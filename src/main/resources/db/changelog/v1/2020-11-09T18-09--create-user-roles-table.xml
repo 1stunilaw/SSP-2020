@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+
+    <changeSet id="2020-11-09T18-09--create-user-roles-table" author="Konstantin Egorov">
+        <!--Insert XML changes objects here https://www.liquibase.org/documentation/xml_format.html-->
+        <createTable tableName="user_roles">
+            <column name="user_id" type="UUID"/>
+            <column name="role_id" type="UUID"/>
+        </createTable>
+        <rollback>
+            DROP TABLE user_roles;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-09T18-09--add-user-fk-user-roles-table" author="Konstantin Egorov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_user"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+    <changeSet id="2020-11-09T18-09--add-roles-fk-user-roles-table" author="Konstantin Egorov">
+        <addForeignKeyConstraint baseColumnNames="role_id"
+                                 baseTableName="user_roles"
+                                 constraintName="fk_user_roles_roles"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="roles"/>
+    </changeSet>
+</databaseChangeLog>
