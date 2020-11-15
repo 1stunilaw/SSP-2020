@@ -23,7 +23,7 @@ public class User extends BasicEntity {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status = Status.ACTIVE;
+    private Status status = Status.UNACTIVATED;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

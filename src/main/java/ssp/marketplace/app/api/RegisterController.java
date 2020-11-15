@@ -3,7 +3,7 @@ package ssp.marketplace.app.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.*;
-import ssp.marketplace.app.entity.RoleName;
+import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.UserService;
 
 import javax.validation.Valid;
@@ -33,5 +33,10 @@ public class RegisterController {
     @PostMapping("/lawyer")
     public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterUserDto registerUserDto){
         return userService.register(registerUserDto, RoleName.ROLE_LAWYER);
+    }
+
+    @GetMapping("/verify")
+    public void confirmRegister(@RequestParam("token") String token){
+        userService.confirmRegister(token);
     }
 }

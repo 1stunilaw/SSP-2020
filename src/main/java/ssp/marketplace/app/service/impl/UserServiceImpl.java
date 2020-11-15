@@ -3,15 +3,17 @@ package ssp.marketplace.app.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.Assert;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ssp.marketplace.app.dto.*;
 import ssp.marketplace.app.dto.mappers.RegisterDtoMapper;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.exceptions.NotFoundException;
+import ssp.marketplace.app.exceptions.custom.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.UserService;
+import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -20,13 +22,22 @@ import java.util.stream.Collectors;
 @Slf4j
 public class UserServiceImpl implements UserService {
 
+    private final ApplicationEventPublisher eventPublisher;
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final TokenRepository tokenRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, RoleRepository roleRepository) {
+    public UserServiceImpl(
+            ApplicationEventPublisher eventPublisher,
+            UserRepository userRepository,
+            RoleRepository roleRepository,
+            TokenRepository tokenRepository
+    ) {
+        this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     @Override
@@ -46,7 +57,11 @@ public class UserServiceImpl implements UserService {
 
         User registeredUser = userRepository.save(user);
 
+        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+        log.info("Starting event");
+        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, baseUrl));
         log.info("IN register - user: {} successfully registered", registeredUser);
+
         return new UserResponseDto(registeredUser);
     }
 
@@ -81,6 +96,40 @@ public class UserServiceImpl implements UserService {
         toDelete.setStatus(Status.DELETED);
         userRepository.save(toDelete);
         log.info("IN deleteUser - user with id {} was successfully disabled", id);
+    }
+
+    @Override
+    public VerificationToken createVerificationToken(User user) {
+        VerificationToken token = new VerificationToken(user);
+        return tokenRepository.save(token);
+    }
+
+    @Override
+    public void confirmRegister(String token) {
+        try {
+            UUID uuid = UUID.fromString(token);
+            VerificationToken verificationToken = getVerificationToken(uuid);
+
+            if(verificationToken.getExpiryDate().getTime() - Calendar.getInstance().getTimeInMillis() <= 0L){
+                tokenRepository.delete(verificationToken);
+                throw new ConfirmationTokenInvalidException("Срок действия токена истёк");
+            }
+
+            User user = verificationToken.getUser();
+            user.setStatus(Status.ACTIVE);
+            userRepository.save(user);
+            tokenRepository.delete(verificationToken);
+        } catch (IllegalArgumentException ex){
+            throw new IllegalArgumentException("Невалидный токен");
+        }
+
+
+    }
+
+    private VerificationToken getVerificationToken(UUID token){
+        return tokenRepository.findById(token).orElseThrow(
+                () -> new NotFoundException("Токен не найден")
+        );
     }
 
     @Override

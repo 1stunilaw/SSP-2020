@@ -10,4 +10,5 @@
     <include file="v1/2020-11-09T18-09--create-user-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-10T2-16--fill-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-12T01-09--add-basic-admin.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-15T23-56--create-verification-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

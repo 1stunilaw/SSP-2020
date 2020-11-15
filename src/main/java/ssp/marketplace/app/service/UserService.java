@@ -17,4 +17,8 @@ public interface UserService extends FieldValueExists {
     User findById(UUID id);
 
     void deleteUser(UUID id);
+
+    VerificationToken createVerificationToken(User user);
+
+    void confirmRegister(String token);
 }

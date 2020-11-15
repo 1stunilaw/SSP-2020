@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+
+    <changeSet id="2020-11-15T23-56--create-verification-table" author="Konstantin Egorov">
+        <createTable tableName="verification">
+            <column name="id" type="UUID"/>
+            <column name="user_id" type="UUID"/>
+            <column name="expiry_date" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            DROP TABLE verification;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-15T23-56--add-pk-verification-table" author="Konstantin Egorov">
+        <addPrimaryKey tableName="verification" columnNames="id"/>
+        <rollback>
+            ALTER TABLE tasks DROP CONSTRAINT verification_pkey;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-15T23-56--add-user-fk-to-verification-table" author="Konstantin Egorov">
+        <addForeignKeyConstraint baseColumnNames="user_id"
+                                 baseTableName="verification"
+                                 constraintName="fk_verification_user"
+                                 onDelete="SET NULL"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="users"/>
+    </changeSet>
+
+</databaseChangeLog>

@@ -16,7 +16,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] publicEndpoints = new String[]{
             "/api/v1/auth/login",
-            "/api/v1/register/user"
+            "/api/v1/register/user",
+            "/api/v1/register/verify"
     };
 
     private static final String[] userEndpoints = new String[]{
