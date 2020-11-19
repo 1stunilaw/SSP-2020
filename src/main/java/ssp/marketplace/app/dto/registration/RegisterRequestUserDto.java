@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto;
+package ssp.marketplace.app.dto.registration;
 
 import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,12 +12,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class RegisterUserDto implements Serializable {
-
-
-    @NotBlank(message = "{name.errors.empty}")
-    private String name;
-
+public abstract class RegisterRequestUserDto implements Serializable {
     @NotBlank(message = "{email.errors.empty}")
     @Pattern(regexp = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
             flags = Pattern.Flag.CASE_INSENSITIVE,

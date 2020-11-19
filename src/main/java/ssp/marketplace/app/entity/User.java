@@ -1,6 +1,9 @@
 package ssp.marketplace.app.entity;
 
+import com.sun.istack.Nullable;
 import lombok.*;
+import ssp.marketplace.app.entity.customer.CustomerDetails;
+import ssp.marketplace.app.entity.supplier.SupplierDetails;
 
 import javax.persistence.*;
 import java.util.*;
@@ -12,8 +15,15 @@ import java.util.*;
 @RequiredArgsConstructor
 public class User extends BasicEntity {
 
-    @Column(name = "name")
-    private String name;
+    @Nullable
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private SupplierDetails supplierDetails;
+
+    @Nullable
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    @PrimaryKeyJoinColumn
+    private CustomerDetails customerDetails;
 
     @Column(name = "email", unique = true)
     private String email;
@@ -23,7 +33,7 @@ public class User extends BasicEntity {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private Status status = Status.UNACTIVATED;
+    private UserStatus status = UserStatus.UNACTIVATED;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",

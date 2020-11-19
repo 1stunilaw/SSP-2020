@@ -22,7 +22,7 @@
     <changeSet id="2020-11-15T23-56--add-pk-verification-table" author="Konstantin Egorov">
         <addPrimaryKey tableName="verification" columnNames="id"/>
         <rollback>
-            ALTER TABLE tasks DROP CONSTRAINT verification_pkey;
+            ALTER TABLE verification DROP CONSTRAINT verification_pkey;
         </rollback>
     </changeSet>
 

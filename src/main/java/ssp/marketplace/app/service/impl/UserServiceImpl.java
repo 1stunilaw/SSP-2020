@@ -7,9 +7,13 @@ import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ssp.marketplace.app.dto.*;
 import ssp.marketplace.app.dto.mappers.RegisterDtoMapper;
+import ssp.marketplace.app.dto.registration.*;
+import ssp.marketplace.app.dto.registration.customer.*;
+import ssp.marketplace.app.dto.registration.supplier.*;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.customer.CustomerDetails;
+import ssp.marketplace.app.entity.supplier.SupplierDetails;
 import ssp.marketplace.app.exceptions.custom.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.UserService;
@@ -41,37 +45,72 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto register(RegisterUserDto registerDto, RoleName role) {
-        RoleName roleName = role;
-        Role roleUser = roleRepository.findByName(roleName)
-                .orElseThrow(()-> new NotFoundException("Role was not found: " + roleName));
+    public UserResponseDto register(RegisterRequestUserDto registerDto) {
+
+        if (registerDto instanceof CustomerRegisterRequestDto){
+            User user = registerCustomer((CustomerRegisterRequestDto) registerDto);
+            log.info("IN register - user: {} successfully registered", user);
+            return new CustomerRegisterResponseDto(user);
+        } else if(registerDto instanceof SupplierRegisterRequestDto){
+            User user = registerSupplier((SupplierRegisterRequestDto) registerDto);
+            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
+            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, baseUrl));
+            log.info("IN register - user: {} successfully registered", user);
+            return new SupplierRegisterResponseDto(user);
+        }
+
+        throw new NotFoundException("Role was not found");
+    }
+
+    private User registerCustomer(CustomerRegisterRequestDto dto){
+        Role roleAdmin = getRoleFromRepository(RoleName.ROLE_ADMIN);
+
+        Set<Role> userRoles = new HashSet<>();
+        userRoles.add(roleAdmin);
+
+//        RegisterDtoMapper mapper = Mappers.getMapper(RegisterDtoMapper.class);
+        User user = new User();
+        // TODO: 19.11.2020 Переделать создание пользователя через MapStruct
+        user.setEmail(dto.getEmail());
+        user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
+        user.setRoles(userRoles);
+        CustomerDetails details = new CustomerDetails(user, dto.getFio(), dto.getPhone());
+        user.setCustomerDetails(details);
+
+        user.setStatus(UserStatus.ACTIVE);
+
+        return userRepository.save(user);
+    }
+
+    private User registerSupplier(SupplierRegisterRequestDto dto){
+        Role roleUser = getRoleFromRepository(RoleName.ROLE_BLANK_USER);
+
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleUser);
 
-        RegisterDtoMapper mapper = Mappers.getMapper(RegisterDtoMapper.class);
+        // TODO: 19.11.2020 Переделать создание пользователя через MapStruct
         User user = new User();
-
-        mapper.createUserFromDto(registerDto, user);
-        user.setPassword(new BCryptPasswordEncoder().encode(user.getPassword()));
+        user.setEmail(dto.getEmail());
+        user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         user.setRoles(userRoles);
+        SupplierDetails details = new SupplierDetails(user, dto.getCompanyName());
+        user.setSupplierDetails(details);
 
-        User registeredUser = userRepository.save(user);
-
-        String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-        log.info("Starting event");
-        eventPublisher.publishEvent(new OnRegistrationCompleteEvent(registeredUser, baseUrl));
-        log.info("IN register - user: {} successfully registered", registeredUser);
-
-        return new UserResponseDto(registeredUser);
+        return userRepository.save(user);
     }
 
-    @Override
-    public Set<UserResponseDto> getAllUsers() {
-        Set<User> users = new HashSet<>(userRepository.findAll());
-        Set<UserResponseDto> result = users.stream().map(UserResponseDto::new).collect(Collectors.toSet());
-        log.info("IN getAllUsers - {} users found", result.size());
-        return result;
+    private Role getRoleFromRepository(RoleName roleName){
+        return roleRepository.findByName(roleName)
+                .orElseThrow(()-> new NotFoundException("Role was not found: " + roleName));
     }
+
+//    @Override
+//    public Set<UserResponseDto> getAllUsers() {
+//        Set<User> users = new HashSet<>(userRepository.findAll());
+//        Set<UserResponseDto> result = users.stream().map(UserResponseDto::new).collect(Collectors.toSet());
+//        log.info("IN getAllUsers - {} users found", result.size());
+//        return result;
+//    }
 
     @Override
     public User findByEmail(String email) {
@@ -93,7 +132,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(UUID id) {
         User toDelete = userRepository.findById(id)
                 .orElseThrow(()-> new NotFoundException("Пользователь с данным id не был найден: " + id));
-        toDelete.setStatus(Status.DELETED);
+        toDelete.setStatus(UserStatus.DELETED);
         userRepository.save(toDelete);
         log.info("IN deleteUser - user with id {} was successfully disabled", id);
     }
@@ -116,7 +155,7 @@ public class UserServiceImpl implements UserService {
             }
 
             User user = verificationToken.getUser();
-            user.setStatus(Status.ACTIVE);
+            user.setStatus(UserStatus.ACTIVE);
             userRepository.save(user);
             tokenRepository.delete(verificationToken);
         } catch (IllegalArgumentException ex){

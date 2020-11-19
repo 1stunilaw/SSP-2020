@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+    <changeSet id="2020-11-18T16-44--create-supplier-details-table" author="Konstantin Egorov">
+        <createTable tableName="supplier_details">
+            <column name="id" type="UUID"/>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="company_name" type="varchar(255)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="inn" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="contact_fio" type="varchar(150)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="region" type="varchar(100)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="nda" type="varchar(50)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="law_status_id" type="UUID">
+                <constraints nullable="true"/>
+            </column>
+
+            <column name="created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            DROP TABLE supplier_details;
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-18T16-45--supplier-details-table-pk" author="Konstantin Egorov">
+        <addPrimaryKey tableName="supplier_details" columnNames="id"/>
+        <rollback>
+            ALTER TABLE law_statuses DROP CONSTRAINT supplier_details_pkey;
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-18T16-46--supplier-details-table-law-status-fk" author="Konstantin Egorov">
+        <addForeignKeyConstraint
+                baseTableName="supplier_details"
+                baseColumnNames="user_id"
+                constraintName="fk_user_supplier_details"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+    <changeSet id="2020-11-18T16-47--supplier-details-table-law-status-fk" author="Konstantin Egorov">
+        <addForeignKeyConstraint
+                baseTableName="supplier_details"
+                baseColumnNames="law_status_id"
+                constraintName="fk_supplier_law_status"
+                referencedTableName="law_statuses"
+                referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

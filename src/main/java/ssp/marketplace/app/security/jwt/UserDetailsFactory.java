@@ -17,7 +17,7 @@ public final class UserDetailsFactory {
                 user.getId(),
                 user.getEmail(),
                 user.getPassword(),
-                user.getStatus().equals(Status.ACTIVE),
+                user.getStatus().equals(UserStatus.ACTIVE),
                 user.getUpdatedAt(),
                 mapToGrantedAuthorities(user.getRoles()));
     }

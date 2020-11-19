@@ -11,4 +11,10 @@
     <include file="v1/2020-11-10T2-16--fill-roles-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-12T01-09--add-basic-admin.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-15T23-56--create-verification-table.xml" relativeToChangelogFile="true"/>
+
+    <include file="v2/2020-11-18T16-33--drop-name-column-users-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-18T16-38--create-law-statuses-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-18T16-44--create-supplier-details-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-18T17-05--create-customer-details-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-18T22-05--add-new-role-to-roles-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

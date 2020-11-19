@@ -16,7 +16,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] publicEndpoints = new String[]{
             "/api/v1/auth/login",
-            "/api/v1/register/user",
+            "/api/v1/register/supplier",
             "/api/v1/register/verify"
     };
 
@@ -27,7 +27,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] adminEndpoints = new String[]{
             "/api/v1/admin",
-            "/api/v1/register/admin",
+            "/api/v1/register/customer",
             "/api/v1/register/lawyer"
     };
 

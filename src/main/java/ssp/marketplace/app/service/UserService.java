@@ -1,6 +1,6 @@
 package ssp.marketplace.app.service;
 
-import ssp.marketplace.app.dto.*;
+import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.validation.FieldValueExists;
 
@@ -8,9 +8,9 @@ import java.util.*;
 
 public interface UserService extends FieldValueExists {
 
-    UserResponseDto register(RegisterUserDto registerDto, RoleName role);
+    UserResponseDto register(RegisterRequestUserDto registerDto);
 
-    Set<UserResponseDto> getAllUsers();
+//    Set<UserResponseDto> getAllUsers();
 
     User findByEmail(String email);
 

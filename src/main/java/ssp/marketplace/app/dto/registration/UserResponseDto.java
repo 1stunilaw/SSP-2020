@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto;
+package ssp.marketplace.app.dto.registration;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
@@ -12,9 +12,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserResponseDto implements Serializable {
+public abstract class UserResponseDto implements Serializable {
     private UUID id;
-    private String name;
     private String email;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     private Timestamp createdAt;
@@ -23,7 +22,6 @@ public class UserResponseDto implements Serializable {
 
     public UserResponseDto(User user) {
         id = user.getId();
-        name = user.getName();
         email = user.getEmail();
         createdAt = user.getCreatedAt();
         updatedAt = user.getUpdatedAt();

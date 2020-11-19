@@ -40,7 +40,7 @@
     <changeSet id="2020-11-09T18-01--add-pk-user-table" author="Konstantin Egorov">
         <addPrimaryKey tableName="users" columnNames="id"/>
         <rollback>
-            ALTER TABLE tasks DROP CONSTRAINT users_pkey;
+            ALTER TABLE users DROP CONSTRAINT users_pkey;
         </rollback>
     </changeSet>
 

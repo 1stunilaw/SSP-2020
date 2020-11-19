@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+        http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+    <changeSet id="2020-11-18T17-05--create-customer-details-table" author="Konstantin Egorov">
+        <createTable tableName="customer_details">
+            <column name="id" type="UUID"/>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false"/>
+            </column>
+            <column name="phone" type="varchar(20)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="fio" type="varchar(150)">
+                <constraints nullable="true"/>
+            </column>
+            <column name="created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+        <rollback>
+            DROP TABLE customer_details;
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-18T17-07--customer_details-table-pk" author="Konstantin Egorov">
+        <addPrimaryKey tableName="customer_details" columnNames="id"/>
+        <rollback>
+            ALTER TABLE customer_details DROP CONSTRAINT customer_details_pkey;
+        </rollback>
+    </changeSet>
+
+
+    <changeSet id="2020-11-18T16-46--supplier-details-table-law-status-fk" author="Konstantin Egorov">
+        <addForeignKeyConstraint
+                baseTableName="customer_details"
+                baseColumnNames="user_id"
+                constraintName="fk_user_customer_details"
+                referencedTableName="users"
+                referencedColumnNames="id"/>
+    </changeSet>
+
+</databaseChangeLog>

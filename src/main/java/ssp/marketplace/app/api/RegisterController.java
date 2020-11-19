@@ -2,7 +2,9 @@ package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.*;
+import ssp.marketplace.app.dto.registration.*;
+import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
+import ssp.marketplace.app.dto.registration.supplier.SupplierRegisterRequestDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.UserService;
 
@@ -20,19 +22,19 @@ public class RegisterController {
         this.userService = userService;
     }
 
-    @PostMapping("/user")
-    public UserResponseDto registerUser(@RequestBody @Valid @NotNull RegisterUserDto registerUserDto){
-        return userService.register(registerUserDto, RoleName.ROLE_USER);
+    @PostMapping("/supplier")
+    public UserResponseDto registerSupplier(@RequestBody @Valid @NotNull SupplierRegisterRequestDto registerUserDto){
+        return userService.register(registerUserDto);
     }
 
-    @PostMapping("/admin")
-    public UserResponseDto registerAdmin(@RequestBody @Valid @NotNull RegisterUserDto registerUserDto){
-        return userService.register(registerUserDto, RoleName.ROLE_ADMIN);
+    @PostMapping("/customer")
+    public UserResponseDto registerCustomer(@RequestBody @Valid @NotNull CustomerRegisterRequestDto registerCustomerDto){
+        return userService.register(registerCustomerDto);
     }
 
     @PostMapping("/lawyer")
-    public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterUserDto registerUserDto){
-        return userService.register(registerUserDto, RoleName.ROLE_LAWYER);
+    public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterRequestUserDto registerUserDto){
+        return userService.register(registerUserDto);
     }
 
     @GetMapping("/verify")
