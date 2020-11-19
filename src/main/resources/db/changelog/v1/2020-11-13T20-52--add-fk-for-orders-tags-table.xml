@@ -1,0 +1,31 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-13T20-52--add-fk-for-orders-tags-table" author="Anton Kharchenko">
+        <addForeignKeyConstraint baseColumnNames="order_id"
+                                 baseTableName="orders_tags"
+                                 constraintName="fk_orders_tags_order"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="orders"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="orders_tags"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-13T20-59--add-fk-for-tag-id" author="Anton Kharchenko">
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="orders_tags"
+                                 constraintName="fk_orders_tags_type"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tags"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="orders_tags"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

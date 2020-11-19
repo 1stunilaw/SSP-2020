@@ -41,7 +41,10 @@ public class User extends BasicEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
 
-    public boolean equals(Object obj){
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Order> orders;
+
+    public boolean equals(Object obj) {
         if (this == obj) {
             return true;
         }

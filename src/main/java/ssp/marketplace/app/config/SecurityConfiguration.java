@@ -22,13 +22,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     private static final String[] userEndpoints = new String[]{
             "/api/v1/auth/home",
-            "/api/v1/user"
+            "/api/v1/user",
+
+            "/document/**",
+            "/orders/**",
     };
 
     private static final String[] adminEndpoints = new String[]{
             "/api/v1/admin",
             "/api/v1/register/customer",
-            "/api/v1/register/lawyer"
+            "/api/v1/register/lawyer",
+            "/api/v1/register/admin",
+            "/api/v1/register/lawyer",
+            "/admin/**",
+
     };
 
     @Autowired

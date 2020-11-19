@@ -1,4 +1,4 @@
-package ssp.marketplace.app.exceptions;
+package ssp.marketplace.app.exceptions.handlers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.*;

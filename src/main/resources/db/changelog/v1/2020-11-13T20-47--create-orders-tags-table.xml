@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  id="2020-11-13T20-47--create-orders-tags-table" author="Anton Kharchenko">
+        <createTable tableName="orders_tags">
+            <column name="order_id" type="UUID">
+            </column>
+
+            <column name="tag_id" type="UUID">
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="orders_tags"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

@@ -17,4 +17,19 @@
     <include file="v2/2020-11-18T16-44--create-supplier-details-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-11-18T17-05--create-customer-details-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-11-18T22-05--add-new-role-to-roles-table.xml" relativeToChangelogFile="true"/>
+
+
+    <!--PI1-10-->
+    <include file="v1/2020-11-13T00-39--create-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-13T17-13--create-documents--table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-13T19-35--create-tags-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-13T20-47--create-orders-tags-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-13T20-52--add-fk-for-orders-tags-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-17T11-02--insert-tags.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-17T15-18--add-column-user-id-in-orders-table.xml" relativeToChangelogFile="true"/>
+
+    <include file="v1/2020-11-18T09-15--drop-fk_order-and-column-order_id.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-18T09-56--add-time-in-documents.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-18T11-50--create-orders_documents-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-18T12-01--add-fk-for-orders_documents-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

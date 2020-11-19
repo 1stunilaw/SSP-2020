@@ -1,0 +1,43 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-17T11-02--insert-tags" author="Anton Kharchenko">
+        <insert tableName="tags">
+            <column name="id" value="9085cadf-a3e5-4eee-8f94-984d29e1427b"/>
+            <column name="tag_name" value="html" />
+        </insert>
+        <insert tableName="tags">
+            <column name="id" value="ea0272af-4ae3-4132-ae97-6f86f36c11fd"/>
+            <column name="tag_name" value="css" />
+        </insert>
+        <insert tableName="tags">
+            <column name="id" value="7835fa8c-df24-4133-8cab-e0f7281ac1ce"/>
+            <column name="tag_name" value="spring" />
+        </insert>
+        <insert tableName="tags">
+            <column name="id" value="e806b964-0eed-4960-b3c9-6f4acbb70343"/>
+            <column name="tag_name" value="java" />
+        </insert>
+        <insert tableName="tags">
+            <column name="id" value="9e9c8a4e-690a-47e7-b8a4-811e65cc08ad"/>
+            <column name="tag_name" value="react js" />
+        </insert>
+        <insert tableName="tags">
+            <column name="id" value="4bcc508e-0113-4ec9-a92a-28c1de7ff93a"/>
+            <column name="tag_name" value="angular js" />
+        </insert>
+
+        <insert tableName="tags">
+            <column name="id" value="d3f2cf95-e032-4b0b-8233-9d887cca649c"/>
+            <column name="tag_name" value="vue js" />
+        </insert>
+
+        <insert tableName="tags">
+            <column name="id" value="38732ac0-70c4-41c3-863a-93fade71af92"/>
+            <column name="tag_name" value="postgres" />
+        </insert>
+
+    </changeSet>
+</databaseChangeLog>

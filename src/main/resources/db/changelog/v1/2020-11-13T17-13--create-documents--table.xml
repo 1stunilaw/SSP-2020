@@ -1,0 +1,32 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  id="2020-11-13T17-13--create-documents--table" author="Anton Kharchenko">
+        <createTable tableName="documents">
+            <column name="id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name_document" type="VARCHAR(350)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="VARCHAR(35)" defaultValue="ACTIVE">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="uuid">
+                <constraints nullable="true" references="orders(id)" deleteCascade="true" foreignKeyName="fk_order"/>
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="documents"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-13T17-20--add-pk-documents-table" author="Anton Kharchenko">
+        <addPrimaryKey tableName="documents" columnNames="id"/>
+        <rollback>
+            <dropPrimaryKey tableName="documents"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

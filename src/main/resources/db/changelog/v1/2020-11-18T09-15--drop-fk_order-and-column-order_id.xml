@@ -1,0 +1,18 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-18T09-15--drop-fk_order" author="Anton Kharchenko">
+        <dropForeignKeyConstraint
+                baseTableName="documents"
+                constraintName="fk_order"/>
+    </changeSet>
+
+    <changeSet id="2020-11-18T09-20--drop-order_id" author="Anton Kharchenko">
+        <dropColumn
+                tableName="documents">
+            <column name="order_id"/>
+        </dropColumn>
+    </changeSet>
+</databaseChangeLog>

@@ -1,13 +1,12 @@
 package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ssp.marketplace.app.dto.mappers.RegisterDtoMapper;
 import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
@@ -16,11 +15,12 @@ import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
 import ssp.marketplace.app.exceptions.custom.*;
 import ssp.marketplace.app.repository.*;
+import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.UserService;
 import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -30,18 +30,21 @@ public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final TokenRepository tokenRepository;
+    private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public UserServiceImpl(
             ApplicationEventPublisher eventPublisher,
             UserRepository userRepository,
             RoleRepository roleRepository,
-            TokenRepository tokenRepository
+            TokenRepository tokenRepository,
+            JwtTokenProvider jwtTokenProvider
     ) {
         this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
@@ -64,7 +67,6 @@ public class UserServiceImpl implements UserService {
 
     private User registerCustomer(CustomerRegisterRequestDto dto){
         Role roleAdmin = getRoleFromRepository(RoleName.ROLE_ADMIN);
-
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleAdmin);
 
@@ -115,7 +117,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findByEmail(String email) {
         User result = userRepository.findByEmail(email)
-                .orElseThrow(()-> new NotFoundException("Пользователь с данным email не был найден: " + email));
+                .orElseThrow(() -> new NotFoundException("Пользователь с данным email не был найден: " + email));
         log.info("IN findByEmail - user: {} found by email {}", result, email);
         return result;
     }
@@ -123,7 +125,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User findById(UUID id) {
         User result = userRepository.findById(id)
-                .orElseThrow(()-> new NotFoundException("Пользователь с данным id не был найден: " + id));
+                .orElseThrow(() -> new NotFoundException("Пользователь с данным id не был найден: " + id));
         log.info("IN findByEmail - user: {} found by id {}", result, id);
         return result;
     }
@@ -182,5 +184,14 @@ public class UserServiceImpl implements UserService {
         }
 
         return userRepository.existsByEmail(value.toString());
+    }
+
+    @Override
+    public User getUserFromHttpServletRequest(HttpServletRequest req) {
+        String token = jwtTokenProvider.resolveToken(req);
+        String email = jwtTokenProvider.getEmail(token);
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        return user;
     }
 }
