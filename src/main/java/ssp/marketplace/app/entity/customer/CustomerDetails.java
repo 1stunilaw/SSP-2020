@@ -5,6 +5,7 @@ import lombok.*;
 import ssp.marketplace.app.entity.*;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -12,8 +13,7 @@ import javax.persistence.*;
 @RequiredArgsConstructor
 public class CustomerDetails extends BasicEntity {
 
-    @OneToOne
-    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
@@ -25,8 +25,10 @@ public class CustomerDetails extends BasicEntity {
     private String phone;
 
     public CustomerDetails(User user, String fio, String phone) {
+        super();
         this.user = user;
         this.fio = fio;
         this.phone = phone;
     }
+
 }

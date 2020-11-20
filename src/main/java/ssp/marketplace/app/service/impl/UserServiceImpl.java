@@ -78,6 +78,7 @@ public class UserServiceImpl implements UserService {
         user.setRoles(userRoles);
         CustomerDetails details = new CustomerDetails(user, dto.getFio(), dto.getPhone());
         user.setCustomerDetails(details);
+        details.setUser(user);
 
         user.setStatus(UserStatus.ACTIVE);
 
@@ -96,7 +97,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         user.setRoles(userRoles);
         SupplierDetails details = new SupplierDetails(user, dto.getCompanyName());
+
         user.setSupplierDetails(details);
+        details.setUser(user);
 
         return userRepository.save(user);
     }

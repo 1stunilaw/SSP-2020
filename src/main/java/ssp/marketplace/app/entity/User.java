@@ -15,14 +15,10 @@ import java.util.*;
 @RequiredArgsConstructor
 public class User extends BasicEntity {
 
-    @Nullable
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private SupplierDetails supplierDetails;
 
-    @Nullable
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
-    @PrimaryKeyJoinColumn
+    @OneToOne(fetch = FetchType.EAGER, mappedBy = "user", cascade = CascadeType.ALL)
     private CustomerDetails customerDetails;
 
     @Column(name = "email", unique = true)

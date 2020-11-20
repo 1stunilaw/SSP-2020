@@ -2,6 +2,7 @@ package ssp.marketplace.app.entity.supplier;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
 
 import javax.persistence.*;
@@ -13,8 +14,7 @@ import javax.persistence.*;
 @Table(name = "supplier_details")
 public class SupplierDetails extends BasicEntity {
 
-    @OneToOne
-    @MapsId
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     @JsonBackReference
     private User user;
@@ -37,9 +37,10 @@ public class SupplierDetails extends BasicEntity {
     @Column(name = "nda", length = 50)
     private String nda;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @MapsId
+    @Nullable
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="law_status_id")
+    @JsonBackReference
     private LawStatus lawStatus;
 
     /**
@@ -48,6 +49,7 @@ public class SupplierDetails extends BasicEntity {
      * @param companyName название компании
      */
     public SupplierDetails(User user, String companyName) {
+        super();
         this.user = user;
         this.companyName = companyName;
     }

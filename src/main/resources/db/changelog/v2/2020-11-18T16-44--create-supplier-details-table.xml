@@ -47,7 +47,7 @@
     <changeSet id="2020-11-18T16-45--supplier-details-table-pk" author="Konstantin Egorov">
         <addPrimaryKey tableName="supplier_details" columnNames="id"/>
         <rollback>
-            ALTER TABLE law_statuses DROP CONSTRAINT supplier_details_pkey;
+            ALTER TABLE supplier_details DROP CONSTRAINT supplier_details_pkey;
         </rollback>
     </changeSet>
 
