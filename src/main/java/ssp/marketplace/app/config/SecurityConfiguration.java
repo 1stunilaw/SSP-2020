@@ -23,7 +23,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private static final String[] userEndpoints = new String[]{
             "/api/v1/auth/home",
             "/api/v1/user",
-
             "/document/**",
             "/orders/**",
     };
@@ -57,15 +56,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
-                .exceptionHandling().authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                .and()
                 .authorizeRequests()
                 .antMatchers(publicEndpoints).permitAll()
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
-                .apply(new JwtConfigurer(jwtTokenProvider));
-
+                .apply(new JwtConfigurer(jwtTokenProvider))
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .accessDeniedHandler(new RestAccessDeniedHandler());
     }
 }

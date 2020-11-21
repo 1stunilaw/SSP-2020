@@ -21,8 +21,9 @@ public class RestAuthenticationEntryPoint implements AuthenticationEntryPoint {
 
         log.info("Commence");
         Map<String,Object> response = new HashMap<>();
+        response.put("message", "Токен отсутствует или невалиден");
         response.put("status", HttpStatus.UNAUTHORIZED.value());
-        response.put("message", e.getMessage());
+
         httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         OutputStream out = httpServletResponse.getOutputStream();

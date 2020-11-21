@@ -13,7 +13,7 @@ import ssp.marketplace.app.dto.registration.supplier.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
-import ssp.marketplace.app.exceptions.custom.*;
+import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.UserService;

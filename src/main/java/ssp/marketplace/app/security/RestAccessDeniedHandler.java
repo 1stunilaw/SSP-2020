@@ -1,6 +1,7 @@
 package ssp.marketplace.app.security;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.stereotype.Component;
@@ -21,8 +22,8 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
             ServletException
     {
         Map<String,Object> response = new HashMap<>();
-        response.put("status",401);
-        response.put("message","unauthorized api access");
+        response.put("message","Unauthorized api access");
+        response.put("status", HttpStatus.UNAUTHORIZED.value());
 
         //httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
