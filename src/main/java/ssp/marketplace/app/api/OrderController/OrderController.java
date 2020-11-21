@@ -5,6 +5,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
 import ssp.marketplace.app.service.OrderService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @RestController
 @RequestMapping("/orders")
@@ -12,6 +13,7 @@ public class OrderController {
 
     private final OrderService orderService;
 
+    @Autowired
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
     }
