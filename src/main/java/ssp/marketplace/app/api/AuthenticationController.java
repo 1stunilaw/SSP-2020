@@ -6,7 +6,7 @@ import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.AuthenticationRequestDto;
+import ssp.marketplace.app.dto.*;
 import ssp.marketplace.app.entity.User;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.UserService;
@@ -18,7 +18,6 @@ import java.util.*;
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
-    private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
 
     @Autowired
@@ -26,25 +25,19 @@ public class AuthenticationController {
             AuthenticationManager authenticationManager, JwtTokenProvider jwtTokenProvider, UserService userService
     ) {
         this.authenticationManager = authenticationManager;
-        this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
     }
 
     @PostMapping("login")
-    public ResponseEntity login(@RequestBody AuthenticationRequestDto requestDto){
+    public AuthenticationResponseDto login(@RequestBody AuthenticationRequestDto requestDto){
         try {
             String email = requestDto.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDto.getPassword()));
             User user = userService.findByEmail(email);
 
-            String token = jwtTokenProvider.createToken(email, user.getRoles());
+            String token = userService.createToken(user);
 
-            //TODO: 22.11.2020 Переделать через DTO
-            Map<Object,Object> response = new HashMap<>();
-            response.put("email", email);
-            response.put("token", token);
-
-            return ResponseEntity.ok(response);
+            return new AuthenticationResponseDto(email, token);
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Invalid username or password");
         }

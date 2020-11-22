@@ -3,10 +3,14 @@ package ssp.marketplace.app.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.authentication.*;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import ssp.marketplace.app.dto.*;
 import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
@@ -38,7 +42,7 @@ public class UserServiceImpl implements UserService {
             UserRepository userRepository,
             RoleRepository roleRepository,
             TokenRepository tokenRepository,
-            JwtTokenProvider jwtTokenProvider
+            @Lazy JwtTokenProvider jwtTokenProvider
     ) {
         this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
@@ -197,4 +201,10 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
         return user;
     }
+
+    @Override
+    public String createToken(User user){
+        return jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
+    }
+
 }

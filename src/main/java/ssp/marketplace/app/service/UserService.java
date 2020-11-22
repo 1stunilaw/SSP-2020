@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service;
 
+import ssp.marketplace.app.dto.*;
 import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.validation.FieldValueExists;
@@ -24,4 +25,6 @@ public interface UserService extends FieldValueExists {
     void confirmRegister(String token);
 
     User getUserFromHttpServletRequest(HttpServletRequest req);
+
+    String createToken(User user);
 }
