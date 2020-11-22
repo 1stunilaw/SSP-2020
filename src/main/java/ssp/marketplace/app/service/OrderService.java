@@ -37,7 +37,6 @@ public interface OrderService {
                 .name(requestOrderDto.getName())
                 .statusForOrder(statusForOrder)
                 .description(requestOrderDto.getDescription())
-                .documents(requestOrderDto.getDocuments())
                 .build();
         return order;
     }

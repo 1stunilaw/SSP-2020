@@ -28,7 +28,5 @@ public class RequestOrderDto {
 
     private StatusForOrder statusForOrder;
 
-    private List<Document> documents;
-
     private List<String> tags;
 }
