@@ -8,8 +8,13 @@ import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.*;
+import java.util.Date;
 
 public interface OrderService {
+
+    int MINUTE = 59;
+    int HOUR = 23;
 
     Page<ResponseOrderDto> getOrders(Pageable pageable);
 
@@ -26,17 +31,21 @@ public interface OrderService {
     ResponseOrderDto getOneOrder(String name);
 
     static Order orderFromOrderDto(RequestOrderDto requestOrderDto) {
-        StatusForOrder statusForOrder = StatusForOrder.ACTIVE;
+        StatusForOrder statusForOrder = StatusForOrder.NEW;
         StatusForOrder statusOrderDto = requestOrderDto.getStatusForOrder();
         if(statusOrderDto != null){
             statusForOrder =  statusOrderDto;
         }
+        LocalDate localDate = requestOrderDto.getDateStop();
+        LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
+
         Order order = Order.builder()
-                .dateStart(requestOrderDto.getDateStart())
-                .dateStop(requestOrderDto.getDateStop())
                 .name(requestOrderDto.getName())
-                .statusForOrder(statusForOrder)
+                .dateStart(LocalDateTime.now())
+                .dateStop(localDateTime)
                 .description(requestOrderDto.getDescription())
+                .statusForOrder(statusForOrder)
+                .organizationName(requestOrderDto.getOrganizationName())
                 .build();
         return order;
     }

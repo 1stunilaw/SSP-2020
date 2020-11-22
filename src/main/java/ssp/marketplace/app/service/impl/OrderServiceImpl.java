@@ -110,7 +110,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOrderDto markDoneOrder(String name) {
         Order order = orderRepository.findByName(name)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        order.setStatusForOrder(StatusForOrder.DONE);
+        order.setStatusForOrder(StatusForOrder.CLOSE);
         orderRepository.save(order);
         return ResponseOrderDto.responseOrderDtoFromOrder(order);
     }
@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private Order setTagForOrder(Order order, RequestOrderDto requestOrderDto) {
+    private Order setTagForOrder(Order order, RequestOrderDto requestOrderDto) {//todo
         List<String> tags = requestOrderDto.getTags();
         List<Tag> orderTags = order.getTags();
         if (tags != null) {

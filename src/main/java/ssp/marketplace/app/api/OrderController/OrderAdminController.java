@@ -25,7 +25,7 @@ public class OrderAdminController {
     public ResponseOrderDto addNewOrder(
             @RequestPart(value = "order") RequestOrderDto responseOrderDto,
             HttpServletRequest req,
-            @RequestPart(value = "multipart-files", required = false) MultipartFile[] multipartFiles
+            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
     ) {
         if (multipartFiles != null && multipartFiles.length != 0) {
             return orderService.addNewOrderWithDocuments(req, responseOrderDto, multipartFiles);
@@ -42,7 +42,7 @@ public class OrderAdminController {
 //        return orderService.editOrder(name, responseOrderDto);
 //    }
 
-    @DeleteMapping(value = "/q/{name}")
+    @DeleteMapping(value = "/{name}")
     public ResponseEntity deleteOrder(
             @PathVariable String name
     ) {

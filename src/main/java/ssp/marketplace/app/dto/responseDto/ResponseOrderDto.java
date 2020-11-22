@@ -5,9 +5,8 @@ import org.springframework.format.annotation.DateTimeFormat;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.service.DocumentService;
-import ssp.marketplace.app.service.impl.ConvertServices;
 
-import java.time.LocalDateTime;
+import java.time.*;
 import java.util.*;
 
 @Data
@@ -30,15 +29,20 @@ public class ResponseOrderDto {
 
     private List<String> documents;
 
+    private String organizationName;
+
+    private String description;
+
     private List<String> tags;
 
     public static ResponseOrderDto responseOrderDtoFromOrder(Order order) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveDocument(order);
         List<String> stringDocs = new ArrayList<>();
-        for (Document doc: activeDocument
-             ) {
+        for (Document doc : activeDocument
+        ) {
             stringDocs.add(doc.getName());
         }
+
         ResponseOrderDto responseOrderDto = builder()
                 .dateStart(order.getDateStart())
                 .dateStop(order.getDateStop())
@@ -46,6 +50,8 @@ public class ResponseOrderDto {
                 .statusForOrder(order.getStatusForOrder())
                 .user(order.getUser().getCustomerDetails().getFio())
                 .documents(stringDocs)
+                .description(order.getDescription())
+                .organizationName(order.getOrganizationName())
                 .build();
         List<Tag> tags = order.getTags();
         List<String> tagsName = new ArrayList<>();
