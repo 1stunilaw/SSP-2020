@@ -1,0 +1,23 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-22T22-24--drop-name" author="Anton Kharchenko">
+        <dropColumn
+                tableName="orders">
+            <column name="name"/>
+        </dropColumn>
+    </changeSet>
+    <changeSet id="2020-11-22T23-24--change-name-in-orders-table" author="Anton Kharchenko">
+        <addColumn tableName="orders">
+            <column name="name" type="VARCHAR(1000)">
+                <constraints nullable="false" unique="true"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="name"
+                        tableName="orders"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

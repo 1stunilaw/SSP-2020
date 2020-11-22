@@ -33,4 +33,9 @@
     <include file="v1/2020-11-18T09-56--add-time-in-documents.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-18T11-50--create-orders_documents-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-18T12-01--add-fk-for-orders_documents-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-22T22-24--change-default-status-for-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-22T23-18--add-organization_name-in-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-22T23-24--change-name-in-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-22T23-42--change-date-in-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-22T23-49--add_not_null-description-in-orders-table.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

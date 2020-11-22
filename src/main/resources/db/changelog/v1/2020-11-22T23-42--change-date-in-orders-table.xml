@@ -1,0 +1,43 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-22T22-24--drop-date_start-in-orders-table" author="Anton Kharchenko">
+        <dropColumn
+                tableName="orders">
+            <column name="date_start"/>
+        </dropColumn>
+    </changeSet>
+
+    <changeSet id="2020-11-22T22-24--drop-date_stop-in-orders-table" author="Anton Kharchenko">
+        <dropColumn
+                tableName="orders">
+            <column name="date_stop"/>
+        </dropColumn>
+    </changeSet>
+
+    <changeSet id="2020-11-22T23-24--add-date_start-in-orders-table" author="Anton Kharchenko">
+        <addColumn tableName="orders">
+            <column name="date_start" type="timestamp without time zone" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="date_start"
+                        tableName="orders"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-22T23-24--add-date_stop-in-orders-table" author="Anton Kharchenko">
+        <addColumn tableName="orders">
+            <column name="date_stop" type="timestamp without time zone">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+        <rollback>
+            <dropColumn columnName="date_stop"
+                        tableName="orders"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
