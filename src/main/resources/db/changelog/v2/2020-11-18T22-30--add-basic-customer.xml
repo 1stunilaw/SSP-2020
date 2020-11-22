@@ -10,7 +10,6 @@
     <changeSet id="2020-11-18T22-30--add-basic-customer" author="Konstantin Egorov">
         <insert tableName="users">
             <column name="id" value="2249ca67-629a-4671-a0a3-086942d67365"/>
-            <column name="name" value="Базовый заказчик"/>
             <column name="email" value="qwe@asd.ru"/>
             <!-- Пароль: $tr0ngPa$$word11 -->
             <column name="password" value="$2y$12$PH9RBo5tHbH0RhDRSUWEGuHYr1zeHi16v9W/6N4cyuhgezeRmyoZ2"/>
@@ -23,6 +22,16 @@
         <insert tableName="user_roles">
             <column name="user_id" value="2249ca67-629a-4671-a0a3-086942d67365"/>
             <column name="role_id" value="b6ec9767-0e03-4b1a-be0d-2e8d4cca0578"/>
+        </insert>
+    </changeSet>
+    <changeSet id="2020-11-18T22-40--add-basic-customer-details" author="Konstantin Egorov">
+        <insert tableName="customer_details">
+            <column name="id" value="ec783675-8318-4cba-bfe7-8581986ef929"/>
+            <column name="user_id" value="2249ca67-629a-4671-a0a3-086942d67365"/>
+            <column name="fio" value="Базовый заказчик"/>
+            <column name="phone" value="+79998884455"/>
+            <column name="created_at" value="${now}"/>
+            <column name="updated_at" value="${now}"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
