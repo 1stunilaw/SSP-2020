@@ -39,6 +39,7 @@ public class AuthenticationController {
 
             String token = jwtTokenProvider.createToken(email, user.getRoles());
 
+            //TODO: 22.11.2020 Переделать через DTO
             Map<Object,Object> response = new HashMap<>();
             response.put("email", email);
             response.put("token", token);
