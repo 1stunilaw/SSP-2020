@@ -8,7 +8,7 @@ import ssp.marketplace.app.service.UserService;
 import java.sql.SQLException;
 
 @RestController
-@RequestMapping("/api/v1")
+@RequestMapping("/api/")
 public class ExampleController {
 
 

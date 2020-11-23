@@ -12,7 +12,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 @RestController
-@RequestMapping("/api/v1/register")
+@RequestMapping("/api/register")
 public class RegisterController {
 
     private UserService userService;
@@ -32,10 +32,10 @@ public class RegisterController {
         return userService.register(registerCustomerDto);
     }
 
-    @PostMapping("/lawyer")
-    public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterRequestUserDto registerUserDto){
-        return userService.register(registerUserDto);
-    }
+//    @PostMapping("/lawyer")
+//    public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterRequestUserDto registerUserDto){
+//        return userService.register(registerUserDto);
+//    }
 
     @GetMapping("/verify")
     public void confirmRegister(@RequestParam("token") String token){

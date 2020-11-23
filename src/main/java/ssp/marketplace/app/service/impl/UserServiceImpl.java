@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
     }
 
     private User registerSupplier(SupplierRegisterRequestDto dto){
-        Role roleUser = getRoleFromRepository(RoleName.ROLE_BLANK_USER);
+        Role roleUser = getRoleFromRepository(RoleName.ROLE_USER);
 
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleUser);

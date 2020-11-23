@@ -14,7 +14,7 @@ import ssp.marketplace.app.service.UserService;
 import java.util.*;
 
 @RestController
-@RequestMapping(value = "api/v1/auth/")
+@RequestMapping(value = "api/")
 public class AuthenticationController {
 
     private final AuthenticationManager authenticationManager;
