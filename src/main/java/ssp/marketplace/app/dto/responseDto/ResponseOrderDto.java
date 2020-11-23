@@ -15,6 +15,8 @@ import java.util.*;
 @Builder
 public class ResponseOrderDto {
 
+    private UUID id;
+
     private String name;
 
     @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
@@ -24,6 +26,8 @@ public class ResponseOrderDto {
     private LocalDateTime dateStop;
 
     private String user;
+
+    private Long number;
 
     private StatusForOrder statusForOrder;
 
@@ -44,6 +48,7 @@ public class ResponseOrderDto {
         }
 
         ResponseOrderDto responseOrderDto = builder()
+                .id(order.getId())
                 .dateStart(order.getDateStart())
                 .dateStop(order.getDateStop())
                 .name(order.getName())
@@ -52,6 +57,7 @@ public class ResponseOrderDto {
                 .documents(stringDocs)
                 .description(order.getDescription())
                 .organizationName(order.getOrganizationName())
+                .number(order.getNumber())
                 .build();
         List<Tag> tags = order.getTags();
         List<String> tagsName = new ArrayList<>();

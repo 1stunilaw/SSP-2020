@@ -1,12 +1,14 @@
 package ssp.marketplace.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
-import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
-import ssp.marketplace.app.entity.statuses.*;
+import org.hibernate.annotations.*;
+import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -16,7 +18,6 @@ import java.util.*;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@TableGenerator(name="tab", initialValue=0, allocationSize=50)
 public class Order {
 
     @Id
@@ -39,13 +40,19 @@ public class Order {
     @Column(name = "description")
     private String description;
 
+//    @JsonProperty("number")
+    @Column(name="number", nullable=false, unique=true, insertable = false,
+            updatable = true, columnDefinition = "BIGINT DEFAULT nextval('orders_number_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "orders_number_seq")
+    @SequenceGenerator(name = "orders_number_seq", sequenceName ="orders_number_seq")
+    private Long number;
+
     @Column(name = "organization_name")
     private String organizationName;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusForOrder statusForOrder;
-
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")

@@ -51,8 +51,8 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseOrderDto getOneOrder(String name) {
-        Order order = orderRepository.findByName(name)
+    public ResponseOrderDto getOneOrder(UUID id) {
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         List<Document> activeDocuments = DocumentService.selectOnlyActiveDocument(order);
         order.setDocuments(activeDocuments);
@@ -62,6 +62,8 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public ResponseOrderDto addNewOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
         Order order = saveUserAndOrder(req, requestOrderDto);
+        Long number = orderRepository.getNumber(order.getName());
+        order.setNumber(number);
         return ResponseOrderDto.responseOrderDtoFromOrder(order);
     }
 
@@ -72,6 +74,8 @@ public class OrderServiceImpl implements OrderService {
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3, order);
         order.setDocuments(documents);
         orderRepository.save(order);
+        Long number = orderRepository.getNumber(order.getName());
+        order.setNumber(number);
         return ResponseOrderDto.responseOrderDtoFromOrder(order);
     }
 
@@ -88,8 +92,8 @@ public class OrderServiceImpl implements OrderService {
 //    }
 
     @Override
-    public void deleteOrder(String name) {
-        Order order = orderRepository.findByName(name)
+    public void deleteOrder(UUID id) {
+        Order order = orderRepository.findByIdAndStatusForOrderNotIn(id, Collections.singleton(StatusForOrder.DELETED))
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatusForOrder(StatusForOrder.DELETED);
         List<Document> documents = order.getDocuments();
@@ -101,14 +105,13 @@ public class OrderServiceImpl implements OrderService {
             catch (NotFoundException e){
                 continue;
             }
-
         }
         orderRepository.save(order);
     }
 
     @Override
-    public ResponseOrderDto markDoneOrder(String name) {
-        Order order = orderRepository.findByName(name)
+    public ResponseOrderDto markDoneOrder(UUID id) {
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatusForOrder(StatusForOrder.CLOSE);
         orderRepository.save(order);

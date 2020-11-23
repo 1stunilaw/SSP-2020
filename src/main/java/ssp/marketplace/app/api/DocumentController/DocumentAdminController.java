@@ -3,13 +3,15 @@ package ssp.marketplace.app.api.DocumentController;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.entity.Order;
+import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.DocumentService;
 
+import java.util.*;
+
 @RestController
-@RequestMapping("/admin")
+@RequestMapping("api/admin/")
 public class DocumentAdminController {
 
     public final DocumentService documentService;
@@ -26,14 +28,17 @@ public class DocumentAdminController {
         this.orderRepository = orderRepository;
     }
 
-    @PostMapping("/orders/{name}/upload_file")
+    @PostMapping("/orders/{id}/upload_file")
     public void addNewDocument(
-            @PathVariable String name,
-            @RequestParam("multipart-files") MultipartFile[] multipartFiles
+            @PathVariable UUID id,
+            @RequestParam("files") MultipartFile[] multipartFiles
     ) {
-        Order order = orderRepository.findByName(name)
+        Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        documentService.addNewDocuments(multipartFiles, "/" + name, order);
+        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
+        List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3, order);
+        order.setDocuments(documents);
+        orderRepository.save(order);
     }
 
     @DeleteMapping("/document/{name}")

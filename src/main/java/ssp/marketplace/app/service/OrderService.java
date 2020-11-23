@@ -9,7 +9,7 @@ import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
-import java.util.Date;
+import java.util.*;
 
 public interface OrderService {
 
@@ -24,11 +24,11 @@ public interface OrderService {
 
 //    ResponseOrderDto editOrder(String name, RequestOrderDto requestOrderDto);
 
-    void deleteOrder(String name);
+    void deleteOrder(UUID id);
 
-    ResponseOrderDto markDoneOrder(String name);
+    ResponseOrderDto markDoneOrder(UUID id);
 
-    ResponseOrderDto getOneOrder(String name);
+    ResponseOrderDto getOneOrder(UUID id);
 
     static Order orderFromOrderDto(RequestOrderDto requestOrderDto) {
         StatusForOrder statusForOrder = StatusForOrder.NEW;

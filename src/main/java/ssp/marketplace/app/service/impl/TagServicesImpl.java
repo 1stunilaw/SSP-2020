@@ -6,6 +6,8 @@ import ssp.marketplace.app.entity.Tag;
 import ssp.marketplace.app.repository.TagRepository;
 import ssp.marketplace.app.service.TagServices;
 
+import java.util.List;
+
 @Service
 public class TagServicesImpl implements TagServices {
 
@@ -17,8 +19,13 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public void addNewTag(RequestTag requestTag) {
-        Tag tag = new Tag();
-        tag.setTagName(requestTag.getTagName());
-        tagRepository.save(tag);
+
+        List<String> tagName = requestTag.getTagName();
+        for (String t: tagName
+             ) {
+            Tag tag = new Tag();
+            tag.setTagName(t);
+            tagRepository.save(tag);
+        }
     }
 }

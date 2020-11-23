@@ -27,7 +27,7 @@ public class S3ServicesImpl implements S3Services {
     public S3ObjectInputStream downloadFile(String filename, String pathS3) {
         S3Object object = s3client.getObject(bucketName + pathS3, filename);
         if (object == null) {
-            throw new NotFoundException("Файл не найден");
+            throw new NotFoundException("Документ не найден");
         }
         S3ObjectInputStream s3is = object.getObjectContent();
         return s3is;

@@ -24,7 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/api/v1/auth/home",
             "/api/v1/user",
             "/document/**",
-            "/orders/**",
+            "api/orders/**",
     };
 
     private static final String[] adminEndpoints = new String[]{
@@ -34,7 +34,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/api/v1/register/admin",
             "/api/v1/register/lawyer",
             "/admin/**",
-
+            "/api/admin/**",
     };
 
     @Autowired
