@@ -15,24 +15,24 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
     private final JwtTokenProvider jwtTokenProvider;
 
     private static final String[] publicEndpoints = new String[]{
-            "/api/v1/auth/login",
-            "/api/v1/register/supplier",
-            "/api/v1/register/verify"
+            "/api/login",
+            "/api/register/supplier",
+            "/api/register/verify"
     };
 
     private static final String[] userEndpoints = new String[]{
-            "/api/v1/auth/home",
-            "/api/v1/user",
+            "/api/home",
+            "/api/user",
             "/document/**",
             "api/orders/**",
     };
 
     private static final String[] adminEndpoints = new String[]{
-            "/api/v1/admin",
-            "/api/v1/register/customer",
-            "/api/v1/register/lawyer",
-            "/api/v1/register/admin",
-            "/api/v1/register/lawyer",
+            "/api/admin",
+            "/api/register/customer",
+            "/api/register/lawyer",
+            "/api/register/admin",
+            "/api/register/lawyer",
             "/admin/**",
             "/api/admin/**",
     };
