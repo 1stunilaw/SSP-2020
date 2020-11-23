@@ -42,7 +42,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void deleteDocument(String name) {
         Document document = documentRepository.findByNameAndStatusForDocumentNotIn(
                 name, Collections.singleton(StatusForDocument.DELETED))
-                .orElseThrow(()-> new NotFoundException("Файл не найден"));
+                .orElseThrow(()-> new NotFoundException("Документ не найден"));
         document.setStatusForDocument(StatusForDocument.DELETED);
         documentRepository.save(document);
     }

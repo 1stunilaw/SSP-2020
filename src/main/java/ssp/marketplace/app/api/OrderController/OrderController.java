@@ -7,8 +7,10 @@ import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
 import ssp.marketplace.app.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.util.UUID;
+
 @RestController
-@RequestMapping("/orders")
+@RequestMapping("api/orders")
 public class OrderController {
 
     private final OrderService orderService;
@@ -25,10 +27,10 @@ public class OrderController {
         return orderService.getOrders(pageable);
     }
 
-    @GetMapping("/{name}")
+    @GetMapping("/{id}")
     public ResponseOrderDto getOneOrder(
-            @PathVariable String name
+            @PathVariable UUID id
     ) {
-        return orderService.getOneOrder(name);
+        return orderService.getOneOrder(id);
     }
 }

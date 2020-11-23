@@ -1,6 +1,6 @@
 package ssp.marketplace.app.dto.requestDto;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -8,8 +8,9 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
+import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
-import java.time.*;
+import java.time.LocalDate;
 import java.util.*;
 
 @Data
@@ -19,15 +20,16 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderDto {
 
+    @NotBlank
     private String name;
 
-//    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
-//    private LocalDateTime dateStart;
-
+    //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
+    //    private LocalDateTime dateStart;
+    @NotNull
     @DateTimeFormat(pattern = "YYYY-MM-dd")
-//    @JsonFormat(locale = "hu", shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm", timezone = "CET")
     private LocalDate dateStop;
 
+    @NotBlank
     private String description;
 
     private StatusForOrder statusForOrder;
@@ -35,7 +37,6 @@ public class RequestOrderDto {
     private List<String> tags;
 
     private String organizationName;
-
 
     @InitBinder
     public void initBinder(WebDataBinder binder) {

@@ -13,6 +13,7 @@ import ssp.marketplace.app.service.DocumentService;
 import java.util.Collections;
 
 @RestController
+@RequestMapping("api/document")
 public class DocumentController {
 
     public final DocumentService documentService;
@@ -29,7 +30,7 @@ public class DocumentController {
         this.orderRepository = orderRepository;
     }
 
-    @GetMapping(value = "/document/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @GetMapping(value = "/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public ResponseEntity<InputStreamResource> getDocument(
             @PathVariable String filename
     ) {

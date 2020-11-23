@@ -8,9 +8,12 @@ import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
 import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
 
 @RestController
-@RequestMapping("/admin/orders")
+@RequestMapping("api/admin/orders")
 public class OrderAdminController {
 
     private final OrderService orderService;
@@ -21,9 +24,9 @@ public class OrderAdminController {
         this.orderService = orderService;
     }
 
-    @PostMapping()
+    @PostMapping("/create")
     public ResponseOrderDto addNewOrder(
-            @RequestPart(value = "order") RequestOrderDto responseOrderDto,
+            @Valid @RequestPart(value = "order") RequestOrderDto responseOrderDto,
             HttpServletRequest req,
             @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
     ) {
@@ -42,18 +45,18 @@ public class OrderAdminController {
 //        return orderService.editOrder(name, responseOrderDto);
 //    }
 
-    @DeleteMapping(value = "/{name}")
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteOrder(
-            @PathVariable String name
+            @PathVariable UUID id
     ) {
-        orderService.deleteOrder(name);
+        orderService.deleteOrder(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/mark-done/{name}")//// TODO: 17.11.2020 Добавить победителя и предложение
+    @PostMapping("/mark-done/{id}")//// TODO: 17.11.2020 Добавить победителя и предложение
     public ResponseOrderDto markDoneOrder(
-            @PathVariable String name
+            @PathVariable UUID id
     ) {
-        return orderService.markDoneOrder(name);
+        return orderService.markDoneOrder(id);
     }
 }
