@@ -3,25 +3,33 @@ package ssp.marketplace.app.api.OrderController;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
+import ssp.marketplace.app.repository.OrderRepository;
 import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("api/admin/orders")
 public class OrderAdminController {
 
+    private static final int HOUR = 23;
+
+    private static final int MINUTES = 59;
+
     private final OrderService orderService;
 
+    private final OrderRepository orderRepository;
+
     public OrderAdminController(
-            OrderService orderService
+            OrderService orderService,
+            OrderRepository orderRepository
     ) {
         this.orderService = orderService;
+        this.orderRepository = orderRepository;
     }
 
     @PostMapping("/create")
@@ -44,6 +52,14 @@ public class OrderAdminController {
 //    ) {
 //        return orderService.editOrder(name, responseOrderDto);
 //    }
+
+    @PatchMapping("{orderId}")
+    public ResponseOrderDto updatePerson(
+            @PathVariable("orderId") UUID id,
+            @Valid @RequestBody RequestOrderUpdateDto orderUpdateDto
+    ) {
+        return orderService.editOrder(id, orderUpdateDto);
+    }
 
     @DeleteMapping(value = "/{id}")
     public ResponseEntity deleteOrder(

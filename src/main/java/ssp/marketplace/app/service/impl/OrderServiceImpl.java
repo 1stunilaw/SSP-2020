@@ -3,7 +3,7 @@ package ssp.marketplace.app.service.impl;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
@@ -12,6 +12,7 @@ import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.*;
 import java.util.*;
 
 @Service
@@ -79,17 +80,39 @@ public class OrderServiceImpl implements OrderService {
         return ResponseOrderDto.responseOrderDtoFromOrder(order);
     }
 
-//    @Override
-//    public ResponseOrderDto editOrder(String name, RequestOrderDto requestOrderDto) {
-//        Order order = orderRepository.findByName(name).orElseThrow(NotFoundException::new);
-//        order.setName(requestOrderDto.getName());
-//        order.setDateStart(requestOrderDto.getDateStart());
-//        order.setDateStop(requestOrderDto.getDateStop());
-//        order.setUsr(requestOrderDto.getUsr());
-//        order.setStatusForOrder(requestOrderDto.getStatusForOrder());
-//        orderRepository.save(order);
-//        return ResponseOrderDto.responseOrderDtoFromOrder(order);
-//    }
+    @Override
+    public ResponseOrderDto editOrder(UUID id, RequestOrderUpdateDto orderUpdateDto) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        if (orderUpdateDto.getName() != null) {
+            order.setName(orderUpdateDto.getName());
+        }
+
+        if (orderUpdateDto.getStatusForOrder() != null) {
+            order.setStatusForOrder(orderUpdateDto.getStatusForOrder());
+        }
+
+        if (orderUpdateDto.getDescription() != null) {
+            order.setDescription(orderUpdateDto.getDescription());
+        }
+
+        if (orderUpdateDto.getOrganizationName() != null) {
+            order.setOrganizationName(orderUpdateDto.getOrganizationName());
+        }
+
+        if (orderUpdateDto.getDateStop()!= null) {
+            LocalDate localDate = orderUpdateDto.getDateStop();
+            LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
+            order.setDateStop(localDateTime);
+        }
+
+        if (orderUpdateDto.getTags()!= null) {
+            List<String> tagsString = orderUpdateDto.getTags();
+            setTagForOrder(order, tagsString);
+        }
+        orderRepository.save(order);
+        return ResponseOrderDto.responseOrderDtoFromOrder(order);
+    }
 
     @Override
     public void deleteOrder(UUID id) {
@@ -113,7 +136,7 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOrderDto markDoneOrder(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        order.setStatusForOrder(StatusForOrder.CLOSE);
+        order.setStatusForOrder(StatusForOrder.CLOSED);
         orderRepository.save(order);
         return ResponseOrderDto.responseOrderDtoFromOrder(order);
     }
@@ -123,7 +146,8 @@ public class OrderServiceImpl implements OrderService {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
         Order order = OrderService.orderFromOrderDto(requestOrderDto);
-        setTagForOrder(order, requestOrderDto);
+        List<String> tags = requestOrderDto.getTags();
+        setTagForOrder(order, tags);
 
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         List<Order> ordersFromUser = userFromDB.getOrders();
@@ -134,13 +158,9 @@ public class OrderServiceImpl implements OrderService {
         return order;
     }
 
-    private Order setTagForOrder(Order order, RequestOrderDto requestOrderDto) {//todo
-        List<String> tags = requestOrderDto.getTags();
-        List<Tag> orderTags = order.getTags();
+    private Order setTagForOrder(Order order, List<String> tags) {
+        List<Tag> orderTags = new ArrayList<>();
         if (tags != null) {
-            if (orderTags == null) {
-                orderTags = new ArrayList<>();
-            }
             for (String tagName : tags
             ) {
                 Tag tagFromDB = tagRepository.findByTagName(tagName);
