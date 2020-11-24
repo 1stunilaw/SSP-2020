@@ -10,31 +10,25 @@ import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("api/admin/orders")
 public class OrderAdminController {
 
-    private static final int HOUR = 23;
-
-    private static final int MINUTES = 59;
-
     private final OrderService orderService;
 
-    private final OrderRepository orderRepository;
 
     public OrderAdminController(
-            OrderService orderService,
-            OrderRepository orderRepository
+            OrderService orderService
     ) {
         this.orderService = orderService;
-        this.orderRepository = orderRepository;
     }
 
     @PostMapping("/create")
     public ResponseOrderDto addNewOrder(
-            @Valid @RequestPart(value = "order") RequestOrderDto responseOrderDto,
+            @Valid @NotNull @RequestPart(value = "order") RequestOrderDto responseOrderDto,
             HttpServletRequest req,
             @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
     ) {
@@ -44,14 +38,6 @@ public class OrderAdminController {
             return orderService.addNewOrder(req, responseOrderDto);
         }
     }
-
-//    @PutMapping("/{name}")
-//    public ResponseOrderDto editOrder(
-//            @PathVariable String name,
-//            @RequestBody RequestOrderDto responseOrderDto
-//    ) {
-//        return orderService.editOrder(name, responseOrderDto);
-//    }
 
     @PatchMapping("{orderId}")
     public ResponseOrderDto updatePerson(

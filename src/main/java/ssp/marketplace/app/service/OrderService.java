@@ -31,7 +31,7 @@ public interface OrderService {
     ResponseOrderDto getOneOrder(UUID id);
 
     static Order orderFromOrderDto(RequestOrderDto requestOrderDto) {
-        StatusForOrder statusForOrder = StatusForOrder.NEW;
+        StatusForOrder statusForOrder = StatusForOrder.WAITING_OFFERS;
         StatusForOrder statusOrderDto = requestOrderDto.getStatusForOrder();
         if(statusOrderDto != null){
             statusForOrder =  statusOrderDto;

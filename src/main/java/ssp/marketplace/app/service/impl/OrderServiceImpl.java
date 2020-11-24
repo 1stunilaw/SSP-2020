@@ -48,6 +48,8 @@ public class OrderServiceImpl implements OrderService {
         }
         Page<ResponseOrderDto> page =
                 orders.map(ResponseOrderDto::responseOrderDtoFromOrder);
+
+//        Page<Order> pageTest = orderRepository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "seatNumber")));
         return page;
     }
 

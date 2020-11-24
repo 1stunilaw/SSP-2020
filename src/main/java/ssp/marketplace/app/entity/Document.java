@@ -10,7 +10,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "documents")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

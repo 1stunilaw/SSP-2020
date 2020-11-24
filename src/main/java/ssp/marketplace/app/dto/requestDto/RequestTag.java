@@ -2,6 +2,7 @@ package ssp.marketplace.app.dto.requestDto;
 
 import lombok.*;
 
+import javax.validation.constraints.*;
 import java.util.List;
 
 @Data
@@ -10,5 +11,7 @@ import java.util.List;
 @Builder
 public class RequestTag {
 
-    private List<String> tagName;
+    @NotNull(message = "{tagName.errors.empty}")
+    @Size(min = 1)
+    private List<@NotBlank(message = "{tagName.errors.empty}") String> tagName;
 }

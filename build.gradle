@@ -1,54 +1,74 @@
 plugins {
-	id 'org.springframework.boot' version '2.3.5.RELEASE'
-	id 'io.spring.dependency-management' version '1.0.10.RELEASE'
-	id 'java'
+    id 'org.springframework.boot' version '2.3.5.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.10.RELEASE'
+    id 'java'
+    id 'java-library'
 }
 
 group = 'ssp.marketplace'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
 
+//ext{
+//    JDBC_DATABASE_URL = "jdbc:postgresql://localhost:5432/smproject?serverTimezone=UTC"
+//    JDBC_DATABASE_USERNAME = "smproject"
+//    JDBC_DATABASE_PASSWORD = "0691"
+//    EMAIL_USERNAME = "letovegorggrob@gmail.com"
+//    EMAIL_PASSWORD = "44112332"
+//
+//}
+
+
+
 configurations {
-	compileOnly {
-		extendsFrom annotationProcessor
-	}
+    annotationProcessor.extendsFrom implementation
+    compileOnly {
+        extendsFrom annotationProcessor
+    }
 }
 
 repositories {
-	mavenCentral()
+    mavenCentral()
+}
+ext {
+    querydslVersion = '4.2.2'
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.springframework.boot:spring-boot-starter-mail'
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	implementation 'org.springframework.boot:spring-boot-starter-validation'
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.liquibase:liquibase-core'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.liquibase:liquibase-core'
 
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
 
-	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.postgresql:postgresql'
+    compileOnly 'org.projectlombok:lombok'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    runtimeOnly 'org.postgresql:postgresql'
 
-	annotationProcessor 'org.projectlombok:lombok'
+    annotationProcessor 'org.projectlombok:lombok'
     annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 
     compile 'io.jsonwebtoken:jjwt-api:0.11.2'
     runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',
             'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
-	testImplementation('org.springframework.boot:spring-boot-starter-test') {
-		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
-	}
-	testImplementation 'org.springframework.security:spring-security-test'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+    testImplementation 'org.springframework.security:spring-security-test'
 
     implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.106')
     implementation 'com.amazonaws:aws-java-sdk-s3'
     testCompile group: 'junit', name: 'junit', version: '4.11'
+
+    annotationProcessor "com.querydsl:querydsl-apt:${querydslVersion}:jpa"
+    api 'org.hibernate.validator:hibernate-validator'
+    api 'com.querydsl:querydsl-jpa'
 }
 
-test {
-	useJUnitPlatform()
-}
+//test {
+//    useJUnitPlatform()
+//}

@@ -4,6 +4,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
+import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.service.OrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,8 +23,9 @@ public class OrderController {
 
     @GetMapping()
     public Page<ResponseOrderDto> getOrders(
-            @PageableDefault(sort = {"name"}, direction = Sort.Direction.ASC) Pageable pageable
+            @PageableDefault(sort = {"statusForOrder", "dateStart"}, direction = Sort.Direction.ASC) Pageable pageable
     ) {
+
         return orderService.getOrders(pageable);
     }
 

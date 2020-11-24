@@ -8,6 +8,7 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.DocumentService;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 @RestController

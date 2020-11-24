@@ -19,7 +19,7 @@ public class TagAdminController {
 
     @PostMapping(value = "/add-tag")
     public void addNewTag(
-            @RequestBody @Valid @NotNull RequestTag requestTag
+            @RequestBody @Valid RequestTag requestTag
     ) {
         tagServices.addNewTag(requestTag);
     }
