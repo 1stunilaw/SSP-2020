@@ -32,7 +32,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             "/api/register/customer",
             "/api/register/lawyer",
             "/api/register/admin",
-            "/api/register/lawyer",
             "/admin/**",
             "/api/admin/**",
     };
@@ -67,5 +66,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .exceptionHandling()
                 .authenticationEntryPoint(new RestAuthenticationEntryPoint())
                 .accessDeniedHandler(new RestAccessDeniedHandler());
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("*")
+                .allowedMethods("*");
     }
 }
