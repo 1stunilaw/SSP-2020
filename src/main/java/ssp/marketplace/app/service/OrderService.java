@@ -2,7 +2,7 @@ package ssp.marketplace.app.service;
 
 import org.springframework.data.domain.*;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
 import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
@@ -22,7 +22,7 @@ public interface OrderService {
 
     ResponseOrderDto addNewOrder(HttpServletRequest req, RequestOrderDto requestOrderDto);
 
-//    ResponseOrderDto editOrder(String name, RequestOrderDto requestOrderDto);
+    ResponseOrderDto editOrder(UUID id, RequestOrderUpdateDto orderUpdateDto);
 
     void deleteOrder(UUID id);
 

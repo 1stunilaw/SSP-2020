@@ -8,7 +8,6 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
-import javax.validation.constraints.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.*;
@@ -18,18 +17,16 @@ import java.util.*;
 @NoArgsConstructor
 @Builder
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RequestOrderDto {
+public class RequestOrderUpdateDto {
 
-    @NotBlank(message = "{name.errors.empty}")
     private String name;
 
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
-    @NotNull(message = "{dateStop.errors.empty}")
+
     @DateTimeFormat(pattern = "YYYY-MM-dd")
     private LocalDate dateStop;
 
-    @NotBlank(message = "{description.errors.empty}")
     private String description;
 
     private StatusForOrder statusForOrder;
