@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
 import ssp.marketplace.app.exceptions.*;
-import ssp.marketplace.app.repository.DocumentRepository;
+import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;
 
 import java.util.*;
@@ -16,19 +16,20 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final S3Services s3Services;
 
+    private final OrderRepository orderRepository;
+
     public final DocumentRepository documentRepository;
 
-    public DocumentServiceImpl(S3Services s3Services, DocumentRepository documentRepository) {
+    public DocumentServiceImpl(S3Services s3Services, OrderRepository orderRepository, DocumentRepository documentRepository) {
         this.s3Services = s3Services;
+        this.orderRepository = orderRepository;
         this.documentRepository = documentRepository;
     }
 
-    @Override
-    public List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3, Order order) {
+    public List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3) {
         List<Document> documents = new ArrayList<>();
         //Проверка выбрал ли пользователь документ
         if (multipartFiles[0].getOriginalFilename().isEmpty()) {
-            System.out.println("test");
             throw new BadRequest("Документ не может быть пустым");
         }
         for (MultipartFile mf : multipartFiles
@@ -38,7 +39,6 @@ public class DocumentServiceImpl implements DocumentService {
             Document document = new Document();
             document.setName(fileName);
             document.setStatusForDocument(StatusForDocument.ACTIVE);
-            document.setOrdersList(Collections.singletonList(order));
             documents.add(document);
             documentRepository.save(document);
         }
@@ -55,7 +55,11 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public S3ObjectInputStream downloadFile(String keyName, String path) {
+    public S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId) {
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        String className = order.getClass().getSimpleName().split("\\$")[0];
+        String path = "/" + className + "/" + order.getName();
         return s3Services.downloadFile(keyName, path);
     }
 }

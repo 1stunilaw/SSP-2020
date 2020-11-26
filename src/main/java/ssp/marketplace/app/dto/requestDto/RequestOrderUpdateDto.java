@@ -1,22 +1,21 @@
 package ssp.marketplace.app.dto.requestDto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.*;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.exceptions.BadRequest;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
     private String name;
@@ -25,6 +24,7 @@ public class RequestOrderUpdateDto {
     //    private LocalDateTime dateStart;
 
     @DateTimeFormat(pattern = "YYYY-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
     private String description;
@@ -35,10 +35,20 @@ public class RequestOrderUpdateDto {
 
     private String organizationName;
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    private List<String> documents;
+
+    public static RequestOrderUpdateDto convert(String requestOrderDto) {
+        if (requestOrderDto == null) {
+            throw new BadRequest("order не может быть пустым");
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        RequestOrderUpdateDto dtoObject;
+        try {
+            dtoObject = mapper.readValue(requestOrderDto, RequestOrderUpdateDto.class);
+        } catch (JsonProcessingException e) {
+            throw new BadRequest("Ключи для полей заполнены неверно");
+        }
+        return dtoObject;
     }
 }

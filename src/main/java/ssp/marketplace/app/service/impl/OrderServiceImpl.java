@@ -4,11 +4,12 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
+import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.entity.statuses.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
+import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,96 +25,126 @@ public class OrderServiceImpl implements OrderService {
 
     private final TagRepository tagRepository;
 
+    private final DocumentRepository documentRepository;
+
     private final DocumentService documentService;
 
     private final UserService userService;
 
+    private final JwtTokenProvider jwtTokenProvider;
+
     public OrderServiceImpl(
             OrderRepository orderRepository, UserRepository userRepository, TagRepository tagRepository,
-            DocumentService documentService,
-            UserService userService
+            DocumentRepository documentRepository, DocumentService documentService,
+            UserService userService,
+            JwtTokenProvider jwtTokenProvider
     ) {
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
         this.tagRepository = tagRepository;
+        this.documentRepository = documentRepository;
         this.documentService = documentService;
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public Page<ResponseOrderDto> getOrders(Pageable pageable) {
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable) {
         Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         if (orders.isEmpty()) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseOrderDto> page =
-                orders.map(ResponseOrderDto::responseOrderDtoFromOrder);
-
-//        Page<Order> pageTest = orderRepository.findAll(PageRequest.of(0, 1, Sort.by(Sort.Direction.ASC, "seatNumber")));
+        Page<ResponseListOrderDto> page =
+                orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
 
     @Override
-    public ResponseOrderDto getOneOrder(UUID id) {
+    public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         List<Document> activeDocuments = DocumentService.selectOnlyActiveDocument(order);
         order.setDocuments(activeDocuments);
-        return ResponseOrderDto.responseOrderDtoFromOrder(order);
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if (role.contains(RoleName.ROLE_ADMIN.toString())) {
+            return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
+        }
+        return ResponseOneOrderDto.responseOrderDtoFromOrder(order);
     }
 
     @Override
-    public ResponseOrderDto addNewOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
-        Order order = saveUserAndOrder(req, requestOrderDto);
+    public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, String dtoString, MultipartFile[] multipartFiles) {
+        RequestOrderDto dtoObject = RequestOrderDto.convert(dtoString);
+        Order order = saveUserAndOrder(req, dtoObject);
         Long number = orderRepository.getNumber(order.getName());
         order.setNumber(number);
-        return ResponseOrderDto.responseOrderDtoFromOrder(order);
+        if (multipartFiles != null && multipartFiles.length != 0) {
+            addDocumentToOrder(order, multipartFiles);
+        }
+        return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
     @Override
-    public ResponseOrderDto addNewOrderWithDocuments(HttpServletRequest req, RequestOrderDto requestOrderDto, MultipartFile[] multipartFiles) {
-        Order order = saveUserAndOrder(req, requestOrderDto);
-        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
-        List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3, order);
-        order.setDocuments(documents);
-        orderRepository.save(order);
-        Long number = orderRepository.getNumber(order.getName());
-        order.setNumber(number);
-        return ResponseOrderDto.responseOrderDtoFromOrder(order);
-    }
-
-    @Override
-    public ResponseOrderDto editOrder(UUID id, RequestOrderUpdateDto orderUpdateDto) {
+    public ResponseOneOrderDtoAdmin editOrder(UUID id, String dtoString, MultipartFile[] multipartFiles) {
+        RequestOrderUpdateDto dtoObject = RequestOrderUpdateDto.convert(dtoString);
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        if (orderUpdateDto.getName() != null) {
-            order.setName(orderUpdateDto.getName());
+
+        List<Document> documents = order.getDocuments();
+        List<String> documentsUpdate = dtoObject.getDocuments();
+        if (documents != null && documentsUpdate != null) {
+            List<String> documentsOld = new ArrayList<>();
+            for (Document doc : documents
+            ) {
+                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
+                    documentsOld.add(doc.getName());
+                }
+            }
+            List<String> docDelete = new ArrayList<>(documentsOld);
+            docDelete.removeAll(documentsUpdate);
+            for (String docDelName : docDelete
+            ) {
+                if (documentRepository.findByName(docDelName) != null) {
+                    documentService.deleteDocument(docDelName);
+                } else {
+                    throw new BadRequest("Файл " + docDelName + " не найден");
+                }
+            }
         }
 
-        if (orderUpdateDto.getStatusForOrder() != null) {
-            order.setStatusForOrder(orderUpdateDto.getStatusForOrder());
+        if (multipartFiles != null && multipartFiles.length != 0) {
+            addDocumentToOrder(order, multipartFiles);
         }
 
-        if (orderUpdateDto.getDescription() != null) {
-            order.setDescription(orderUpdateDto.getDescription());
+        if (dtoObject.getName() != null) {
+            order.setName(dtoObject.getName());
         }
 
-        if (orderUpdateDto.getOrganizationName() != null) {
-            order.setOrganizationName(orderUpdateDto.getOrganizationName());
+        if (dtoObject.getStatusForOrder() != null) {
+            order.setStatusForOrder(dtoObject.getStatusForOrder());
         }
 
-        if (orderUpdateDto.getDateStop()!= null) {
-            LocalDate localDate = orderUpdateDto.getDateStop();
+        if (dtoObject.getDescription() != null) {
+            order.setDescription(dtoObject.getDescription());
+        }
+
+        if (dtoObject.getOrganizationName() != null) {
+            order.setOrganizationName(dtoObject.getOrganizationName());
+        }
+
+        if (dtoObject.getDateStop() != null) {
+            LocalDate localDate = dtoObject.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
             order.setDateStop(localDateTime);
         }
 
-        if (orderUpdateDto.getTags()!= null) {
-            List<String> tagsString = orderUpdateDto.getTags();
+        if (dtoObject.getTags() != null) {
+            List<String> tagsString = dtoObject.getTags();
             setTagForOrder(order, tagsString);
         }
         orderRepository.save(order);
-        return ResponseOrderDto.responseOrderDtoFromOrder(order);
+        return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
     @Override
@@ -126,8 +157,7 @@ public class OrderServiceImpl implements OrderService {
         ) {
             try {
                 documentService.deleteDocument(doc.getName());
-            }
-            catch (NotFoundException e){
+            } catch (NotFoundException e) {
                 continue;
             }
         }
@@ -135,16 +165,16 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseOrderDto markDoneOrder(UUID id) {
+    public ResponseListOrderDto markDoneOrder(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatusForOrder(StatusForOrder.CLOSED);
         orderRepository.save(order);
-        return ResponseOrderDto.responseOrderDtoFromOrder(order);
+        return ResponseListOrderDto.responseOrderDtoFromOrder(order);
     }
 
     private Order saveUserAndOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
-        if(orderRepository.findByName(requestOrderDto.getName()).isPresent()){
+        if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
         Order order = OrderService.orderFromOrderDto(requestOrderDto);
@@ -173,5 +203,19 @@ public class OrderServiceImpl implements OrderService {
         }
         order.setTags(orderTags);
         return order;
+    }
+
+    private void addDocumentToOrder(
+            Order order,
+            MultipartFile[] multipartFiles
+    ) {
+        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
+        List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
+        if (order.getDocuments() != null) {
+            order.getDocuments().addAll(documents);
+        } else {
+            order.setDocuments(documents);
+        }
+        orderRepository.save(order);
     }
 }

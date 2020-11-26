@@ -18,11 +18,16 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
+    public List<String> getTags() {
+        return tagRepository.findAllTagName();
+    }
+
+    @Override
     public void addNewTag(RequestTag requestTag) {
 
         List<String> tagName = requestTag.getTagName();
-        for (String t: tagName
-             ) {
+        for (String t : tagName
+        ) {
             Tag tag = new Tag();
             tag.setTagName(t);
             tagRepository.save(tag);

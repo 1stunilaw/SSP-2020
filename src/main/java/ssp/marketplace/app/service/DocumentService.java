@@ -9,11 +9,11 @@ import java.util.*;
 
 public interface DocumentService {
 
-    List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3, Order order);
+    List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3);
 
     void deleteDocument(String name);
 
-    S3ObjectInputStream downloadFile(String keyName, String path);
+    S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId);
 
     static List<Document> selectOnlyActiveDocument(Order order) {
         List<Document> allDocuments = order.getDocuments();

@@ -1,35 +1,31 @@
 package ssp.marketplace.app.dto.requestDto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.*;
-import org.springframework.beans.propertyeditors.CustomDateEditor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.exceptions.BadRequest;
 
-import javax.validation.constraints.*;
-import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
-@JsonIgnoreProperties(ignoreUnknown = true)
+@NoArgsConstructor
+@AllArgsConstructor
 public class RequestOrderDto {
 
-    @NotBlank(message = "{name.errors.empty}")
     private String name;
-
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
-    @NotNull(message = "{dateStop.errors.empty}")
+
     @DateTimeFormat(pattern = "YYYY-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
-    @NotBlank(message = "{description.errors.empty}")
     private String description;
 
     private StatusForOrder statusForOrder;
@@ -38,10 +34,28 @@ public class RequestOrderDto {
 
     private String organizationName;
 
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateFormat.setLenient(false);
-        binder.registerCustomEditor(Date.class, new CustomDateEditor(dateFormat, false));
+    public static RequestOrderDto convert(String requestOrderDto) {
+        if (requestOrderDto == null) {
+            throw new BadRequest("order не может быть пустым");
+        }
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        RequestOrderDto dtoObject;
+        try {
+            dtoObject = mapper.readValue(requestOrderDto, RequestOrderDto.class);
+        } catch (JsonProcessingException e) {
+            throw new BadRequest("Передаваемые знчения не соответствуют формату");
+        }
+
+        if (dtoObject.name == null) {
+            throw new BadRequest("Имя не может быть пустым");
+        }
+        if (dtoObject.description == null) {
+            throw new BadRequest("Описание не может быть пустым");
+        }
+        if (dtoObject.dateStop == null) {
+            throw new BadRequest("Дата не может быть пустой");
+        }
+        return dtoObject;
     }
 }

@@ -2,39 +2,37 @@ package ssp.marketplace.app.service;
 
 import org.springframework.data.domain.*;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
+import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
+import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
-import java.util.*;
+import java.util.UUID;
 
 public interface OrderService {
 
     int MINUTE = 59;
     int HOUR = 23;
 
-    Page<ResponseOrderDto> getOrders(Pageable pageable);
+    Page<ResponseListOrderDto> getOrders(Pageable pageable);
 
-    ResponseOrderDto addNewOrderWithDocuments(HttpServletRequest req, RequestOrderDto requestOrderDto, MultipartFile[] multipartFiles);
+    ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, String requestOrderDto, MultipartFile[] multipartFiles);
 
-    ResponseOrderDto addNewOrder(HttpServletRequest req, RequestOrderDto requestOrderDto);
-
-    ResponseOrderDto editOrder(UUID id, RequestOrderUpdateDto orderUpdateDto);
+    ResponseOneOrderDtoAdmin editOrder(UUID id, String dtoString, MultipartFile[] multipartFiles);
 
     void deleteOrder(UUID id);
 
-    ResponseOrderDto markDoneOrder(UUID id);
+    ResponseListOrderDto markDoneOrder(UUID id);
 
-    ResponseOrderDto getOneOrder(UUID id);
+    ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req);
 
     static Order orderFromOrderDto(RequestOrderDto requestOrderDto) {
         StatusForOrder statusForOrder = StatusForOrder.WAITING_OFFERS;
         StatusForOrder statusOrderDto = requestOrderDto.getStatusForOrder();
-        if(statusOrderDto != null){
-            statusForOrder =  statusOrderDto;
+        if (statusOrderDto != null) {
+            statusForOrder = statusOrderDto;
         }
         LocalDate localDate = requestOrderDto.getDateStop();
         LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
