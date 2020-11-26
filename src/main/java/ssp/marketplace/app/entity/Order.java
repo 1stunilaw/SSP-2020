@@ -54,6 +54,9 @@ public class Order {
     @Column(name = "status")
     private StatusForOrder statusForOrder;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Comment> comments;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;

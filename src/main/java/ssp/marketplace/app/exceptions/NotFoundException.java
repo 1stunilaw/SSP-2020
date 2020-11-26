@@ -9,4 +9,8 @@ public class NotFoundException extends RuntimeException {
     public NotFoundException(String message) {
         super(message);
     }
+
+    public NotFoundException(String name, Object key) {
+        super(String.format("Entity %s (key = $s) was not found.", name, key.toString()));
+    }
 }

@@ -39,4 +39,8 @@
     <include file="v1/2020-11-22T23-42--change-date-in-orders-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-22T23-49--add_not_null-description-in-orders-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-23T02-16--add-column-number-in-orders-table.xml" relativeToChangelogFile="true"/>
+
+    <include file="v1/2020-11-19T20-01--create-comment-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-21T18-09--create-replies-table.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>
