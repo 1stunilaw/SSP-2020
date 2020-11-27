@@ -49,9 +49,9 @@ public class OrderAdminController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/mark-done/{id}")//// TODO: 17.11.2020 Добавить победителя и предложение
+    @PostMapping("/{id}/mark-done")//// TODO: 17.11.2020 Добавить победителя и предложение
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseListOrderDto markDoneOrder(
+    public ResponseOneOrderDtoAdmin markDoneOrder(
             @PathVariable UUID id
     ) {
         return orderService.markDoneOrder(id);

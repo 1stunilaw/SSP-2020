@@ -46,7 +46,6 @@ public class RequestOrderDto {
         } catch (JsonProcessingException e) {
             throw new BadRequest("Передаваемые знчения не соответствуют формату");
         }
-
         if (dtoObject.name == null) {
             throw new BadRequest("Имя не может быть пустым");
         }

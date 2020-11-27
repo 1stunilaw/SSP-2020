@@ -24,7 +24,7 @@ public interface OrderService {
 
     void deleteOrder(UUID id);
 
-    ResponseListOrderDto markDoneOrder(UUID id);
+    ResponseOneOrderDtoAdmin markDoneOrder(UUID id);
 
     ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req);
 

@@ -165,12 +165,12 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public ResponseListOrderDto markDoneOrder(UUID id) {
+    public ResponseOneOrderDtoAdmin markDoneOrder(UUID id) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatusForOrder(StatusForOrder.CLOSED);
         orderRepository.save(order);
-        return ResponseListOrderDto.responseOrderDtoFromOrder(order);
+        return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
     private Order saveUserAndOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
