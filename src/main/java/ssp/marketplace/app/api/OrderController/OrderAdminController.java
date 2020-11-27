@@ -32,7 +32,7 @@ public class OrderAdminController {
     }
 
     @RequestMapping(value = "{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin updateOrder(
             @PathVariable("orderId") UUID id,
             @RequestPart(value = "order", required = false) String orderUpdateDto,
@@ -42,15 +42,15 @@ public class OrderAdminController {
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteOrder(
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteOrder(
             @PathVariable UUID id
     ) {
         orderService.deleteOrder(id);
-        return new ResponseEntity(HttpStatus.OK);
     }
 
     @PostMapping("/{id}/mark-done")//// TODO: 17.11.2020 Добавить победителя и предложение
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin markDoneOrder(
             @PathVariable UUID id
     ) {

@@ -29,7 +29,7 @@ public class DocumentAdminController {
     }
 
     @PostMapping("/orders/{id}/upload_file")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.OK)
     public void addNewDocument(
             @PathVariable UUID id,
             @RequestParam("files") MultipartFile[] multipartFiles
