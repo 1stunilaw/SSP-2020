@@ -63,6 +63,9 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        if(order.getStatusForOrder()==StatusForOrder.DELETED){
+            throw new NotFoundException("Заказ удален");
+        }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveDocument(order);
         order.setDocuments(activeDocuments);
         String token = jwtTokenProvider.resolveToken(req);
