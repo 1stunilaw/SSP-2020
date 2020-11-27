@@ -9,7 +9,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/admin/tags")
+@RequestMapping("/api/admin/tags")
 public class TagAdminController {
 
     private final TagServices tagServices;
