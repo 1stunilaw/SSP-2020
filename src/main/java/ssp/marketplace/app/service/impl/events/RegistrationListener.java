@@ -45,7 +45,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
         String recipientAddress = "<" + user.getEmail() + ">";
         String subject = "Подтверждение регистрации";
-        String confirmationUrl = event.getAppUrl() + "/api/v1/register/verify?token=" + token.getId();
+        String confirmationUrl = event.getAppUrl() + "/api/register/verify?token=" + token.getId();
         String message = messageSource.getMessage("email.verify.message", null, new Locale("ru", "RU"));
 
         SimpleMailMessage email = new SimpleMailMessage();
