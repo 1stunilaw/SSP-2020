@@ -1,12 +1,9 @@
 package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.service.DocumentService;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -27,8 +24,8 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
 
         ResponseOneOrderDtoAdmin orderDto = new ResponseOneOrderDtoAdmin();
         orderDto.setId(order.getId());
-        orderDto.setDateStart(order.getDateStart());
-        orderDto.setDateStop(order.getDateStop());
+        orderDto.setDateStart(order.getDateStart().withSecond(0).withNano(0).toString());
+        orderDto.setDateStop(order.getDateStop().withSecond(0).withNano(0).toString());
         orderDto.setName(order.getName());
         orderDto.setUser(order.getUser().getCustomerDetails().getFio());
         orderDto.setStatusForOrder(order.getStatusForOrder());

@@ -1,12 +1,10 @@
 package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.service.DocumentService;
 
-import java.time.*;
 import java.util.*;
 
 @Data
@@ -18,17 +16,18 @@ public class ResponseListOrderDto {
     private UUID id;
 
     private String name;
+
     private Long number;
+
     private String user;
+
     private StatusForOrder statusForOrder;
+
     private List<String> tags;
 
-    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
-    private LocalDateTime dateStart;
+    private String dateStart;
 
-    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
-    private LocalDateTime dateStop;
-
+    private String dateStop;
 
     public static ResponseListOrderDto responseOrderDtoFromOrder(Order order) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveDocument(order);
@@ -37,11 +36,10 @@ public class ResponseListOrderDto {
         ) {
             stringDocs.add(doc.getName());
         }
-
         ResponseListOrderDto responseListOrderDto = builder()
                 .id(order.getId())
-                .dateStart(order.getDateStart())
-                .dateStop(order.getDateStop())
+                .dateStart(order.getDateStart().withSecond(0).withNano(0).toString())
+                .dateStop(order.getDateStop().withSecond(0).withNano(0).toString())
                 .name(order.getName())
                 .statusForOrder(order.getStatusForOrder())
                 .user(order.getUser().getCustomerDetails().getFio())

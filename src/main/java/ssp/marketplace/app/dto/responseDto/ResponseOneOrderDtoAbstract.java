@@ -1,10 +1,8 @@
 package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Data
@@ -22,11 +20,9 @@ public abstract class ResponseOneOrderDtoAbstract {
 
     private StatusForOrder statusForOrder;
 
-    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
-    private LocalDateTime dateStart;
+    private String dateStart;
 
-    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
-    private LocalDateTime dateStop;
+    private String dateStop;
 
     private String description;
 
