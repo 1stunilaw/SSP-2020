@@ -131,7 +131,7 @@ public class OrderServiceImpl implements OrderService {
             }
         }
 
-        MultipartFile[] multipartFiles = updateDto.getMultipartFiles();
+        MultipartFile[] multipartFiles = updateDto.getFiles();
         if (multipartFiles != null) {
             addDocumentToOrder(order, multipartFiles);
         }
