@@ -34,5 +34,5 @@ public class RequestOrderUpdateDto {
 
     private List<String> documents;
 
-    private MultipartFile[] multipartFiles;
+    private MultipartFile[] files;
 }
