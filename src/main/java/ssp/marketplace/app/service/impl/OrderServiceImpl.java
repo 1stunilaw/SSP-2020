@@ -88,7 +88,7 @@ public class OrderServiceImpl implements OrderService {
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOrders().add(order);
         order.setUser(userFromDB);
-        MultipartFile[] multipartFiles = requestOrderDto.getMultipartFiles();
+        MultipartFile[] multipartFiles = requestOrderDto.getFiles();
         if (multipartFiles != null) {
             addDocumentToOrder(order, multipartFiles);
         }
@@ -102,6 +102,13 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOneOrderDtoAdmin editOrder(UUID id, RequestOrderUpdateDto updateDto) {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+
+        String updateName = updateDto.getName();
+        Optional<Order> byName = orderRepository.findByName(updateName);
+        //если в бд существует заказ с таким же именем
+        if (byName.isPresent() && !byName.get().getId().equals(id)) {
+            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
+        }
         List<Document> documents = order.getDocuments();
         List<String> documentsUpdate = updateDto.getDocuments();
         if (documents != null && documentsUpdate != null) {
@@ -129,8 +136,8 @@ public class OrderServiceImpl implements OrderService {
             addDocumentToOrder(order, multipartFiles);
         }
 
-        if (updateDto.getName() != null) {
-            order.setName(updateDto.getName());
+        if (updateName != null) {
+            order.setName(updateName);
         }
 
         if (updateDto.getStatusForOrder() != null) {
