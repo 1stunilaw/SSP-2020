@@ -8,9 +8,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.responseDto.*;
-import ssp.marketplace.app.entity.Order;
-import ssp.marketplace.app.exceptions.NotFoundException;
-import ssp.marketplace.app.repository.OrderRepository;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,13 +21,10 @@ public class OrderController {
 
     private final DocumentService documentService;
 
-    private final OrderRepository orderRepository;
-
     @Autowired
-    public OrderController(OrderService orderService, DocumentService documentService, OrderRepository orderRepository) {
+    public OrderController(OrderService orderService, DocumentService documentService) {
         this.orderService = orderService;
         this.documentService = documentService;
-        this.orderRepository = orderRepository;
     }
 
     @GetMapping()

@@ -1,13 +1,10 @@
 package ssp.marketplace.app.dto.requestDto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
-import ssp.marketplace.app.exceptions.BadRequest;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -16,6 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
     private String name;
@@ -23,8 +21,7 @@ public class RequestOrderUpdateDto {
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
 
-    @DateTimeFormat(pattern = "YYYY-MM-dd")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
     private String description;
@@ -37,18 +34,5 @@ public class RequestOrderUpdateDto {
 
     private List<String> documents;
 
-    public static RequestOrderUpdateDto convert(String requestOrderDto) {
-        if (requestOrderDto == null) {
-            throw new BadRequest("order не может быть пустым");
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        RequestOrderUpdateDto dtoObject;
-        try {
-            dtoObject = mapper.readValue(requestOrderDto, RequestOrderUpdateDto.class);
-        } catch (JsonProcessingException e) {
-            throw new BadRequest("Ключи для полей заполнены неверно");
-        }
-        return dtoObject;
-    }
+    private MultipartFile[] multipartFiles;
 }
