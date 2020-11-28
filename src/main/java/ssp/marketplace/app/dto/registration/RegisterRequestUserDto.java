@@ -1,6 +1,7 @@
 package ssp.marketplace.app.dto.registration;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Value;
 import ssp.marketplace.app.service.UserService;
 import ssp.marketplace.app.service.impl.UserServiceImpl;
@@ -18,12 +19,14 @@ public abstract class RegisterRequestUserDto implements Serializable {
             flags = Pattern.Flag.CASE_INSENSITIVE,
             message = "{email.errors.validation}"
     )
+    @Length(max = 100, message = "{email.errors.length}")
     @Unique(message = "{email.errors.unique}", service = UserService.class, fieldName = "email")
     private String email;
 
 
     @NotBlank(message = "{password.errors.empty}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$).{10,}$",
+    @Length(min = 10, max = 25, message = "{password.errors.length}")
+    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$)(?=[\\x21-\\x7E]+$).{10,25}$",
             message = "{password.errors.validation}")
     private String password;
 }
