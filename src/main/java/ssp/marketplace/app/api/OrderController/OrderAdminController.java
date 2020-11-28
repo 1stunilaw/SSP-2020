@@ -43,17 +43,6 @@ public class OrderAdminController {
         return orderService.editOrder(id, updateDto);
     }
 
-
-//    @RequestMapping(value = "{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
-//    @ResponseStatus(HttpStatus.OK)
-//    public ResponseOneOrderDtoAdmin updateOrder(
-//            @PathVariable("orderId") UUID id,
-//            @RequestPart(value = "order", required = false) String orderUpdateDto,
-//            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
-//    ) {
-//        return orderService.editOrder(id, orderUpdateDto, multipartFiles);
-//    }
-
     @DeleteMapping(value = "/{id}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteOrder(

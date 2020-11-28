@@ -36,5 +36,5 @@ public class RequestOrderDto {
 
     private String organizationName;
 
-    private MultipartFile[] multipartFiles;
+    private MultipartFile[] files;
 }
