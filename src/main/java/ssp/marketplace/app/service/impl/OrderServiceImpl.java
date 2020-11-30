@@ -166,43 +166,6 @@ public class OrderServiceImpl implements OrderService {
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
-//    public ResponseOneOrderDtoAdmin editOrder(UUID id, String dtoString, MultipartFile[] multipartFiles) {
-//        RequestOrderUpdateDto dtoObject = RequestOrderUpdateDto.convert(dtoString);
-//
-//        if (multipartFiles != null && multipartFiles.length != 0) {
-//            addDocumentToOrder(order, multipartFiles);
-//        }
-//
-//        if (dtoObject.getName() != null) {
-//            order.setName(dtoObject.getName());
-//        }
-//
-//        if (dtoObject.getStatusForOrder() != null) {
-//            order.setStatusForOrder(dtoObject.getStatusForOrder());
-//        }
-//
-//        if (dtoObject.getDescription() != null) {
-//            order.setDescription(dtoObject.getDescription());
-//        }
-//
-//        if (dtoObject.getOrganizationName() != null) {
-//            order.setOrganizationName(dtoObject.getOrganizationName());
-//        }
-//
-//        if (dtoObject.getDateStop() != null) {
-//            LocalDate localDate = dtoObject.getDateStop();
-//            LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
-//            order.setDateStop(localDateTime);
-//        }
-//
-//        if (dtoObject.getTags() != null) {
-//            List<String> tagsString = dtoObject.getTags();
-//            setTagForOrder(order, tagsString);
-//        }
-//        orderRepository.save(order);
-//        return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
-//    }
-
     @Override
     public void deleteOrder(UUID id) {
         Order order = orderRepository.findByIdAndStatusForOrderNotIn(id, Collections.singleton(StatusForOrder.DELETED))
@@ -228,39 +191,6 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
-
-//    private Order saveUserAndOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
-//        if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
-//            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
-//        }
-//        Order order = OrderService.orderFromOrderDto(requestOrderDto);
-//        List<String> tags = requestOrderDto.getTags();
-//        setTagForOrder(order, tags);
-//
-//        User userFromDB = userService.getUserFromHttpServletRequest(req);
-//        List<Order> ordersFromUser = userFromDB.getOrders();
-//        order.setUser(userFromDB);
-//        ordersFromUser.add(order);
-//        orderRepository.save(order);
-//        userRepository.save(userFromDB);
-//        return order;
-//    }
-
-//    @Override
-//    public Order setTagForOrder(Order order, List<String> tags) {
-//        List<Tag> orderTags = new ArrayList<>();
-//        if (tags != null) {
-//            for (String tagName : tags
-//            ) {
-//                Tag tagFromDB = tagRepository.findByTagName(tagName);
-////                tagFromDB.getOrdersList().add(order);
-//                orderTags.add(tagFromDB);//
-//                tagRepository.save(tagFromDB);
-//            }
-//        }
-//        order.setTags(orderTags);
-//        return order;
-//    }
 
     private void addDocumentToOrder(
             Order order,

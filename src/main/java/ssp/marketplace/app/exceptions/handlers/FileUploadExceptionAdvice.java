@@ -15,7 +15,7 @@ public class FileUploadExceptionAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     @ExceptionHandler(MaxUploadSizeExceededException.class)
-    public ErrorResponse handleMaxSizeException(
+    public ErrorResponse FileUploadExceptionAdvice(
             MaxUploadSizeExceededException ex
     ) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Превышен максимальный размер файла "+size);

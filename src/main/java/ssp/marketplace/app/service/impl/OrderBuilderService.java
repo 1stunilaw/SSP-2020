@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.exceptions.NotFoundException;
 import ssp.marketplace.app.repository.TagRepository;
 
 import java.time.*;
@@ -50,7 +51,7 @@ public class OrderBuilderService {
         if (tags != null) {
             for (String tagName : tags
             ) {
-                Tag tagFromDB = tagRepository.findByTagName(tagName);
+                Tag tagFromDB = tagRepository.findByTagName(tagName).orElseThrow(() -> new NotFoundException("Тега "+tagName+" не существует в базе данных"));
                 tagFromDB.getOrdersList().add(order);
                 orderTags.add(tagFromDB);//
                 tagRepository.save(tagFromDB);

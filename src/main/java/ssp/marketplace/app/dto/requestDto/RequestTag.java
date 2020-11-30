@@ -13,5 +13,5 @@ public class RequestTag {
 
     @NotNull(message = "{tagName.errors.empty}")
     @Size(min = 1)
-    private List<@NotBlank(message = "{tagName.errors.empty}") String> tagName;
+    private List<@NotBlank (message = "{tagName.errors.empty}") @Size(max = 50)String> tagName;
 }
