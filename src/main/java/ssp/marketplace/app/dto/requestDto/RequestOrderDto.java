@@ -8,7 +8,7 @@ import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Data
 @Builder
@@ -19,6 +19,7 @@ public class RequestOrderDto {
 
     @NotBlank(message = "{name.errors.empty}")
     @NotNull(message = "{name.errors.empty}")
+    @Size(max = 1000)
     private String name;
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
@@ -28,6 +29,7 @@ public class RequestOrderDto {
     private LocalDate dateStop;
 
     @NotBlank(message = "{description.errors.empty}")
+    @Size(max = 10000)
     private String description;
 
     private StatusForOrder statusForOrder;

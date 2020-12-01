@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -24,6 +25,7 @@ public class RequestOrderUpdateDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
+    @Size(max = 10000)
     private String description;
 
     private StatusForOrder statusForOrder;
