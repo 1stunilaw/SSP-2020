@@ -10,7 +10,8 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
@@ -19,7 +20,7 @@ public class RequestOrderDto {
 
     @NotBlank(message = "{name.errors.empty}")
     @NotNull(message = "{name.errors.empty}")
-    @Size(max = 1000)
+    @Size(max = 250)
     private String name;
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
@@ -34,7 +35,7 @@ public class RequestOrderDto {
 
     private StatusForOrder statusForOrder;
 
-    private List<String> tags;
+    private List<UUID> tags;
 
     private String organizationName;
 

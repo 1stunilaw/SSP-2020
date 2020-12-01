@@ -1,5 +1,7 @@
 package ssp.marketplace.app.service.impl;
 
+import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,11 +25,11 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
 
-    private final TagRepository tagRepository;
-
     private final DocumentRepository documentRepository;
 
     private final DocumentService documentService;
+
+    private final MessageSource messageSource;
 
     private final UserService userService;
 
@@ -36,14 +38,14 @@ public class OrderServiceImpl implements OrderService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public OrderServiceImpl(
-            OrderRepository orderRepository, UserRepository userRepository, TagRepository tagRepository,
+            OrderRepository orderRepository, Environment env, UserRepository userRepository,
             DocumentRepository documentRepository, DocumentService documentService,
-            UserService userService,
+            MessageSource messageSource, UserService userService,
             OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider
     ) {
         this.orderRepository = orderRepository;
+        this.messageSource = messageSource;
         this.userRepository = userRepository;
-        this.tagRepository = tagRepository;
         this.documentRepository = documentRepository;
         this.documentService = documentService;
         this.userService = userService;
@@ -83,6 +85,10 @@ public class OrderServiceImpl implements OrderService {
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
+        }
+        if(requestOrderDto.getFiles()!= null && requestOrderDto.getFiles().length>10){
+            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
+            throw new BadRequest(filesCountError);
         }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
@@ -159,8 +165,8 @@ public class OrderServiceImpl implements OrderService {
         }
 
         if (updateDto.getTags() != null) {
-            List<String> tagsString = updateDto.getTags();
-            orderBuilderService.setTagForOrder(order, tagsString);
+            List<UUID> tagsId = updateDto.getTags();
+            orderBuilderService.setTagForOrder(order, tagsId);
         }
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);

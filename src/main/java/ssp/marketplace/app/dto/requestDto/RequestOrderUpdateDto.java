@@ -8,7 +8,7 @@ import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
-import java.util.List;
+import java.util.*;
 
 @Data
 @AllArgsConstructor
@@ -17,6 +17,7 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
+    @Size(max = 250)
     private String name;
 
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
@@ -30,7 +31,7 @@ public class RequestOrderUpdateDto {
 
     private StatusForOrder statusForOrder;
 
-    private List<String> tags;
+    private List<UUID> tags;
 
     private String organizationName;
 

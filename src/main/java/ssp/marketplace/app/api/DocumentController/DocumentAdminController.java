@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.exceptions.NotFoundException;
+import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.DocumentService;
 
@@ -35,20 +35,7 @@ public class DocumentAdminController {
             @PathVariable UUID id,
             @RequestParam("files") MultipartFile[] multipartFiles
     ) {
-//        System.out.println(multipartFiles[0].getSize());
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
-        List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
-        order.getDocuments().addAll(documents);
-        orderRepository.save(order);
-        List<String> strings = new ArrayList<>();
-        for (Document doc : documents
-        ){
-            strings.add(doc.getName());
-        }
-        ResponseNameDocument responseNameDocument = new ResponseNameDocument(strings);
-        return responseNameDocument;
+        return documentService.addNewDocumentsInOrder(id, multipartFiles);
     }
 
     @DeleteMapping("/document/{name}")

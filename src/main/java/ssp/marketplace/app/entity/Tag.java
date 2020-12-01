@@ -25,6 +25,6 @@ public class Tag {
     @Column(name = "tag_name", nullable = false)
     private String tagName;
 
-    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
-    private List<Order> ordersList;
+//    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+//    private List<Order> ordersList;
 }
