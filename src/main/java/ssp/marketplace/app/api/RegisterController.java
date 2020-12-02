@@ -1,6 +1,7 @@
 package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
@@ -23,16 +24,19 @@ public class RegisterController {
     }
 
     @PostMapping("/supplier")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto registerSupplier(@RequestBody @Valid @NotNull SupplierRegisterRequestDto registerUserDto){
         return userService.register(registerUserDto);
     }
 
     @PostMapping("/customer")
+    @ResponseStatus(HttpStatus.CREATED)
     public UserResponseDto registerCustomer(@RequestBody @Valid @NotNull CustomerRegisterRequestDto registerCustomerDto){
         return userService.register(registerCustomerDto);
     }
 
 //    @PostMapping("/lawyer")
+//    @ResponseStatus(HttpStatus.CREATED)
 //    public UserResponseDto registerLawyer(@RequestBody @Valid @NotNull RegisterRequestUserDto registerUserDto){
 //        return userService.register(registerUserDto);
 //    }

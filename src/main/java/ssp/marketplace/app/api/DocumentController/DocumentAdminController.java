@@ -3,6 +3,7 @@ package ssp.marketplace.app.api.DocumentController;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
@@ -29,16 +30,12 @@ public class DocumentAdminController {
     }
 
     @PostMapping("/orders/{id}/upload_file")
-    public void addNewDocument(
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseNameDocument addNewDocument(
             @PathVariable UUID id,
             @RequestParam("files") MultipartFile[] multipartFiles
     ) {
-        Order order = orderRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
-        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
-        List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3, order);
-        order.setDocuments(documents);
-        orderRepository.save(order);
+        return documentService.addNewDocumentsInOrder(id, multipartFiles);
     }
 
     @DeleteMapping("/document/{name}")

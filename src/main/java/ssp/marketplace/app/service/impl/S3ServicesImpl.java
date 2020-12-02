@@ -25,11 +25,14 @@ public class S3ServicesImpl implements S3Services {
 
     @Override
     public S3ObjectInputStream downloadFile(String filename, String pathS3) {
-        S3Object object = s3client.getObject(bucketName + pathS3, filename);
-        if (object == null) {
+        S3ObjectInputStream s3is;
+        try {
+            S3Object object = s3client.getObject(bucketName + pathS3, filename);
+            s3is = object.getObjectContent();
+        }
+        catch(Exception e) {
             throw new NotFoundException("Документ не найден");
         }
-        S3ObjectInputStream s3is = object.getObjectContent();
         return s3is;
     }
 

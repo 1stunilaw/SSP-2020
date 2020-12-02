@@ -1,76 +1,58 @@
 package ssp.marketplace.app.api.OrderController;
 
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseOrderDto;
-import ssp.marketplace.app.repository.OrderRepository;
+import ssp.marketplace.app.dto.responseDto.ResponseOneOrderDtoAdmin;
 import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.UUID;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/admin/orders")
 public class OrderAdminController {
 
-    private static final int HOUR = 23;
-
-    private static final int MINUTES = 59;
-
     private final OrderService orderService;
 
-    private final OrderRepository orderRepository;
-
     public OrderAdminController(
-            OrderService orderService,
-            OrderRepository orderRepository
+            OrderService orderService
     ) {
         this.orderService = orderService;
-        this.orderRepository = orderRepository;
     }
 
-    @PostMapping("/create")
-    public ResponseOrderDto addNewOrder(
-            @Valid @RequestPart(value = "order") RequestOrderDto responseOrderDto,
-            HttpServletRequest req,
-            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
+
+    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseOneOrderDtoAdmin createOrder(
+            @ModelAttribute @Valid RequestOrderDto responseOrderDto,
+            HttpServletRequest req
     ) {
-        if (multipartFiles != null && multipartFiles.length != 0) {
-            return orderService.addNewOrderWithDocuments(req, responseOrderDto, multipartFiles);
-        } else {
-            return orderService.addNewOrder(req, responseOrderDto);
-        }
+        return orderService.createOrder(req, responseOrderDto);
     }
 
-//    @PutMapping("/{name}")
-//    public ResponseOrderDto editOrder(
-//            @PathVariable String name,
-//            @RequestBody RequestOrderDto responseOrderDto
-//    ) {
-//        return orderService.editOrder(name, responseOrderDto);
-//    }
-
-    @PatchMapping("{orderId}")
-    public ResponseOrderDto updatePerson(
+    @RequestMapping(value = "{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseOneOrderDtoAdmin updateOrder(
             @PathVariable("orderId") UUID id,
-            @Valid @RequestBody RequestOrderUpdateDto orderUpdateDto
+            @ModelAttribute @Valid RequestOrderUpdateDto updateDto
     ) {
-        return orderService.editOrder(id, orderUpdateDto);
+        return orderService.editOrder(id, updateDto);
     }
 
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity deleteOrder(
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteOrder(
             @PathVariable UUID id
     ) {
         orderService.deleteOrder(id);
-        return new ResponseEntity(HttpStatus.OK);
     }
 
-    @PostMapping("/mark-done/{id}")//// TODO: 17.11.2020 Добавить победителя и предложение
-    public ResponseOrderDto markDoneOrder(
+    @PostMapping("/{id}/mark-done")//// TODO: 17.11.2020 Добавить победителя и предложение
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseOneOrderDtoAdmin markDoneOrder(
             @PathVariable UUID id
     ) {
         return orderService.markDoneOrder(id);
