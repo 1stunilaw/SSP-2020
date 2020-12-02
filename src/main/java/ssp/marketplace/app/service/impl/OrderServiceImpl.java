@@ -86,6 +86,12 @@ public class OrderServiceImpl implements OrderService {
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
+        LocalDate now = LocalDate.now();
+        LocalDate dateStop = requestOrderDto.getDateStop();
+        if(dateStop.isBefore(now)){
+            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
+            throw new BadRequest(dateError);
+        }
         if(requestOrderDto.getFiles()!= null && requestOrderDto.getFiles().length>10){
             String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
             throw new BadRequest(filesCountError);
@@ -114,6 +120,12 @@ public class OrderServiceImpl implements OrderService {
         //если в бд существует заказ с таким же именем
         if (byName.isPresent() && !byName.get().getId().equals(id)) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
+        }
+        LocalDate now = LocalDate.now();
+        LocalDate dateStop = updateDto.getDateStop();
+        if(dateStop.isBefore(now)){
+            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
+            throw new BadRequest(dateError);
         }
         List<Document> documents = order.getDocuments();
         List<String> documentsUpdate = updateDto.getDocuments();
@@ -194,6 +206,7 @@ public class OrderServiceImpl implements OrderService {
         Order order = orderRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         order.setStatusForOrder(StatusForOrder.CLOSED);
+        order.setDateStop(LocalDateTime.now());
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
