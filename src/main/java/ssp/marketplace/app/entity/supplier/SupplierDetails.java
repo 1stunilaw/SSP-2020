@@ -6,6 +6,7 @@ import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -36,6 +37,19 @@ public class SupplierDetails extends BasicEntity {
 
     @Column(name = "nda", length = 50)
     private String nda;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "suppliers_documents",
+            joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "doc_id", referencedColumnName = "id")})
+    private List<Document> documents;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "suppliers_tags",
+            joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
+    private List<Tag> tags;
+
 
     @Nullable
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)

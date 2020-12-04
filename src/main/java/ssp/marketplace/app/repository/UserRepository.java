@@ -1,8 +1,9 @@
 package ssp.marketplace.app.repository;
 
+import org.springframework.data.domain.*;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
-import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.entity.*;
 
 import java.util.*;
 

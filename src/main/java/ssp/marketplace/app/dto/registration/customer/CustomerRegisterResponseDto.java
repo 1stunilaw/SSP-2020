@@ -1,7 +1,7 @@
 package ssp.marketplace.app.dto.registration.customer;
 
 import lombok.*;
-import ssp.marketplace.app.dto.registration.UserResponseDto;
+import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.entity.User;
 
 @Getter

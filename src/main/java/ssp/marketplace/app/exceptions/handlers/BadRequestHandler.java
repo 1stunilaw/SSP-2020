@@ -9,8 +9,8 @@ import ssp.marketplace.app.exceptions.response.ErrorResponse;
 public class BadRequestHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    @ExceptionHandler(BadRequest.class)
-    public ErrorResponse BadRequestHandler(BadRequest ex){
+    @ExceptionHandler(BadRequestException.class)
+    public ErrorResponse BadRequestHandler(BadRequestException ex){
         return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 }

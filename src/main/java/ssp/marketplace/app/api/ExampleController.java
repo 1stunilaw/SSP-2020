@@ -26,11 +26,6 @@ public class ExampleController {
         return "Home";
     }
 
-    @GetMapping("/user")
-    public String user(){
-        return "User";
-    }
-
     @GetMapping("/admin")
     public String admin(){
         return "Admin";

@@ -18,19 +18,22 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final OrderRepository orderRepository;
 
+    private final UserRepository userRepository;
+
     public final DocumentRepository documentRepository;
 
-    public DocumentServiceImpl(S3Services s3Services, OrderRepository orderRepository, DocumentRepository documentRepository) {
+    public DocumentServiceImpl(S3Services s3Services, UserRepository userRepository, OrderRepository orderRepository, DocumentRepository documentRepository) {
         this.s3Services = s3Services;
         this.orderRepository = orderRepository;
         this.documentRepository = documentRepository;
+        this.userRepository = userRepository;
     }
 
     public List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3) {
         List<Document> documents = new ArrayList<>();
         //Проверка выбрал ли пользователь документ
         if (multipartFiles[0].getOriginalFilename().isEmpty()) {
-            throw new BadRequest("Документ не может быть пустым");
+            throw new BadRequestException("Документ не может быть пустым");
         }
         for (MultipartFile mf : multipartFiles
         ) {
@@ -52,6 +55,15 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElseThrow(() -> new NotFoundException("Документ не найден"));
         document.setStatusForDocument(StatusForDocument.DELETED);
         documentRepository.save(document);
+    }
+
+    @Override
+    public S3ObjectInputStream downloadSupplierFile(String keyName, UUID userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        String className = user.getClass().getSimpleName().split("\\$")[0];
+        String path = "/" + className + "/" + user.getId();
+        return s3Services.downloadFile(keyName, path);
     }
 
     @Override

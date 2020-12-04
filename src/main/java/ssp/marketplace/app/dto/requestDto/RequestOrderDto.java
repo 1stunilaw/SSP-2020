@@ -7,7 +7,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
-import ssp.marketplace.app.exceptions.BadRequest;
+import ssp.marketplace.app.exceptions.BadRequestException;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -36,7 +36,7 @@ public class RequestOrderDto {
 
     public static RequestOrderDto convert(String requestOrderDto) {
         if (requestOrderDto == null) {
-            throw new BadRequest("order не может быть пустым");
+            throw new BadRequestException("order не может быть пустым");
         }
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
@@ -44,16 +44,16 @@ public class RequestOrderDto {
         try {
             dtoObject = mapper.readValue(requestOrderDto, RequestOrderDto.class);
         } catch (JsonProcessingException e) {
-            throw new BadRequest("Передаваемые знчения не соответствуют формату");
+            throw new BadRequestException("Передаваемые знчения не соответствуют формату");
         }
         if (dtoObject.name == null) {
-            throw new BadRequest("Имя не может быть пустым");
+            throw new BadRequestException("Имя не может быть пустым");
         }
         if (dtoObject.description == null) {
-            throw new BadRequest("Описание не может быть пустым");
+            throw new BadRequestException("Описание не может быть пустым");
         }
         if (dtoObject.dateStop == null) {
-            throw new BadRequest("Дата не может быть пустой");
+            throw new BadRequestException("Дата не может быть пустой");
         }
         return dtoObject;
     }

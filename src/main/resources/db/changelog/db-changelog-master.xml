@@ -41,4 +41,8 @@
     <include file="v1/2020-11-25T00-41--change-status-in-orders-table.xml" relativeToChangelogFile="true"/>
 
     <include file="v2/2020-11-28T01-55--add-basic-suppliers.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-29T17-40--create-supplier-documents-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-29T17-50--create-supplier-tags-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-11-29T22-10--add-contacts-row-to-supplier-details" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-04T04-34--fill-law-statuses-table" relativeToChangelogFile="true"/>
 </databaseChangeLog>

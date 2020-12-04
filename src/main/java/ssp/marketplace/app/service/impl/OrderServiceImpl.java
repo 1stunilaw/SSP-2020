@@ -111,7 +111,7 @@ public class OrderServiceImpl implements OrderService {
                 if (documentRepository.findByName(docDelName) != null) {
                     documentService.deleteDocument(docDelName);
                 } else {
-                    throw new BadRequest("Файл " + docDelName + " не найден");
+                    throw new BadRequestException("Файл " + docDelName + " не найден");
                 }
             }
         }

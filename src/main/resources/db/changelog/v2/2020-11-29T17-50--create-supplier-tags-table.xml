@@ -1,0 +1,35 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  id="2020-11-29T17-50--create-supplier-tags-table" author="Konstantin Egorov">
+        <createTable tableName="suppliers_tags">
+            <column name="supplier_id" type="UUID"/>
+            <column name="tag_id" type="UUID"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="supplier_tags"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-29T17-52--add-fk-for-supplier-tags-table-supplier" author="Anton Kharchenko">
+        <addForeignKeyConstraint baseColumnNames="supplier_id"
+                                 baseTableName="suppliers_tags"
+                                 constraintName="fk_suppliers_tags_supplier"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="supplier_details"/>
+    </changeSet>
+
+    <changeSet id="2020-11-13T20-59--add-fk-for-tag-id" author="Anton Kharchenko">
+        <addForeignKeyConstraint baseColumnNames="tag_id"
+                                 baseTableName="suppliers_tags"
+                                 constraintName="fk_suppliers_tags_tag"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="tags"/>
+    </changeSet>
+</databaseChangeLog>
