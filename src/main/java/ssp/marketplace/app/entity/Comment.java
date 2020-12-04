@@ -38,4 +38,6 @@ public class Comment extends BasicEntity{
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @Enumerated(EnumType.STRING)
+    private CommentAccessLevel accessLevel;
 }

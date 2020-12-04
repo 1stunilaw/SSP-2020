@@ -1,11 +1,9 @@
 package ssp.marketplace.app.service;
 
 import ssp.marketplace.app.dto.CommentDto;
-
 import javax.servlet.http.HttpServletRequest;
 import org.springframework.data.domain.*;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
-
 import java.util.*;
 
 public interface CommentService {
@@ -14,7 +12,11 @@ public interface CommentService {
 
     void deleteComment(UUID id);
 
-    List<ResponseCommentDto> getAll(HttpServletRequest request, Pageable page, UUID orderId);
+    Page<ResponseCommentDto> getAll(HttpServletRequest request, Pageable page, UUID orderId);
 
     CommentDto addComment(HttpServletRequest request, CommentDto commentDto, UUID parentId);
+
+    Page<ResponseCommentDto> getUsersComments(HttpServletRequest req, Pageable pageable);
+
+//    Page<ResponseCommentDto> getAllForAdmin(HttpServletRequest req, Pageable pageable);
 }

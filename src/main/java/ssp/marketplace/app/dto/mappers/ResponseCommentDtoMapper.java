@@ -10,7 +10,19 @@ import java.util.*;
 
 @Mapper
 public class ResponseCommentDtoMapper {
-   public ResponseCommentDto createDtoFromComments(Comment question) {
+    public List<ResponseCommentDto> createDtoFromComments(List<Comment> comments)
+    {
+        List<ResponseCommentDto> result = new ArrayList<>();
+
+        for (Comment comment : comments)
+        {
+            result.add(createDtoFromComment(comment));
+        }
+
+        return result;
+    }
+
+    public ResponseCommentDto createDtoFromComment(Comment question) {
         CommentDtoMapper mapper = Mappers.getMapper(CommentDtoMapper.class);
         ResponseCommentDto responseCommentDto = new ResponseCommentDto();
 

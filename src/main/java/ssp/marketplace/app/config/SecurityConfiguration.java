@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/user",
             "/document/**",
             "api/orders/**",
-            "/comment/**"
+            "api/comments/**"
     };
 
     private static final String[] adminEndpoints = new String[]{
