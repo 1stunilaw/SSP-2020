@@ -227,15 +227,7 @@ public class UserServiceImpl implements UserService {
     public CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
-
-        if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
-        }
-
-        if (dto.getPassword() != null) {
-            user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
-        }
-
+        
         if (dto.getFio() != null) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
@@ -254,14 +246,6 @@ public class UserServiceImpl implements UserService {
     ) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
-
-        if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
-        }
-
-        if (dto.getPassword() != null) {
-            user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
-        }
 
         if (dto.getDescription() != null) {
             user.getSupplierDetails().setDescription(dto.getDescription());
@@ -318,12 +302,6 @@ public class UserServiceImpl implements UserService {
     public SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
-        if (dto.getEmail() != null) {
-            user.setEmail(dto.getEmail());
-        }
-        if (dto.getPassword() != null) {
-            user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
-        }
         user.getSupplierDetails().setCompanyName(dto.getCompanyName());
         user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
