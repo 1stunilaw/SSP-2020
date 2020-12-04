@@ -1,8 +1,10 @@
 package ssp.marketplace.app.service.impl;
 
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
 import ssp.marketplace.app.exceptions.*;
@@ -22,11 +24,15 @@ public class DocumentServiceImpl implements DocumentService {
 
     public final DocumentRepository documentRepository;
 
-    public DocumentServiceImpl(S3Services s3Services, UserRepository userRepository, OrderRepository orderRepository, DocumentRepository documentRepository) {
+    private final MessageSource messageSource;
+
+
+    public DocumentServiceImpl(S3Services s3Services, MessageSource messageSource, UserRepository userRepository, OrderRepository orderRepository, DocumentRepository documentRepository) {
         this.s3Services = s3Services;
         this.orderRepository = orderRepository;
         this.documentRepository = documentRepository;
         this.userRepository = userRepository;
+        this.messageSource = messageSource;
     }
 
     public List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3) {
@@ -46,6 +52,31 @@ public class DocumentServiceImpl implements DocumentService {
             documentRepository.save(document);
         }
         return documents;
+    }
+
+    @Override
+    public ResponseNameDocument addNewDocumentsInOrder(
+            UUID id, MultipartFile[] multipartFiles
+    ) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        int countActiveDocs = DocumentService.selectOnlyActiveDocument(order).size();
+        int countNewDocs = multipartFiles.length;
+        if (countActiveDocs + countNewDocs > 10) {
+            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
+        String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
+        List<Document> documents = addNewDocuments(multipartFiles, pathS3);
+        order.getDocuments().addAll(documents);
+        orderRepository.save(order);
+        List<String> strings = new ArrayList<>();
+        for (Document doc : documents
+        ) {
+            strings.add(doc.getName());
+        }
+        ResponseNameDocument responseNameDocument = new ResponseNameDocument(strings);
+        return responseNameDocument;
     }
 
     @Override

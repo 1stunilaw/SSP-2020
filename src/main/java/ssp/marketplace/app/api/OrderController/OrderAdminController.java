@@ -1,13 +1,15 @@
 package ssp.marketplace.app.api.OrderController;
 
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.responseDto.*;
+import ssp.marketplace.app.dto.requestDto.*;
+import ssp.marketplace.app.dto.responseDto.ResponseOneOrderDtoAdmin;
 import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.UUID;
+import javax.validation.Valid;
+import java.util.*;
 
 @RestController
 @RequestMapping("api/admin/orders")
@@ -21,24 +23,23 @@ public class OrderAdminController {
         this.orderService = orderService;
     }
 
+
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOneOrderDtoAdmin createOrder(
-            @RequestPart(value = "order", required = false) String responseOrderDto,
-            HttpServletRequest req,
-            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
+            @ModelAttribute @Valid RequestOrderDto responseOrderDto,
+            HttpServletRequest req
     ) {
-        return orderService.createOrder(req, responseOrderDto, multipartFiles);
+        return orderService.createOrder(req, responseOrderDto);
     }
 
     @RequestMapping(value = "{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin updateOrder(
             @PathVariable("orderId") UUID id,
-            @RequestPart(value = "order", required = false) String orderUpdateDto,
-            @RequestPart(value = "files", required = false) MultipartFile[] multipartFiles
+            @ModelAttribute @Valid RequestOrderUpdateDto updateDto
     ) {
-        return orderService.editOrder(id, orderUpdateDto, multipartFiles);
+        return orderService.editOrder(id, updateDto);
     }
 
     @DeleteMapping(value = "/{id}")

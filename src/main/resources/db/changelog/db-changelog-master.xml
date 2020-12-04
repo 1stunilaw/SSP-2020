@@ -39,6 +39,7 @@
     <include file="v1/2020-11-22T23-49--add_not_null-description-in-orders-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-23T02-16--add-column-number-in-orders-table.xml" relativeToChangelogFile="true"/>
     <include file="v1/2020-11-25T00-41--change-status-in-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v1/2020-11-29T20-24--add-not_null-in-tag_name.xml" relativeToChangelogFile="true"/>
 
     <include file="v2/2020-11-28T01-55--add-basic-suppliers.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-11-29T17-40--create-supplier-documents-table.xml" relativeToChangelogFile="true"/>

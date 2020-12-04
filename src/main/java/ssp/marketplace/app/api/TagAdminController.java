@@ -3,6 +3,7 @@ package ssp.marketplace.app.api;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.requestDto.RequestTag;
+import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.service.TagServices;
 
 import javax.validation.Valid;
@@ -27,7 +28,7 @@ public class TagAdminController {
     }
 
     @GetMapping()
-    public List<String> getAllTags(
+    public List<ResponseTag> getAllTags(
     ) {
         return tagServices.getTags();
     }
