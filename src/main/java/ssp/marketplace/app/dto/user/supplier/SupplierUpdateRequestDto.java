@@ -16,6 +16,9 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()][a-zA-ZА-я0-9-.,&\":_%$@#() ]+$", message = "{companyName.errors.regex}")
+    private String description;
+
     @Pattern(regexp = "^[\\d+]{10,12}$", message = "{inn.errors.regex}")
     private String inn;
 

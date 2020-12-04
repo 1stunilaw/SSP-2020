@@ -263,6 +263,10 @@ public class UserServiceImpl implements UserService {
             user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         }
 
+        if (dto.getDescription() != null) {
+            user.getSupplierDetails().setDescription(dto.getDescription());
+        }
+
         if (dto.getCompanyName() != null) {
             user.getSupplierDetails().setCompanyName(dto.getCompanyName());
         }
@@ -321,6 +325,7 @@ public class UserServiceImpl implements UserService {
             user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         }
         user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
         user.getSupplierDetails().setContactFio(dto.getContactFio());
         user.getSupplierDetails().setPhone(dto.getPhone());

@@ -32,6 +32,9 @@ public class SupplierDetails extends BasicEntity {
     @Column(name = "contact_fio", length = 150)
     private String contactFio;
 
+    @Column(name = "description", length = 2500)
+    private String description;
+
     @Column(name = "region", length = 100)
     private String region;
 

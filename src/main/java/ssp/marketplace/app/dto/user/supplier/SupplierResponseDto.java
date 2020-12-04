@@ -15,6 +15,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class SupplierResponseDto extends UserResponseDto {
     private String companyName;
+    private String description;
     private String inn;
     private String phone;
     private String contactFio;
@@ -29,6 +30,7 @@ public class SupplierResponseDto extends UserResponseDto {
     public SupplierResponseDto(User user) {
         super(user);
 
+        description = user.getSupplierDetails().getDescription();
         companyName = user.getSupplierDetails().getCompanyName();
         inn = user.getSupplierDetails().getInn();
         phone = user.getSupplierDetails().getPhone();

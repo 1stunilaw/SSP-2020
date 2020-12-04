@@ -13,12 +13,16 @@ import java.util.*;
 @Setter
 @RequiredArgsConstructor
 public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
-    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
     @NotBlank(message = "{inn.errors.empty}")
     @Pattern(regexp = "^[\\d+]{10,12}$", message = "{inn.errors.regex}")
     private String inn;
+
+    @NotBlank(message = "{description.errors.empty}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()][a-zA-ZА-я0-9-.,&\":_%$@#() ]+$", message = "{companyName.errors.regex}")
+    private String description;
 
     @NotBlank(message = "{phone.errors.empty}")
     @Length(min = 6, max = 20, message = "{phone.errors.length}")
