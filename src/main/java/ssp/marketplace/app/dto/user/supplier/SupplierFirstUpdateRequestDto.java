@@ -2,6 +2,7 @@ package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
 import ssp.marketplace.app.validation.ValidUUID;
 
@@ -12,7 +13,7 @@ import java.util.*;
 @Setter
 @RequiredArgsConstructor
 public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
-    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\"]+$", message = "{companyName.errors.regex}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
     @NotBlank(message = "{inn.errors.empty}")
@@ -40,4 +41,11 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
 
     @NotEmpty(message = "{tags.errors.empty}")
     private Set<UUID> tags;
+
+    @NotBlank(message = "{contacts.errors.empty}")
+    @Length(min = 5, max = 500, message = "{contacts.errors.length}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{contacts.errors.regex}")
+    private String contacts;
+
+    private MultipartFile[] files;
 }

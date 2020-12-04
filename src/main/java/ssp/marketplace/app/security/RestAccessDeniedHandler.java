@@ -22,7 +22,7 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
             ServletException
     {
         Map<String,Object> response = new HashMap<>();
-        response.put("message","Unauthorized api access");
+        response.put("message","Доступ закрыт");
         response.put("status", HttpStatus.UNAUTHORIZED.value());
 
         //httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);

@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 @RequiredArgsConstructor
 public class SupplierRegisterRequestDto extends RegisterRequestUserDto {
     @NotBlank(message = "{companyName.errors.empty}")
-    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\"]+$", message = "{companyName.errors.regex}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     @Length(min = 1, max = 250, message = "{companyName.errors.length}")
     private String companyName;
 }

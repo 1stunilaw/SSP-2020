@@ -35,8 +35,8 @@ public interface UserService extends FieldValueExists {
 
     CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto);
 
-    SupplierResponseDto updateSupplier(HttpServletRequest request, SupplierUpdateRequestDto dto, MultipartFile[] files);
+    SupplierResponseDto updateSupplier(HttpServletRequest request, SupplierUpdateRequestDto dto);
 
-    SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto, MultipartFile[] files);
+    SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
 
 }

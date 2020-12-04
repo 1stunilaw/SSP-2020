@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.RequestTag;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.entity.Tag;
-import ssp.marketplace.app.exceptions.BadRequest;
+import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.repository.TagRepository;
 import ssp.marketplace.app.service.TagServices;
 
@@ -34,7 +34,7 @@ public class TagServicesImpl implements TagServices {
         for (String name : tagName
         ) {
             if (tagRepository.findByTagName(name).isPresent()) {
-                throw new BadRequest("Тег с именем " + name + " уже существует");
+                throw new BadRequestException("Тег с именем " + name + " уже существует");
             }
         }
         for (String t : tagName

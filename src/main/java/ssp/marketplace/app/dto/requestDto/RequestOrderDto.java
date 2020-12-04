@@ -43,30 +43,5 @@ public class RequestOrderDto {
 
     private String organizationName;
 
-    public static RequestOrderDto convert(String requestOrderDto) {
-        if (requestOrderDto == null) {
-            throw new BadRequestException("order не может быть пустым");
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        RequestOrderDto dtoObject;
-        try {
-            dtoObject = mapper.readValue(requestOrderDto, RequestOrderDto.class);
-        } catch (JsonProcessingException e) {
-            throw new BadRequestException("Передаваемые знчения не соответствуют формату");
-        }
-        if (dtoObject.name == null) {
-            throw new BadRequestException("Имя не может быть пустым");
-        }
-        if (dtoObject.description == null) {
-            throw new BadRequestException("Описание не может быть пустым");
-        }
-        if (dtoObject.dateStop == null) {
-            throw new BadRequestException("Дата не может быть пустой");
-        }
-        return dtoObject;
-    }
-
     private MultipartFile[] files;
-
 }

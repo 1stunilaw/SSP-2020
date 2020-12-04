@@ -22,7 +22,7 @@
         </insert>
         <insert tableName="law_statuses">
             <column name="id" value="06b8917d-19db-49cd-a012-57485021169a"/>
-            <column name="name" value="Акцонерное общество"/>
+            <column name="name" value="Акционерное общество"/>
             <column name="created_at" value="${now}"/>
             <column name="updated_at" value="${now}"/>
         </insert>

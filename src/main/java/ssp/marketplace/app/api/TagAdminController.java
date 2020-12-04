@@ -10,7 +10,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/admin/tags")
+@RequestMapping("/api")
 public class TagAdminController {
 
     private final TagServices tagServices;
@@ -19,7 +19,7 @@ public class TagAdminController {
         this.tagServices = tagServices;
     }
 
-    @PostMapping(value = "/add-tag")
+    @PostMapping(value = "/admin/tags/add-tag")
     @ResponseStatus(HttpStatus.CREATED)
     public void addNewTag(
             @RequestBody @Valid RequestTag requestTag
@@ -27,7 +27,7 @@ public class TagAdminController {
         tagServices.addNewTag(requestTag);
     }
 
-    @GetMapping()
+    @GetMapping("/tags")
     public List<ResponseTag> getAllTags(
     ) {
         return tagServices.getTags();

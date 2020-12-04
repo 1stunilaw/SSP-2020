@@ -1,6 +1,7 @@
 package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserResponseDto;
@@ -28,25 +29,28 @@ public class UserController {
     }
 
     @PatchMapping(value = "/customer/update")
+    @ResponseStatus(HttpStatus.OK)
     public CustomerResponseDto updateCustomer(HttpServletRequest request, @RequestBody @Valid @NotNull CustomerUpdateRequestDto dto){
         return userService.updateCustomer(request, dto);
     }
 
-    @PatchMapping(value = "/supplier/update")
+    @PatchMapping(value = "/supplier/update", consumes = "multipart/form-data")
+    @ResponseStatus(HttpStatus.OK)
     public SupplierResponseDto updateSupplier(
             HttpServletRequest request,
-            @RequestPart("user") SupplierUpdateRequestDto dto,
-            @RequestParam("files") MultipartFile[] files)
+            @ModelAttribute @Valid @NotNull SupplierUpdateRequestDto dto
+    )
     {
-        return userService.updateSupplier(request, dto, files);
+        return userService.updateSupplier(request, dto);
     }
 
-    @PatchMapping(value = "/supplier/fill")
+    @PatchMapping(value = "/supplier/fill", consumes = "multipart/form-data")
+    @ResponseStatus(HttpStatus.OK)
     public SupplierResponseDto fillSupplier(
             HttpServletRequest request,
-            @RequestPart("user") @Valid @NotNull SupplierFirstUpdateRequestDto dto,
-            @RequestParam("files") MultipartFile[] files)
+            @ModelAttribute @Valid @NotNull SupplierFirstUpdateRequestDto dto
+    )
     {
-        return userService.fillSupplier(request, dto, files);
+        return userService.fillSupplier(request, dto);
     }
 }

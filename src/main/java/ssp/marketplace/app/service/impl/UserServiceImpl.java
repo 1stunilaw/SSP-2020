@@ -250,8 +250,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public SupplierResponseDto updateSupplier(
             HttpServletRequest request,
-            SupplierUpdateRequestDto dto,
-            MultipartFile[] files
+            SupplierUpdateRequestDto dto
     ) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
@@ -290,6 +289,7 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setLawStatus(status);
         }
 
+        MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
             addDocumentToUser(user, files);
         }
@@ -311,7 +311,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto, MultipartFile[] files) {
+    public SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
         if (dto.getEmail() != null) {
@@ -329,6 +329,8 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
         user.getSupplierDetails().setLawStatus(status);
 
+
+        MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
             addDocumentToUser(user, files);
         }
