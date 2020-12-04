@@ -47,13 +47,11 @@ public class OrderBuilderService {
     }
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
-        System.out.println(tagsId);
         List<Tag> orderTags = new ArrayList<>();
         if (tagsId != null) {
             for (UUID id: tagsId
             ) {
                 Tag tagFromDB = tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Тега c id = "+id+" не существует в базе данных"));
-//                tagFromDB.getOrdersList().add(order);
                 orderTags.add(tagFromDB);//
                 tagRepository.save(tagFromDB);
             }
