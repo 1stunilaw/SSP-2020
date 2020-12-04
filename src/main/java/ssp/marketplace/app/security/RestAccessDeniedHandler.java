@@ -25,12 +25,11 @@ public class RestAccessDeniedHandler implements AccessDeniedHandler {
         response.put("message","Доступ закрыт");
         response.put("status", HttpStatus.UNAUTHORIZED.value());
 
-        //httpServletResponse.setStatus(HttpServletResponse.SC_FORBIDDEN);
+        httpServletResponse.setContentType("application/json");
         httpServletResponse.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         OutputStream out = httpServletResponse.getOutputStream();
         ObjectMapper mapper = new ObjectMapper();
         mapper.writerWithDefaultPrettyPrinter().writeValue(out,response);
-        //mapper.writeValue(out, response);
 
         out.flush();
     }

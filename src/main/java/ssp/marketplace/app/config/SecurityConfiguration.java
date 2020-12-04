@@ -46,7 +46,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/register/lawyer",
             "/api/register/admin",
             "/admin/**",
-            "/api/suppliers/**",
+            "/api/suppliers",
+            "/api/suppliers/{id}",
             "/api/admin/**",
     };
 
