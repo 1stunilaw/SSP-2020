@@ -41,7 +41,7 @@ public class SupplierServiceImpl implements SupplierService {
             UUID uuid = UUID.fromString(id);
             Optional<User> user = userRepository.findById(uuid);
 
-            if (user.isEmpty() || user.get().getSupplierDetails() == null){
+            if (!user.isPresent() || user.get().getSupplierDetails() == null){
                 throw new NotFoundException("Поставщик с данным идентификатором не был найден");
             }
 
