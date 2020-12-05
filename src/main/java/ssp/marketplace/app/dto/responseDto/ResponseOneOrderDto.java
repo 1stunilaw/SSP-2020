@@ -26,7 +26,7 @@ public class  ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
         orderDto.setNumber(order.getNumber());
         orderDto.setUser(order.getUser().getCustomerDetails().getFio());
 
-        List<Tag> tags = order.getTags();
+        Set<Tag> tags = order.getTags();
         List<String> tagsName = new ArrayList<>();
         if (tags != null) {
             for (Tag tag : tags

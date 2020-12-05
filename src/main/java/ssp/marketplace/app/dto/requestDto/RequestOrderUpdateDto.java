@@ -41,21 +41,6 @@ public class RequestOrderUpdateDto {
 
     private List<String> documents;
 
-    public static RequestOrderUpdateDto convert(String requestOrderDto) {
-        if (requestOrderDto == null) {
-            throw new BadRequestException("order не может быть пустым");
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        RequestOrderUpdateDto dtoObject;
-        try {
-            dtoObject = mapper.readValue(requestOrderDto, RequestOrderUpdateDto.class);
-        } catch (JsonProcessingException e) {
-            throw new BadRequestException("Ключи для полей заполнены неверно");
-        }
-        return dtoObject;
-    }
-
     private MultipartFile[] files;
 
 }

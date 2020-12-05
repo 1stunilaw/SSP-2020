@@ -18,7 +18,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     private static final String[] publicEndpoints = new String[]{
             "/api/login",
             "/api/register/supplier",
-            "/api/register/verify"
+            "/api/register/verify",
+            "/api/tags",
     };
 
     private static final String[] blankUserEndpoints = new String[]{
@@ -72,10 +73,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(adminEndpoints).hasRole("ADMIN")
-                .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
-                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
                 .antMatchers(publicEndpoints).permitAll()
+                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
+                .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
+                .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))

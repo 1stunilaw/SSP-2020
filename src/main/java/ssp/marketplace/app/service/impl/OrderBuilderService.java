@@ -47,13 +47,14 @@ public class OrderBuilderService {
     }
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
-        List<Tag> orderTags = new ArrayList<>();
+        Set<Tag> orderTags = new HashSet<>();
         if (tagsId != null) {
-            for (UUID id: tagsId
+            for (UUID id : tagsId
             ) {
-                Tag tagFromDB = tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Тега c id = "+id+" не существует в базе данных"));
-                orderTags.add(tagFromDB);//
-                tagRepository.save(tagFromDB);
+                Tag tagFromDB = tagRepository.findById(id).orElseThrow(
+                        () -> new NotFoundException("Тега c id = " + id + " не существует в базе данных"));
+                    orderTags.add(tagFromDB);//
+                    tagRepository.save(tagFromDB);
             }
         }
         order.setTags(orderTags);
