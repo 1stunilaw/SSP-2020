@@ -49,6 +49,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/suppliers",
             "/api/suppliers/{id}",
             "/api/admin/**",
+            "/api/tags",
     };
 
     @Autowired
