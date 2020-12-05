@@ -26,7 +26,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/user",
             "/api/orders/**",
             "/document/**"
-    }
+    };
 
     private static final String[] blankUserEndpoints = new String[]{
             "/api/supplier/fill"
