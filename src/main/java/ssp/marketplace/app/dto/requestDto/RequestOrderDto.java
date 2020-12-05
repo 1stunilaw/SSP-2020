@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
@@ -24,7 +25,7 @@ public class RequestOrderDto {
 
     @NotBlank(message = "{name.errors.empty}")
     @NotNull(message = "{name.errors.empty}")
-    @Size(max = 250)
+    @Length(min = 1, max = 250, message = "{name.errors.length}")
     private String name;
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;

@@ -88,11 +88,11 @@ public class OrderServiceImpl implements OrderService {
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = requestOrderDto.getDateStop();
-        if(dateStop.isBefore(now)){
+        if (dateStop.isBefore(now)) {
             String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
-        if(requestOrderDto.getFiles()!= null && requestOrderDto.getFiles().length>10){
+        if (requestOrderDto.getFiles() != null && requestOrderDto.getFiles().length > 10) {
             String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
@@ -123,7 +123,7 @@ public class OrderServiceImpl implements OrderService {
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = updateDto.getDateStop();
-        if(dateStop.isBefore(now)){
+        if (dateStop != null && dateStop.isBefore(now)) {
             String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
