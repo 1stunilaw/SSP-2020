@@ -24,6 +24,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     private static final String[] generalEndpoints = new String[]{
             "/api/tags",
             "/api/user",
+            "/api/law-statuses",
             "/api/orders/**",
             "/document/**"
     };
