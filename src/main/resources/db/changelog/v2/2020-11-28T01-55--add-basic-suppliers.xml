@@ -7,7 +7,7 @@
     http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
 
     <property name="now" value="now()" dbms="postgresql"/>
-    <changeSet id="2020-11-28T01-55--add-active-basic-supplier" author="Konstantin Egorov">
+<changeSet id="2020-11-28T01-55--add-active-basic-supplier" author="Konstantin Egorov">
         <insert tableName="users">
             <column name="id" value="611c6334-542b-4685-b935-8a2a0733189c"/>
             <column name="email" value="active@supplier.ru"/>
@@ -20,7 +20,7 @@
     </changeSet>
     <changeSet id="2020-11-28T01-57--add-active-basic-supplier-role-relation" author="Konstantin Egorov">
         <insert tableName="user_roles">
-            <column name="user_id" value="611c6334-542b-4685-b935-8a2a0733189c"/>
+            <column name="user_id" value="2249ca67-629a-4671-a0a3-086942d67365"/>
             <column name="role_id" value="a9105225-e3e0-49c6-8433-eca4cf441201"/>
         </insert>
     </changeSet>
@@ -53,8 +53,8 @@
     </changeSet>
     <changeSet id="2020-11-28T02-10--add-unactivated-basic-supplier-details" author="Konstantin Egorov">
         <insert tableName="supplier_details">
-            <column name="id" value="8c886d3c-ea8e-42e6-bfac-d212114ed416"/>
-            <column name="user_id" value="fd336cbf-5a1b-418f-9341-883868b03c0e"/>
+            <column name="id" value="fd336cbf-5a1b-418f-9341-883868b03c0e"/>
+            <column name="user_id" value="611c6334-542b-4685-b935-8a2a0733189c"/>
             <column name="company_name" value="Неактивированный поставщик"/>
             <column name="created_at" value="${now}"/>
             <column name="updated_at" value="${now}"/>
