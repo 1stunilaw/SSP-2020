@@ -76,7 +76,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .and()
                 .authorizeRequests()
                 .antMatchers(publicEndpoints).permitAll()
-                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
+                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER", "USER", "ADMIN")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")                
                 .anyRequest().authenticated()
