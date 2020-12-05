@@ -2,20 +2,20 @@ package ssp.marketplace.app.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.requestDto.RequestTag;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.service.TagServices;
 
 import javax.validation.Valid;
-import java.util.List;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
-public class TagAdminController {
+public class TagController {
 
     private final TagServices tagServices;
 
-    public TagAdminController(TagServices tagServices) {
+    public TagController(TagServices tagServices) {
         this.tagServices = tagServices;
     }
 
@@ -31,5 +31,22 @@ public class TagAdminController {
     public List<ResponseTag> getAllTags(
     ) {
         return tagServices.getTags();
+    }
+
+    @DeleteMapping(value = "/admin/tags/{tagId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTag(
+            @PathVariable UUID tagId
+    ) {
+        tagServices.deleteTag(tagId);
+    }
+
+    @PatchMapping(value = "/admin/tags/{tagId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateTag(
+            @PathVariable UUID tagId,
+            @RequestBody @Valid RequestUpdateTag requestUpdateTag
+    ) {
+        tagServices.editTag(tagId, requestUpdateTag);
     }
 }

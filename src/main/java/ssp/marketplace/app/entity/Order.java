@@ -14,7 +14,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -61,7 +62,7 @@ public class Order {
     @JoinTable(name = "orders_tags",
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "orders_documents",
