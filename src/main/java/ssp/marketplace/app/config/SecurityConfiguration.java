@@ -18,25 +18,23 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     private static final String[] publicEndpoints = new String[]{
             "/api/login",
             "/api/register/supplier",
-            "/api/register/verify",
-            "/api/tags",
+            "/api/register/verify"
     };
 
-    private static final String[] blankUserEndpoints = new String[]{
-            "/api/supplier/fill",
-            "/document/**",
+    private static final String[] generalEndpoints = new String[]{
             "/api/tags",
-            "api/orders/**",
             "/api/user",
+            "/api/orders/**",
+            "/document/**"
+    }
+
+    private static final String[] blankUserEndpoints = new String[]{
+            "/api/supplier/fill"
     };
 
     private static final String[] userEndpoints = new String[]{
             "/api/home",
-            "/api/user",
-            "/document/**",
             "/api/supplier/update",
-            "api/orders/**",
-            "/api/tags",
             "/api/suppliers/{supplierId}/{filename}"
     };
 
@@ -49,9 +47,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/admin/**",
             "/api/suppliers",
             "/api/suppliers/{id}",
-            "/api/admin/**",
-            "/api/tags",
-            "/api/user",
+            "/api/admin/**"
     };
 
     @Autowired
@@ -76,9 +72,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .and()
                 .authorizeRequests()
                 .antMatchers(publicEndpoints).permitAll()
-                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER", "USER", "ADMIN")
+                .antMatchers(generalEndpoints).hasAnyRole("ADMIN", "USER", "BLANK_USER")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
-                .antMatchers(adminEndpoints).hasRole("ADMIN")                
+                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
+                .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))
