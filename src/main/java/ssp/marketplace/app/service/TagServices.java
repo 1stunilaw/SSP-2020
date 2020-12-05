@@ -1,6 +1,6 @@
 package ssp.marketplace.app.service;
 
-import ssp.marketplace.app.dto.requestDto.RequestTag;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 
 import java.util.*;
@@ -13,5 +13,5 @@ public interface TagServices {
 
     void deleteTag(UUID id);
 
-    void editTag(UUID id);
+    void editTag(UUID id, RequestUpdateTag requestUpdateTag);
 }

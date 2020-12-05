@@ -2,7 +2,7 @@ package ssp.marketplace.app.api;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.requestDto.RequestTag;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.service.TagServices;
 
@@ -39,5 +39,14 @@ public class TagController {
             @PathVariable UUID tagId
     ) {
         tagServices.deleteTag(tagId);
+    }
+
+    @PatchMapping(value = "/admin/tags/{tagId}")
+    @ResponseStatus(HttpStatus.OK)
+    public void updateTag(
+            @PathVariable UUID tagId,
+            @RequestBody @Valid RequestUpdateTag requestUpdateTag
+    ) {
+        tagServices.editTag(tagId, requestUpdateTag);
     }
 }

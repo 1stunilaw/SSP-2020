@@ -2,7 +2,7 @@ package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.requestDto.RequestTag;
+import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForTag;
@@ -30,8 +30,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public List<ResponseTag> getTags() {
-//        List<Tag> allTags = tagRepository.findAllByStatusForTagNotIn(Collections.singleton(StatusForTag.DELETED));
-        List<Tag> allTags = tagRepository.findAll();
+        List<Tag> allTags = tagRepository.findAllByStatusForTagNotIn(Collections.singleton(StatusForTag.DELETED));
         List<ResponseTag> responseTagStream =
                 allTags.stream().map(ResponseTag::getResponseTagFromTag).collect(Collectors.toList());
         return responseTagStream;
@@ -65,10 +64,15 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
-    public void editTag(UUID id) {
-//        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
-//                .orElseThrow(() -> new NotFoundException("Тег не найден"));
-
+    public void editTag(UUID id, RequestUpdateTag requestUpdateTag) {
+        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
+                .orElseThrow(() -> new NotFoundException("Тег не найден"));
+        String newTagName = requestUpdateTag.getTagName();
+        if (tagRepository.findByTagName(newTagName).isPresent()) {
+            throw new BadRequestException("Тег с именем " + newTagName + " уже существует");
+        }
+        tag.setTagName(newTagName);
+        tagRepository.save(tag);
     }
 
     private void delTagInOrders(Tag tag) {
