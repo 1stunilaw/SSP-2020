@@ -28,14 +28,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/document/**"
     };
 
-    private static final String[] blankUserEndpoints = new String[]{
-            "/api/supplier/fill"
-    };
-
     private static final String[] userEndpoints = new String[]{
             "/api/home",
             "/api/supplier/update",
-            "/api/suppliers/{supplierId}/{filename}"
+            "/api/suppliers/{supplierId}/{filename}",
+            "/api/supplier/fill"
     };
 
     private static final String[] adminEndpoints = new String[]{
@@ -74,7 +71,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .antMatchers(publicEndpoints).permitAll()
                 .antMatchers(generalEndpoints).hasAnyRole("ADMIN", "USER", "BLANK_USER")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
-                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
