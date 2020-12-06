@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
 import ssp.marketplace.app.entity.*;
@@ -34,13 +35,18 @@ public class OrderBuilderService {
 
         List<UUID> tagsId = requestOrderDto.getTags();
 
+        String organizationName = null;
+        if(!StringUtils.isBlank(requestOrderDto.getOrganizationName())){
+            organizationName = requestOrderDto.getOrganizationName();
+        }
+
         Order order = Order.builder()
                 .name(requestOrderDto.getName())
                 .dateStart(LocalDateTime.now())
                 .dateStop(localDateTime)
                 .description(requestOrderDto.getDescription())
                 .statusForOrder(statusForOrder)
-                .organizationName(requestOrderDto.getOrganizationName())
+                .organizationName(organizationName)
                 .build();
         setTagForOrder(order, tagsId);
         return order;

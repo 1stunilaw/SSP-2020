@@ -22,7 +22,7 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
-    @Length(max = 50, message = "{name.errors.length.max}")
+    @Length(max = 250, message = "{name.errors.length.max}")
     @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.\" ]+$)", message = "{name.errors.regex}")
     private String name;
 
@@ -41,6 +41,7 @@ public class RequestOrderUpdateDto {
     private List<UUID> tags;
 
     @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.\" ]+$)", message = "{organizationName.errors.regex}")
+    @Length(max = 250, message = "{organizationName.errors.length}")
     private String organizationName;
 
     private List<String> documents;
