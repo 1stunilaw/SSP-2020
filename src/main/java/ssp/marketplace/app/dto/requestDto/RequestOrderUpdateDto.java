@@ -11,7 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.BadRequestException;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -22,7 +22,8 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
-    @Length(min = 1, max = 250, message = "{name.errors.length}")
+    @Length(min = 1, max = 50, message = "{name.errors.length}")
+    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{name.errors.regex}")
     private String name;
 
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
@@ -31,13 +32,15 @@ public class RequestOrderUpdateDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
-    @Size(max = 10000)
+    @Length(max = 10000, message = "{description.errors.length}")
+    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{description.errors.regex}")
     private String description;
 
     private StatusForOrder statusForOrder;
 
     private List<UUID> tags;
 
+    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{organizationName.errors.regex}")
     private String organizationName;
 
     private List<String> documents;

@@ -49,6 +49,7 @@ public class TagServicesImpl implements TagServices {
         ) {
             Tag tag = new Tag();
             tag.setTagName(t);
+            tag.setStatusForTag(StatusForTag.ACTIVE);
             tagRepository.save(tag);
         }
     }

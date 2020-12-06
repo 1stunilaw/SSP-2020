@@ -1,6 +1,7 @@
 package ssp.marketplace.app.dto.requestDto;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.*;
 import java.util.List;
@@ -12,6 +13,10 @@ import java.util.List;
 public class RequestTag {
 
     @NotNull(message = "{tagName.errors.empty}")
-    @Size(min = 1)
-    private List<@NotBlank (message = "{tagName.errors.empty}") @Size(max = 50)String> tagName;
+    @Size(min = 1, message = "{tagName.errors.empty}")
+    private List<
+            @NotBlank(message = "{tagName.errors.empty}")
+            @Size(min = 1, max = 50, message = "{tagName.errors.length}")
+            @Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z0-9]+$", message = "{tagName.errors.regex}")
+                    String> tagName;
 }
