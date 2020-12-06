@@ -55,9 +55,8 @@ public class SupplierDetails extends BasicEntity {
 
 
     @Nullable
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="law_status_id")
-    @JsonBackReference
     private LawStatus lawStatus;
 
     /**
