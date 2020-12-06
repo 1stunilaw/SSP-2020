@@ -5,6 +5,7 @@ import lombok.*;
 import ssp.marketplace.app.entity.BasicEntity;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -14,8 +15,7 @@ public class LawStatus extends BasicEntity {
     @Column(name = "name")
     private String name;
 
-    @OneToOne(mappedBy = "lawStatus")
-    @PrimaryKeyJoinColumn
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "lawStatus", cascade = CascadeType.ALL)
     @JsonBackReference
-    private SupplierDetails supplier;
+    private List<SupplierDetails> supplier;
 }
