@@ -271,6 +271,10 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setRegion(dto.getRegion());
         }
 
+        if (dto.getContacts() != null){
+            user.getSupplierDetails().setContacts(dto.getContacts());
+        }
+
         if (dto.getLawStatusId() != null) {
             LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
                     .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
@@ -307,6 +311,7 @@ public class UserServiceImpl implements UserService {
         user.getSupplierDetails().setInn(dto.getInn());
         user.getSupplierDetails().setContactFio(dto.getContactFio());
         user.getSupplierDetails().setPhone(dto.getPhone());
+        user.getSupplierDetails().setContacts(dto.getContacts());
         user.getSupplierDetails().setRegion(dto.getRegion());
         LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
                 .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
