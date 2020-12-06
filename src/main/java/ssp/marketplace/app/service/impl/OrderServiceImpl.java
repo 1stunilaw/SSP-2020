@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
@@ -154,7 +155,7 @@ public class OrderServiceImpl implements OrderService {
             addDocumentToOrder(order, multipartFiles);
         }
 
-        if (updateName != null && !updateName.isBlank()) {
+        if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
 
@@ -163,12 +164,12 @@ public class OrderServiceImpl implements OrderService {
         }
 
         String description = updateDto.getDescription();
-        if (description != null && !description.isBlank()) {
+        if (description != null && !StringUtils.isBlank(description)) {
             order.setDescription(description);
         }
 
         String organizationName = updateDto.getOrganizationName();
-        if (organizationName != null && !organizationName.isBlank()) {
+        if (organizationName != null && !StringUtils.isBlank(organizationName)) {
             order.setOrganizationName(organizationName);
         }
 
