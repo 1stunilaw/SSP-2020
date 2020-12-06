@@ -1,26 +1,30 @@
 package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
-import ssp.marketplace.app.service.UserService;
+import ssp.marketplace.app.exceptions.BadRequestException;
+import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @RestController
 @RequestMapping("/api")
 public class UserController {
     private final UserService userService;
+    private final SupplierService supplierService;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SupplierService supplierService) {
         this.userService = userService;
+        this.supplierService = supplierService;
     }
 
     @GetMapping("/user")
@@ -52,5 +56,24 @@ public class UserController {
     )
     {
         return userService.fillSupplier(request, dto);
+    }
+
+    @DeleteMapping(value = "/supplier/tags/{tagId}")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseEntity deleteTagFromSupplier(
+            HttpServletRequest request,
+            @PathVariable String tagId
+    )
+    {
+        try {
+            UUID id = UUID.fromString(tagId);
+            supplierService.deleteTagFromSupplier(request, id);
+            HashMap response = new HashMap();
+            response.put("status", HttpStatus.OK);
+            response.put("message", "Тег успешно удалён");
+            return new ResponseEntity(response, HttpStatus.OK);
+        } catch (IllegalArgumentException ex){
+            throw new BadRequestException("Невалидный ID тега");
+        }
     }
 }

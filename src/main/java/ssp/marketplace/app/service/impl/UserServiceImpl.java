@@ -2,8 +2,9 @@ package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,8 @@ import ssp.marketplace.app.service.*;
 import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,6 +44,8 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final MessageSource messageSource;
+
     private final LawStatusRepository lawStatusRepository;
 
     private final DocumentService documentService;
@@ -53,12 +58,14 @@ public class UserServiceImpl implements UserService {
             TokenRepository tokenRepository,
             LawStatusRepository lawStatusRepository,
             DocumentService documentService,
+            MessageSource messageSource,
             @Lazy JwtTokenProvider jwtTokenProvider
     ) {
         this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
+        this.messageSource = messageSource;
         this.jwtTokenProvider = jwtTokenProvider;
         this.lawStatusRepository = lawStatusRepository;
         this.documentService = documentService;
@@ -246,6 +253,24 @@ public class UserServiceImpl implements UserService {
     ) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_USER)){
+            throw new AccessDeniedException("Доступ запрещён");
+        }
+
+        if (dto.getLawStatusId() != null) {
+            LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
+                    .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
+            user.getSupplierDetails().setLawStatus(status);
+        }
+
+        if (user.getSupplierDetails().getDocuments().size() + dto.getFiles().length > 10) {
+            throw new BadRequestException(
+                    messageSource.getMessage(
+                            "files.errors.amount", null, new Locale("ru", "RU")
+                    )
+            );
+        }
 
         if (dto.getDescription() != null) {
             user.getSupplierDetails().setDescription(dto.getDescription());
@@ -275,17 +300,12 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setContacts(dto.getContacts());
         }
 
-        if (dto.getLawStatusId() != null) {
-            LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
-                    .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
-            user.getSupplierDetails().setLawStatus(status);
-        }
-
         MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
             addDocumentToUser(user, files);
         }
 
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
         return new SupplierResponseDto(userRepository.save(user));
     }
 
@@ -305,7 +325,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_BLANK_USER)){
+            throw new AccessDeniedException("Доступ запрещён");
+        }
         // TODO: 03.12.2020 Переделать через MapStruct
+        LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
+                .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
+        if (user.getSupplierDetails().getDocuments().size() + dto.getFiles().length > 10) {
+            throw new BadRequestException(
+                    messageSource.getMessage(
+                            "files.errors.amount", null, new Locale("ru", "RU")
+                    )
+            );
+        }
         user.getSupplierDetails().setCompanyName(dto.getCompanyName());
         user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
@@ -313,10 +346,7 @@ public class UserServiceImpl implements UserService {
         user.getSupplierDetails().setPhone(dto.getPhone());
         user.getSupplierDetails().setContacts(dto.getContacts());
         user.getSupplierDetails().setRegion(dto.getRegion());
-        LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
-                .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
         user.getSupplierDetails().setLawStatus(status);
-
 
         MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
@@ -328,6 +358,7 @@ public class UserServiceImpl implements UserService {
 
         user.getRoles().remove(blankUser);
         user.getRoles().add(roleUser);
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
 
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
 

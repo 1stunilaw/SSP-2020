@@ -63,7 +63,7 @@ public class DocumentServiceImpl implements DocumentService {
         int countActiveDocs = DocumentService.selectOnlyActiveDocument(order).size();
         int countNewDocs = multipartFiles.length;
         if (countActiveDocs + countNewDocs > 10) {
-            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();

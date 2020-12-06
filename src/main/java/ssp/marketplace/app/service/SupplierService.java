@@ -15,4 +15,8 @@ public interface SupplierService {
     Page<SupplierPageResponseDto> getAllSuppliers();
 
     ResponseEntity<InputStreamResource> getSupplierDocument(String filename, UUID supplierId, HttpServletRequest request);
+
+    void deleteDocument(UUID supplierId, String filename, HttpServletRequest request);
+
+    void deleteTagFromSupplier(HttpServletRequest request, UUID tagId);
 }
