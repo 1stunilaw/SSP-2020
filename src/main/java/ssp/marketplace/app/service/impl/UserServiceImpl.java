@@ -299,7 +299,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
+    public SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
         user.getSupplierDetails().setCompanyName(dto.getCompanyName());
@@ -324,7 +324,9 @@ public class UserServiceImpl implements UserService {
         user.getRoles().remove(blankUser);
         user.getRoles().add(roleUser);
 
-        return new SupplierResponseDto(userRepository.save(user));
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
+
+        return new SupplierResponseDtoWithNewToken(userRepository.save(user), token);
     }
 
 }

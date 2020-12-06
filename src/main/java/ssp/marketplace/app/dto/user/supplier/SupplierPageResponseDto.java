@@ -1,9 +1,8 @@
-package ssp.marketplace.app.dto.suppliers;
+package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
 
 import java.io.Serializable;
 import java.util.*;

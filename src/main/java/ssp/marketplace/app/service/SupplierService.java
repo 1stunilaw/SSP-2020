@@ -3,8 +3,7 @@ package ssp.marketplace.app.service;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-import ssp.marketplace.app.dto.suppliers.*;
-import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
+import ssp.marketplace.app.dto.user.supplier.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;

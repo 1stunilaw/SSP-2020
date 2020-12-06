@@ -37,6 +37,6 @@ public interface UserService extends FieldValueExists {
 
     SupplierResponseDto updateSupplier(HttpServletRequest request, SupplierUpdateRequestDto dto);
 
-    SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
+    SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
 
 }
