@@ -22,7 +22,7 @@ public class RequestOrderDto {
     @NotBlank(message = "{name.errors.empty}")
     @NotNull(message = "{name.errors.empty}")
     @Length(min = 1, max = 250, message = "{name.errors.length}")
-    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{name.errors.regex}")
+    @Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z0-9]+$", message = "{name.errors.regex}")
     private String name;
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;

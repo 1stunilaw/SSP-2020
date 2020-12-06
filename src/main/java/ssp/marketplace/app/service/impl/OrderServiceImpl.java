@@ -154,7 +154,7 @@ public class OrderServiceImpl implements OrderService {
             addDocumentToOrder(order, multipartFiles);
         }
 
-        if (updateName != null) {
+        if (updateName != null && !updateName.isBlank()) {
             order.setName(updateName);
         }
 
@@ -162,12 +162,14 @@ public class OrderServiceImpl implements OrderService {
             order.setStatusForOrder(updateDto.getStatusForOrder());
         }
 
-        if (updateDto.getDescription() != null) {
-            order.setDescription(updateDto.getDescription());
+        String description = updateDto.getDescription();
+        if (description != null && !description.isBlank()) {
+            order.setDescription(description);
         }
 
-        if (updateDto.getOrganizationName() != null) {
-            order.setOrganizationName(updateDto.getOrganizationName());
+        String organizationName = updateDto.getOrganizationName();
+        if (organizationName != null && !organizationName.isBlank()) {
+            order.setOrganizationName(organizationName);
         }
 
         if (updateDto.getDateStop() != null) {

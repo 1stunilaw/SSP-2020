@@ -11,7 +11,7 @@ import javax.validation.constraints.*;
 public class RequestUpdateTag {
 
     @NotBlank(message = "{tagName.errors.empty}")
-    @Size(max = 50)
-    @Size(min = 1)
+    @Size(min = 1, max = 50, message = "{tagName.errors.length}")
+    @Pattern(regexp = "^[а-яА-ЯёЁa-zA-Z0-9]+$", message = "{tagName.errors.regex}")
     private String tagName;
 }
