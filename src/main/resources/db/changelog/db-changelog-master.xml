@@ -47,5 +47,6 @@
     <include file="v2/2020-11-29T22-10--add-contacts-row-to-supplier-details.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-04T04-34--fill-law-statuses-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-05T00-04--add-description-row-to-supplier-details.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-05T13-38--add-status-in-tags-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-06T18-41--change-law-status.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
