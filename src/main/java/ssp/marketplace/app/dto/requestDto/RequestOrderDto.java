@@ -22,7 +22,7 @@ public class RequestOrderDto {
     @NotBlank(message = "{name.errors.empty}")
     @NotNull(message = "{name.errors.empty}")
     @Length(min = 1, max = 250, message = "{name.errors.length}")
-    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.\" ]+$)", message = "{name.errors.regex}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.,!?'&\" ]+$)", message = "{name.errors.regex}")
     private String name;
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
@@ -33,14 +33,14 @@ public class RequestOrderDto {
 
     @NotBlank(message = "{description.errors.empty}")
     @Length(min = 1, max = 10000, message = "{description.errors.length}")
-    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.\" ]+$)", message = "{description.errors.regex}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.,!?'&\" ]+$)", message = "{description.errors.regex}")
     private String description;
 
     private StatusForOrder statusForOrder;
 
     private List<UUID> tags;
 
-    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.\" ]+$)", message = "{organizationName.errors.regex}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-.,!?'&\" ]+$)", message = "{organizationName.errors.regex}")
     @Length(max = 250, message = "{organizationName.errors.length}")
     private String organizationName;
 

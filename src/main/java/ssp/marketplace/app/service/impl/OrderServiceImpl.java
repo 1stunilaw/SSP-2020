@@ -128,27 +128,6 @@ public class OrderServiceImpl implements OrderService {
             String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
-        List<Document> documents = order.getDocuments();
-        List<String> documentsUpdate = updateDto.getDocuments();
-        if (documents != null && documentsUpdate != null) {
-            List<String> documentsOld = new ArrayList<>();
-            for (Document doc : documents
-            ) {
-                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
-                    documentsOld.add(doc.getName());
-                }
-            }
-            List<String> docDelete = new ArrayList<>(documentsOld);
-            docDelete.removeAll(documentsUpdate);
-            for (String docDelName : docDelete
-            ) {
-                if (documentRepository.findByName(docDelName) != null) {
-                    documentService.deleteDocument(docDelName);
-                } else {
-                    throw new BadRequestException("Файл " + docDelName + " не найден");
-                }
-            }
-        }
 
         MultipartFile[] multipartFiles = updateDto.getFiles();
         if (multipartFiles != null) {
