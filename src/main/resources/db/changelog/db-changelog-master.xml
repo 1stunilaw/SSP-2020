@@ -49,4 +49,5 @@
     <include file="v2/2020-12-05T00-04--add-description-row-to-supplier-details.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-05T13-38--add-status-in-tags-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-06T18-41--change-law-status.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-06T18-41--make-name-not-null-and-unique-law-statuses.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
