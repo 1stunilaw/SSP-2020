@@ -44,7 +44,5 @@ public class RequestOrderUpdateDto {
     @Length(max = 250, message = "{organizationName.errors.length}")
     private String organizationName;
 
-    private List<String> documents;
-
     private MultipartFile[] files;
 }
