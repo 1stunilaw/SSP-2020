@@ -1,14 +1,12 @@
 package ssp.marketplace.app.api;
 
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.suppliers.*;
-import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
+import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;

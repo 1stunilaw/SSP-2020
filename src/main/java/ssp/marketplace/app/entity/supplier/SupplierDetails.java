@@ -41,6 +41,9 @@ public class SupplierDetails extends BasicEntity {
     @Column(name = "nda", length = 50)
     private String nda;
 
+    @Column(name = "contacts", length = 500)
+    private String contacts;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "suppliers_documents",
             joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},

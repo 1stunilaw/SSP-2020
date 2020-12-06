@@ -19,6 +19,7 @@ public class SupplierResponseDto extends UserResponseDto {
     private String inn;
     private String phone;
     private String contactFio;
+    private String contacts;
     private String region;
     private String nda;
     private String lawStatus;
@@ -35,6 +36,7 @@ public class SupplierResponseDto extends UserResponseDto {
         inn = user.getSupplierDetails().getInn();
         phone = user.getSupplierDetails().getPhone();
         contactFio = user.getSupplierDetails().getContactFio();
+        contacts = user.getSupplierDetails().getContacts();
         region = user.getSupplierDetails().getRegion();
         nda = user.getSupplierDetails().getNda();
         if(user.getSupplierDetails().getLawStatus() != null){

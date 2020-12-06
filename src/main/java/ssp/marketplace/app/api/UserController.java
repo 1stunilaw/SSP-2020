@@ -46,7 +46,7 @@ public class UserController {
 
     @PatchMapping(value = "/supplier/fill", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.OK)
-    public SupplierResponseDto fillSupplier(
+    public SupplierResponseDtoWithNewToken fillSupplier(
             HttpServletRequest request,
             @ModelAttribute @Valid @NotNull SupplierFirstUpdateRequestDto dto
     )
