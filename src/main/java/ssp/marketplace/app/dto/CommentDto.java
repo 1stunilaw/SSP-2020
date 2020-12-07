@@ -17,7 +17,7 @@ public class CommentDto {
     private UUID orderId;
     @NotBlank(message = "{text.errors.empty}")
     @Length(max = 500, message = "{text.errors.length}")
-    @Pattern(regexp = "(^$]|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{text.errors.regex}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{text.errors.regex}")
     private String text;
     private StatusForComment status;
     private Timestamp createdAt;
