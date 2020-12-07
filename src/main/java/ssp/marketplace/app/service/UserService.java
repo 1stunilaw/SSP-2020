@@ -39,4 +39,5 @@ public interface UserService extends FieldValueExists {
 
     SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
 
+    boolean verifyJwt(HttpServletRequest request);
 }

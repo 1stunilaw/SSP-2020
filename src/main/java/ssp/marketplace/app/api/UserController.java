@@ -81,6 +81,12 @@ public class UserController {
         }
     }
 
+    @GetMapping("/user/token")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean verifyJwt(HttpServletRequest request){
+        return userService.verifyJwt(request);
+    }
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));

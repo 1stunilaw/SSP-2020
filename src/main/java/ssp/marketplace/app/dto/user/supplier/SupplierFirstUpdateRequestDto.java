@@ -7,6 +7,8 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
+import ssp.marketplace.app.service.UserService;
+import ssp.marketplace.app.validation.Unique;
 import ssp.marketplace.app.validation.uuid.*;
 
 import javax.validation.constraints.*;
@@ -21,6 +23,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     private String companyName;
 
     @NotBlank(message = "{inn.errors.empty}")
+    @Unique(message = "{email.errors.unique}", service = UserService.class, fieldName = "inn")
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
     private String inn;
 

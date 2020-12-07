@@ -391,4 +391,10 @@ public class UserServiceImpl implements UserService {
 
         return new SupplierResponseDtoWithNewToken(userRepository.save(user), token);
     }
+
+    @Override
+    public boolean verifyJwt(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        return jwtTokenProvider.validateToken(token);
+    }
 }
