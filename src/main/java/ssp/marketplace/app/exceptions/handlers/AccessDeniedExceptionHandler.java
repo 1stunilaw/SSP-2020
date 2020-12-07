@@ -8,7 +8,7 @@ import ssp.marketplace.app.exceptions.response.ErrorResponse;
 
 @ControllerAdvice
 public class AccessDeniedExceptionHandler {
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
     @ExceptionHandler(AccessDeniedException.class)
     public ErrorResponse AccessDeniedExceptionHandler(AccessDeniedException ex){

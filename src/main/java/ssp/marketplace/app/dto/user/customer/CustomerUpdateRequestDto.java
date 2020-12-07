@@ -2,6 +2,9 @@ package ssp.marketplace.app.dto.user.customer;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
 
 import javax.validation.constraints.*;
@@ -17,4 +20,9 @@ public class CustomerUpdateRequestDto extends UserUpdateRequestDto {
     @Length(min = 6, max = 20, message = "{phone.errors.length}")
     @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{6,15}$", message = "{phone.errors.regex}")
     private String phone;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 }

@@ -6,7 +6,7 @@ import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -54,7 +54,7 @@ public class SupplierDetails extends BasicEntity {
     @JoinTable(name = "suppliers_tags",
             joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
 
     @Nullable
