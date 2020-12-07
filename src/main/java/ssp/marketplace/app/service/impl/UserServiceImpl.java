@@ -264,7 +264,9 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setLawStatus(status);
         }
 
-        if (user.getSupplierDetails().getDocuments().size() + dto.getFiles().length > 10) {
+        List<Document> userDocs = user.getSupplierDetails().getDocuments();
+
+        if (userDocs != null && userDocs.size() + dto.getFiles().length > 10) {
             throw new BadRequestException(
                     messageSource.getMessage(
                             "files.errors.amount", null, new Locale("ru", "RU")
@@ -332,7 +334,10 @@ public class UserServiceImpl implements UserService {
         // TODO: 03.12.2020 Переделать через MapStruct
         LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
                 .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
-        if (user.getSupplierDetails().getDocuments().size() + dto.getFiles().length > 10) {
+
+        List<Document> userDocs = user.getSupplierDetails().getDocuments();
+
+        if (userDocs != null && userDocs.size() + dto.getFiles().length > 10){
             throw new BadRequestException(
                     messageSource.getMessage(
                             "files.errors.amount", null, new Locale("ru", "RU")
