@@ -2,9 +2,12 @@ package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
-import ssp.marketplace.app.validation.ValidUUID;
+import ssp.marketplace.app.validation.uuid.*;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -38,11 +41,17 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{contacts.errors.regex}")
     private String contacts;
 
-    @ValidUUID
+    @ValidUUID(message = "{uuid.errors.regex}")
     private String lawStatusId;
 
-    private Set<UUID> tags;
+    @CollectionOfUiid(message = "{uuid.errors.regex}")
+    private Set<String> tags;
 
     @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 }

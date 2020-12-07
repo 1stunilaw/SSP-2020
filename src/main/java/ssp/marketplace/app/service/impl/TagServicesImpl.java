@@ -94,7 +94,7 @@ public class TagServicesImpl implements TagServices {
             for (SupplierDetails supplier : suppliers
             ) {
                 User user = supplier.getUser();
-                List<Tag> tags = supplier.getTags();
+                Set<Tag> tags = supplier.getTags();
                 tags.remove(tag);
                 userRepository.save(user);
             }

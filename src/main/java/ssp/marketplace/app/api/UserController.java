@@ -1,5 +1,6 @@
 package ssp.marketplace.app.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +16,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 public class UserController {
@@ -69,7 +71,7 @@ public class UserController {
             UUID id = UUID.fromString(tagId);
             supplierService.deleteTagFromSupplier(request, id);
             HashMap response = new HashMap();
-            response.put("status", HttpStatus.OK);
+            response.put("status", HttpStatus.OK.value());
             response.put("message", "Тег успешно удалён");
             return new ResponseEntity(response, HttpStatus.OK);
         } catch (IllegalArgumentException ex){

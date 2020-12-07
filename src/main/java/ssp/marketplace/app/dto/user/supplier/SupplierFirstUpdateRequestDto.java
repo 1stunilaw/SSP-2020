@@ -4,7 +4,7 @@ import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
-import ssp.marketplace.app.validation.ValidUUID;
+import ssp.marketplace.app.validation.uuid.*;
 
 import javax.validation.constraints.*;
 import java.util.*;
@@ -40,11 +40,11 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     private String region;
 
     @NotBlank(message = "{lawStatus.errors.empty}")
-    @ValidUUID
+    @ValidUUID(message = "{uuid.errors.regex}")
     private String lawStatusId;
 
-    @NotEmpty(message = "{tags.errors.empty}")
-    private Set<UUID> tags;
+    @CollectionOfUiid(message = "{uuid.errors.regex}")
+    private Set<String> tags;
 
     @NotBlank(message = "{contacts.errors.empty}")
     @Length(min = 5, max = 500, message = "{contacts.errors.length}")

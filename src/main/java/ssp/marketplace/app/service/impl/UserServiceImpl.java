@@ -17,6 +17,7 @@ import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
+import ssp.marketplace.app.entity.statuses.StatusForTag;
 import ssp.marketplace.app.entity.supplier.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
@@ -50,12 +51,15 @@ public class UserServiceImpl implements UserService {
 
     private final DocumentService documentService;
 
+    private final TagRepository tagRepository;
+
     @Autowired
     public UserServiceImpl(
             ApplicationEventPublisher eventPublisher,
             UserRepository userRepository,
             RoleRepository roleRepository,
             TokenRepository tokenRepository,
+            TagRepository tagRepository,
             LawStatusRepository lawStatusRepository,
             DocumentService documentService,
             MessageSource messageSource,
@@ -65,6 +69,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
+        this.tagRepository = tagRepository;
         this.messageSource = messageSource;
         this.jwtTokenProvider = jwtTokenProvider;
         this.lawStatusRepository = lawStatusRepository;
@@ -234,7 +239,7 @@ public class UserServiceImpl implements UserService {
     public CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
-        
+
         if (dto.getFio() != null) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
@@ -254,7 +259,7 @@ public class UserServiceImpl implements UserService {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains(RoleName.ROLE_USER)){
+        if (!roles.contains(RoleName.ROLE_USER)) {
             throw new AccessDeniedException("Доступ запрещён");
         }
 
@@ -266,7 +271,7 @@ public class UserServiceImpl implements UserService {
 
         List<Document> userDocs = user.getSupplierDetails().getDocuments();
 
-        if (userDocs != null && userDocs.size() + dto.getFiles().length > 10) {
+        if (userDocs != null && dto.getFiles() != null && userDocs.size() + dto.getFiles().length > 10) {
             throw new BadRequestException(
                     messageSource.getMessage(
                             "files.errors.amount", null, new Locale("ru", "RU")
@@ -298,8 +303,12 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setRegion(dto.getRegion());
         }
 
-        if (dto.getContacts() != null){
+        if (dto.getContacts() != null) {
             user.getSupplierDetails().setContacts(dto.getContacts());
+        }
+
+        if (dto.getTags() != null) {
+            addTagsToUser(user, dto.getTags());
         }
 
         MultipartFile[] files = dto.getFiles();
@@ -309,6 +318,17 @@ public class UserServiceImpl implements UserService {
 
         user.setUpdatedAt(new Timestamp(new Date().getTime()));
         return new SupplierResponseDto(userRepository.save(user));
+    }
+
+    private void addTagsToUser(User user, Set<String> setOfId){
+        setOfId.forEach(id -> {
+            Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StatusForTag.DELETED))
+                    .orElseThrow(()->new NotFoundException("Тег с данным id не найден"));
+            log.info("TagId:" + id);
+            log.info("Tags: " + user.getSupplierDetails().getTags());
+            user.getSupplierDetails().getTags().add(tag);
+            log.info("Tags after: " + user.getSupplierDetails().getTags());
+        });
     }
 
     private void addDocumentToUser(
@@ -328,16 +348,17 @@ public class UserServiceImpl implements UserService {
     public SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
-        if (!roles.contains(RoleName.ROLE_BLANK_USER)){
+        if (!roles.contains(RoleName.ROLE_BLANK_USER)) {
             throw new AccessDeniedException("Доступ запрещён");
         }
         // TODO: 03.12.2020 Переделать через MapStruct
-        LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
-                .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
+        LawStatus status = lawStatusRepository.findById(
+                UUID.fromString(dto.getLawStatusId())
+        ).orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
 
         List<Document> userDocs = user.getSupplierDetails().getDocuments();
 
-        if (userDocs != null && userDocs.size() + dto.getFiles().length > 10){
+        if (userDocs != null && dto.getFiles() != null && userDocs.size() + dto.getFiles().length > 10) {
             throw new BadRequestException(
                     messageSource.getMessage(
                             "files.errors.amount", null, new Locale("ru", "RU")
@@ -352,6 +373,10 @@ public class UserServiceImpl implements UserService {
         user.getSupplierDetails().setContacts(dto.getContacts());
         user.getSupplierDetails().setRegion(dto.getRegion());
         user.getSupplierDetails().setLawStatus(status);
+
+        if (dto.getTags() != null) {
+            addTagsToUser(user, dto.getTags());
+        }
 
         MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
@@ -369,5 +394,4 @@ public class UserServiceImpl implements UserService {
 
         return new SupplierResponseDtoWithNewToken(userRepository.save(user), token);
     }
-
 }
