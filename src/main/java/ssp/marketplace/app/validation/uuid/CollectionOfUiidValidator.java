@@ -13,7 +13,7 @@ public class CollectionOfUiidValidator implements ConstraintValidator<Collection
         if (collection == null){
             return true;
         }
-        String regexp = "^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$";
+        String regexp = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})";
         return collection.stream().allMatch(x -> {
             log.info("Validation, TagId:" + x + " " + Pattern.matches(regexp, x));
             return Pattern.matches(regexp, x);
