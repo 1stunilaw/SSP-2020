@@ -1,6 +1,7 @@
 package ssp.marketplace.app.dto;
 
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import ssp.marketplace.app.entity.statuses.*;
 
 import javax.validation.constraints.*;
@@ -15,7 +16,8 @@ public class CommentDto {
 
     private UUID orderId;
     @NotBlank(message = "{text.errors.empty}")
-    @Size(max = 250)
+    @Length(max = 500, message = "{text.errors.length}")
+    @Pattern(regexp = "(^$]|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{text.errors.regex}")
     private String text;
     private StatusForComment status;
     private Timestamp createdAt;
