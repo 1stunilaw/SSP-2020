@@ -36,7 +36,9 @@ public class CommentServiceImpl implements CommentService {
 
         comment.setQuestion(question);
 
-        question.setAccessLevel(commentDto.getAccessLevel());
+        if(question.getAccessLevel() ==CommentAccessLevel.PRIVATE){
+            question.setAccessLevel(commentDto.getAccessLevel());
+        }
         commentRepository.save(question);
 
         comment = commentRepository.save(comment);
@@ -86,7 +88,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(UUID id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
+                .orElseThrow(() -> new NotFoundException("Комментарий не найденd"));
         comment.setStatus(StatusForComment.DELETED);
 
         commentRepository.save(comment);

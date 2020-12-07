@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
@@ -88,13 +89,13 @@ public class OrderServiceImpl implements OrderService {
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = requestOrderDto.getDateStop();
-        if(dateStop.isBefore(now)){
-            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
-            throw new BadRequest(dateError);
+        if (dateStop.isBefore(now)) {
+            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
+            throw new BadRequestException(dateError);
         }
-        if(requestOrderDto.getFiles()!= null && requestOrderDto.getFiles().length>10){
-            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
-            throw new BadRequest(filesCountError);
+        if (requestOrderDto.getFiles() != null && requestOrderDto.getFiles().length > 10) {
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
         }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
@@ -123,30 +124,9 @@ public class OrderServiceImpl implements OrderService {
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = updateDto.getDateStop();
-        if(dateStop.isBefore(now)){
-            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
-            throw new BadRequest(dateError);
-        }
-        List<Document> documents = order.getDocuments();
-        List<String> documentsUpdate = updateDto.getDocuments();
-        if (documents != null && documentsUpdate != null) {
-            List<String> documentsOld = new ArrayList<>();
-            for (Document doc : documents
-            ) {
-                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
-                    documentsOld.add(doc.getName());
-                }
-            }
-            List<String> docDelete = new ArrayList<>(documentsOld);
-            docDelete.removeAll(documentsUpdate);
-            for (String docDelName : docDelete
-            ) {
-                if (documentRepository.findByName(docDelName) != null) {
-                    documentService.deleteDocument(docDelName);
-                } else {
-                    throw new BadRequest("Файл " + docDelName + " не найден");
-                }
-            }
+        if (dateStop != null && dateStop.isBefore(now)) {
+            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
+            throw new BadRequestException(dateError);
         }
 
         MultipartFile[] multipartFiles = updateDto.getFiles();
@@ -154,7 +134,7 @@ public class OrderServiceImpl implements OrderService {
             addDocumentToOrder(order, multipartFiles);
         }
 
-        if (updateName != null) {
+        if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
 
@@ -162,12 +142,14 @@ public class OrderServiceImpl implements OrderService {
             order.setStatusForOrder(updateDto.getStatusForOrder());
         }
 
-        if (updateDto.getDescription() != null) {
-            order.setDescription(updateDto.getDescription());
+        String description = updateDto.getDescription();
+        if (description != null && !StringUtils.isBlank(description)) {
+            order.setDescription(description);
         }
 
-        if (updateDto.getOrganizationName() != null) {
-            order.setOrganizationName(updateDto.getOrganizationName());
+        String organizationName = updateDto.getOrganizationName();
+        if (organizationName != null && !StringUtils.isBlank(organizationName)) {
+            order.setOrganizationName(organizationName);
         }
 
         if (updateDto.getDateStop() != null) {

@@ -16,6 +16,8 @@ public interface DocumentService {
 
     void deleteDocument(String name);
 
+    S3ObjectInputStream downloadSupplierFile(String keyName, UUID userId);
+
     S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId);
 
     static List<Document> selectOnlyActiveDocument(Order order) {

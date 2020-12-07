@@ -2,6 +2,8 @@ package ssp.marketplace.app.entity;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import ssp.marketplace.app.entity.statuses.StatusForTag;
+import ssp.marketplace.app.entity.supplier.SupplierDetails;
 
 import javax.persistence.*;
 import java.util.*;
@@ -24,4 +26,15 @@ public class Tag {
 
     @Column(name = "tag_name", nullable = false)
     private String tagName;
+
+    @Column(name = "status")
+    @Enumerated(EnumType.STRING)
+    private StatusForTag statusForTag;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private List<Order> ordersList;
+
+    @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
+    private List<SupplierDetails> suppliers;
+
 }

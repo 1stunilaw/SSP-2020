@@ -7,7 +7,7 @@
     http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
 
     <property name="now" value="now()" dbms="postgresql"/>
-    <changeSet id="2020-11-28T01-55--add-active-basic-supplier" author="Konstantin Egorov">
+<changeSet id="2020-11-28T01-55--add-active-basic-supplier" author="Konstantin Egorov">
         <insert tableName="users">
             <column name="id" value="611c6334-542b-4685-b935-8a2a0733189c"/>
             <column name="email" value="active@supplier.ru"/>

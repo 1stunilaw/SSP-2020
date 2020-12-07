@@ -43,6 +43,7 @@ public class User extends BasicEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private  List<Comment> comments;
 
+
     public boolean equals(Object obj) {
         if (this == obj) {
             return true;

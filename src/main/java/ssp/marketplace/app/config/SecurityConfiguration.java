@@ -18,24 +18,38 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     private static final String[] publicEndpoints = new String[]{
             "/api/login",
             "/api/register/supplier",
-            "/api/register/verify"
+            "/api/register/verify",
+            "/api/tags",
+    };
+
+    private static final String[] generalEndpoints = new String[]{
+            "/api/tags",
+            "/api/user",
+            "/api/law-statuses",
+            "/api/orders/**",
+            "/api/supplier/fill",
+            "/document/**",
+            "api/comments/**"
+
     };
 
     private static final String[] userEndpoints = new String[]{
             "/api/home",
-            "/api/user",
-            "/document/**",
-            "api/orders/**",
-            "api/comments/**"
+            "/api/supplier/update",
+            "/api/suppliers/{supplierId}/{filename}"
+
     };
 
     private static final String[] adminEndpoints = new String[]{
             "/api/admin",
+            "/api/customer/update",
             "/api/register/customer",
             "/api/register/lawyer",
             "/api/register/admin",
             "/admin/**",
-            "/api/admin/**",
+            "/api/suppliers",
+            "/api/suppliers/{id}",
+            "/api/admin/**"
     };
 
     @Autowired
@@ -60,6 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .and()
                 .authorizeRequests()
                 .antMatchers(publicEndpoints).permitAll()
+                .antMatchers(generalEndpoints).hasAnyRole("ADMIN", "USER", "BLANK_USER")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()

@@ -1,7 +1,10 @@
 package ssp.marketplace.app.service;
 
-import ssp.marketplace.app.dto.*;
+import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.registration.*;
+import ssp.marketplace.app.dto.user.*;
+import ssp.marketplace.app.dto.user.customer.*;
+import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.validation.FieldValueExists;
 
@@ -27,4 +30,13 @@ public interface UserService extends FieldValueExists {
     User getUserFromHttpServletRequest(HttpServletRequest req);
 
     String createToken(User user);
+
+    UserResponseDto getCurrentUser(HttpServletRequest request);
+
+    CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto);
+
+    SupplierResponseDto updateSupplier(HttpServletRequest request, SupplierUpdateRequestDto dto);
+
+    SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
+
 }

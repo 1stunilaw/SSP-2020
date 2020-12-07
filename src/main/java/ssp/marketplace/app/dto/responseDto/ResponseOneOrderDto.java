@@ -5,7 +5,7 @@ import ssp.marketplace.app.service.DocumentService;
 
 import java.util.*;
 
-public class ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
+public class  ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
 
     public static ResponseOneOrderDto responseOrderDtoFromOrder(Order order) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveDocument(order);
@@ -26,7 +26,7 @@ public class ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
         orderDto.setNumber(order.getNumber());
         orderDto.setUser(order.getUser().getCustomerDetails().getFio());
 
-        List<Tag> tags = order.getTags();
+        Set<Tag> tags = order.getTags();
         List<String> tagsName = new ArrayList<>();
         if (tags != null) {
             for (Tag tag : tags
