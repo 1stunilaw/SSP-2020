@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
@@ -9,17 +10,19 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.NotBlank;
 import java.time.*;
 import java.util.*;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
@@ -180,6 +183,17 @@ public class OrderServiceImpl implements OrderService {
                 continue;
             }
         }
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrderTags(UUID id, RequestDeleteTags requestDeleteTags) {
+        Order order = orderRepository.findByIdAndStatusForOrderNotIn(id, Collections.singleton(StatusForOrder.DELETED))
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        Set<UUID> tagsId = requestDeleteTags.getTagsId();
+        Set<Tag> tags = order.getTags();
+        tags.removeIf(t -> tagsId.contains(t.getId()));
+        order.setTags(tags);
         orderRepository.save(order);
     }
 

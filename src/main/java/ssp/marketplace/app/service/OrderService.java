@@ -1,18 +1,13 @@
 package ssp.marketplace.app.service;
 
 import org.springframework.data.domain.*;
-import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
-import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.*;
 import java.util.*;
 
 public interface OrderService {
-
 
     int MINUTE = 59;
     int HOUR = 23;
@@ -24,6 +19,8 @@ public interface OrderService {
     ResponseOneOrderDtoAdmin editOrder(UUID id, RequestOrderUpdateDto updateDto);
 
     void deleteOrder(UUID id);
+
+    void deleteOrderTags(UUID id, RequestDeleteTags requestDeleteTags);
 
     ResponseOneOrderDtoAdmin markDoneOrder(UUID id);
 

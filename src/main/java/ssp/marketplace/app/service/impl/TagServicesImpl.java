@@ -41,16 +41,23 @@ public class TagServicesImpl implements TagServices {
         List<String> tagName = requestTag.getTagName();
         for (String name : tagName
         ) {
-            if (tagRepository.findByTagName(name).isPresent()) {
-                throw new BadRequestException("Тег с именем " + name + " уже существует");
+            Optional<Tag> byTagName = tagRepository.findByTagName(name);
+            if (byTagName.isPresent()) {
+                Tag tag = byTagName.get();
+                if(tag.getStatusForTag() == StatusForTag.DELETED){
+                    tag.setStatusForTag(StatusForTag.ACTIVE);
+                    tagRepository.save(tag);
+                }
+                else {
+                    throw new BadRequestException("Тег с именем " + name + " уже существует");
+                }
             }
-        }
-        for (String t : tagName
-        ) {
-            Tag tag = new Tag();
-            tag.setTagName(t);
-            tag.setStatusForTag(StatusForTag.ACTIVE);
-            tagRepository.save(tag);
+            else {
+                Tag tag = new Tag();
+                tag.setTagName(name);
+                tag.setStatusForTag(StatusForTag.ACTIVE);
+                tagRepository.save(tag);
+            }
         }
     }
 
