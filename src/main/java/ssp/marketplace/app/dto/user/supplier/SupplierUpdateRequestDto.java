@@ -43,5 +43,6 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
 
     private Set<UUID> tags;
 
+    @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
 }

@@ -51,5 +51,6 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{contacts.errors.regex}")
     private String contacts;
 
+    @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
 }
