@@ -53,7 +53,7 @@ public class OrderBuilderService {
     }
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
-        Set<Tag> orderTags = new HashSet<>();
+        Set<Tag> orderTags = order.getTags();
         if (tagsId != null) {
             for (UUID id : tagsId
             ) {

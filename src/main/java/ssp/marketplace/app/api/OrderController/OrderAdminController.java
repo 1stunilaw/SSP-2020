@@ -57,4 +57,13 @@ public class OrderAdminController {
     ) {
         return orderService.markDoneOrder(id);
     }
+
+    @DeleteMapping(value = "/{orderId}/delete-tag")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteTagFromOrder(
+            @PathVariable UUID orderId,
+            @RequestBody @Valid RequestDeleteTags requestDeleteTags
+    ) {
+        orderService.deleteOrderTags(orderId, requestDeleteTags);
+    }
 }
