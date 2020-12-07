@@ -18,6 +18,6 @@ public class CustomerUpdateRequestDto extends UserUpdateRequestDto {
     private String fio;
 
     @Length(min = 6, max = 20, message = "{phone.errors.length}")
-    @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{6,15}$", message = "{phone.errors.regex}")
+    @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\-]?)?(\\(?\\d{3}\\)?[\\-]?)?[\\d\\-]{6,15}$", message = "{phone.errors.regex}")
     private String phone;
 }

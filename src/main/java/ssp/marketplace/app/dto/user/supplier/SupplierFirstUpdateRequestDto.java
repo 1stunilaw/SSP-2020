@@ -16,11 +16,12 @@ import java.util.*;
 @Setter
 @RequiredArgsConstructor
 public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
+    @Length(min = 2, max = 255, message = "companyName.errors.length")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
     @NotBlank(message = "{inn.errors.empty}")
-    @Pattern(regexp = "^[\\d+]{10,12}$", message = "{inn.errors.regex}")
+    @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
     private String inn;
 
     @Length(min = 5, max = 10000, message = "{description.errors.length}")
@@ -29,7 +30,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
 
     @NotBlank(message = "{phone.errors.empty}")
     @Length(min = 6, max = 20, message = "{phone.errors.length}")
-    @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{6,15}$", message = "{phone.errors.regex}")
+    @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\-]?)?(\\(?\\d{3}\\)?[\\-]?)?[\\d\\-]{6,15}$", message = "{phone.errors.regex}")
     private String phone;
 
     @NotBlank(message = "{fio.errors.empty}")

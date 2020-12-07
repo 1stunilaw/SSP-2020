@@ -247,6 +247,7 @@ public class UserServiceImpl implements UserService {
             user.getCustomerDetails().setPhone(dto.getPhone());
         }
 
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
         return new CustomerResponseDto(userRepository.save(user));
     }
 

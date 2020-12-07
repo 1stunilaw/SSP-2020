@@ -17,6 +17,7 @@ import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -92,6 +93,10 @@ public class SupplierServiceImpl implements SupplierService {
     @Override
     public void deleteTagFromSupplier(HttpServletRequest request, UUID tagId) {
         User user = userService.getUserFromHttpServletRequest(request);
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_USER)) {
+            throw new AccessDeniedException("Доступ запрещён");
+        }
         Optional<Tag> tagToDelete = user.getSupplierDetails().getTags().stream().filter(x -> x.getId().equals(tagId)).findFirst();
         if (tagToDelete.isPresent()){
             user.getSupplierDetails().getTags().remove(tagToDelete.get());
