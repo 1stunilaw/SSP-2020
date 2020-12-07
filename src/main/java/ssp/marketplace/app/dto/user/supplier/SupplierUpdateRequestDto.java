@@ -50,9 +50,4 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
 
     @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
 }

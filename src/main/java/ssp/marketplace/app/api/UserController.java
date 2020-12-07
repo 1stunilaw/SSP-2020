@@ -2,7 +2,9 @@ package ssp.marketplace.app.api;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.*;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserResponseDto;
@@ -77,5 +79,10 @@ public class UserController {
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID тега");
         }
+    }
+
+    @InitBinder
+    public void initBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }
