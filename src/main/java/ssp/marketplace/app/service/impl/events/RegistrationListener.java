@@ -26,7 +26,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Autowired
     public RegistrationListener(UserService userService, MessageSource messageSource, JavaMailSender mailSender) {
-        log.info("Listener created");
         this.userService = userService;
         this.messageSource = messageSource;
         this.mailSender = mailSender;
@@ -34,7 +33,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
 
     @Override
     public void onApplicationEvent(OnRegistrationCompleteEvent event) {
-        log.info("Event caught");
         confirmRegistration(event);
     }
 
@@ -54,9 +52,6 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         email.setSubject(subject);
         email.setText(message + "\r\n" + confirmationUrl);
 
-        log.info("Sending email");
         mailSender.send(email);
-
-        log.info("Email sended");
     }
 }

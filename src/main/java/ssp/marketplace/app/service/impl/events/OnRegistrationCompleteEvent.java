@@ -15,7 +15,6 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
     public OnRegistrationCompleteEvent(User user, String appUrl) {
         super(user);
-        log.info("Event started");
         this.user = user;
         this.appUrl = appUrl;
     }
