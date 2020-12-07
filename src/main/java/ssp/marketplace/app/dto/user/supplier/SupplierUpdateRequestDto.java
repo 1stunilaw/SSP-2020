@@ -19,6 +19,7 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
+    @Length(min = 5, max = 10000, message = "{description.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()][a-zA-ZА-я0-9-.,&\":_%$@#() ]+$", message = "{companyName.errors.regex}")
     private String description;
 
@@ -31,7 +32,7 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
 
     @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{fio.errors.regex}")
     @Length(min = 5, max = 150, message = "{fio.errors.length}")
-    private String contactFio;
+    private String fio;
 
     @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{region.errors.regex}")
     @Length(min = 5, max = 100, message = "{region.errors.length}")
@@ -49,9 +50,4 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto implements Se
 
     @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
-
-    @InitBinder
-    public void initBinder(WebDataBinder binder) {
-        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
-    }
 }

@@ -15,7 +15,6 @@ public class CollectionOfUiidValidator implements ConstraintValidator<Collection
         }
         String regexp = "([a-f0-9]{8}(-[a-f0-9]{4}){4}[a-f0-9]{8})";
         return collection.stream().allMatch(x -> {
-            log.info("Validation, TagId:" + x + " " + Pattern.matches(regexp, x));
             return Pattern.matches(regexp, x);
         });
     }

@@ -2,6 +2,9 @@ package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
 import ssp.marketplace.app.validation.uuid.*;
@@ -20,7 +23,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @Pattern(regexp = "^[\\d+]{10,12}$", message = "{inn.errors.regex}")
     private String inn;
 
-    @NotBlank(message = "{description.errors.empty}")
+    @Length(min = 5, max = 10000, message = "{description.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()][a-zA-ZА-я0-9-.,&\":_%$@#() ]+$", message = "{companyName.errors.regex}")
     private String description;
 
@@ -32,7 +35,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @NotBlank(message = "{fio.errors.empty}")
     @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{fio.errors.regex}")
     @Length(min = 5, max = 150, message = "{fio.errors.length}")
-    private String contactFio;
+    private String fio;
 
     @NotBlank(message = "{region.errors.empty}")
     @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{region.errors.regex}")
@@ -46,7 +49,6 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @CollectionOfUiid(message = "{uuid.errors.regex}")
     private Set<String> tags;
 
-    @NotBlank(message = "{contacts.errors.empty}")
     @Length(min = 5, max = 500, message = "{contacts.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{contacts.errors.regex}")
     private String contacts;

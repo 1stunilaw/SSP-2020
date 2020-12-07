@@ -142,7 +142,6 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         User result = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь с данным email не был найден: " + email));
-        log.info("IN findByEmail - user: {} found by email {}", result, email);
         return result;
     }
 
@@ -291,8 +290,8 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setInn(dto.getInn());
         }
 
-        if (dto.getContactFio() != null) {
-            user.getSupplierDetails().setContactFio(dto.getContactFio());
+        if (dto.getFio() != null) {
+            user.getSupplierDetails().setContactFio(dto.getFio());
         }
 
         if (dto.getPhone() != null) {
@@ -324,10 +323,7 @@ public class UserServiceImpl implements UserService {
         setOfId.forEach(id -> {
             Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StatusForTag.DELETED))
                     .orElseThrow(()->new NotFoundException("Тег с данным id не найден"));
-            log.info("TagId:" + id);
-            log.info("Tags: " + user.getSupplierDetails().getTags());
             user.getSupplierDetails().getTags().add(tag);
-            log.info("Tags after: " + user.getSupplierDetails().getTags());
         });
     }
 
@@ -368,7 +364,7 @@ public class UserServiceImpl implements UserService {
         user.getSupplierDetails().setCompanyName(dto.getCompanyName());
         user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
-        user.getSupplierDetails().setContactFio(dto.getContactFio());
+        user.getSupplierDetails().setContactFio(dto.getFio());
         user.getSupplierDetails().setPhone(dto.getPhone());
         user.getSupplierDetails().setContacts(dto.getContacts());
         user.getSupplierDetails().setRegion(dto.getRegion());
