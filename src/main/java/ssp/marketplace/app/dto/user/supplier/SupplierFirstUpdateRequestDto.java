@@ -23,7 +23,6 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     private String companyName;
 
     @NotBlank(message = "{inn.errors.empty}")
-    @Unique(message = "{email.errors.unique}", service = UserService.class, fieldName = "inn")
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
     private String inn;
 
