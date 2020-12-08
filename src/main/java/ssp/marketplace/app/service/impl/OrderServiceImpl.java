@@ -142,9 +142,6 @@ public class OrderServiceImpl implements OrderService {
         StatusForOrder statusForOrder = updateDto.getStatusForOrder();
         if (statusForOrder != null) {
             order.setStatusForOrder(statusForOrder);
-            if(statusForOrder==StatusForOrder.CLOSED){
-                order.setDateStop(LocalDateTime.now());
-            }
         }
 
         String description = updateDto.getDescription();
@@ -160,6 +157,10 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getDateStop() != null) {
             LocalDate localDate = updateDto.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
+            if(statusForOrder==StatusForOrder.CLOSED){
+                localDateTime = LocalDateTime.now();
+                order.setDateStop(localDateTime);
+            }
             order.setDateStop(localDateTime);
         }
 

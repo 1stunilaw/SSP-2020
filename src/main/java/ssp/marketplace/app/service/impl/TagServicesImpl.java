@@ -38,7 +38,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public void addNewTag(RequestTag requestTag) {
-        List<String> tagName = requestTag.getTagName();
+        List<String> tagName = requestTag.getTagName().stream().map(String::toLowerCase).collect(Collectors.toList());
         for (String name : tagName
         ) {
             Optional<Tag> byTagName = tagRepository.findByTagName(name);
@@ -72,7 +72,7 @@ public class TagServicesImpl implements TagServices {
     public void editTag(UUID id, RequestUpdateTag requestUpdateTag) {
         Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
                 .orElseThrow(() -> new NotFoundException("Тег не найден"));
-        String newTagName = requestUpdateTag.getTagName();
+        String newTagName = requestUpdateTag.getTagName().toLowerCase();
         if (tagRepository.findByTagName(newTagName).isPresent()) {
             throw new BadRequestException("Тег с именем " + newTagName + " уже существует");
         }
