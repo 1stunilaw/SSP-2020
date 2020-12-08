@@ -48,9 +48,6 @@ public class TagServicesImpl implements TagServices {
                     tag.setStatusForTag(StatusForTag.ACTIVE);
                     tagRepository.save(tag);
                 }
-                else {
-                    throw new BadRequestException("Тег с именем " + name + " уже существует");
-                }
             }
             else {
                 Tag tag = new Tag();

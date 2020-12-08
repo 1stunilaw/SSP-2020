@@ -17,7 +17,6 @@ import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
 import java.time.*;
 import java.util.*;
 
@@ -140,9 +139,12 @@ public class OrderServiceImpl implements OrderService {
         if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
-
-        if (updateDto.getStatusForOrder() != null) {
-            order.setStatusForOrder(updateDto.getStatusForOrder());
+        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
+        if (statusForOrder != null) {
+            order.setStatusForOrder(statusForOrder);
+            if(statusForOrder==StatusForOrder.CLOSED){
+                order.setDateStop(LocalDateTime.now());
+            }
         }
 
         String description = updateDto.getDescription();
