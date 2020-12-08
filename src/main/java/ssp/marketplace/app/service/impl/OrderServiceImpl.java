@@ -3,7 +3,6 @@ package ssp.marketplace.app.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,8 +27,6 @@ public class OrderServiceImpl implements OrderService {
 
     private final UserRepository userRepository;
 
-    private final DocumentRepository documentRepository;
-
     private final DocumentService documentService;
 
     private final MessageSource messageSource;
@@ -41,15 +38,14 @@ public class OrderServiceImpl implements OrderService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public OrderServiceImpl(
-            OrderRepository orderRepository, Environment env, UserRepository userRepository,
-            DocumentRepository documentRepository, DocumentService documentService,
+            OrderRepository orderRepository, UserRepository userRepository,
+            DocumentService documentService,
             MessageSource messageSource, UserService userService,
             OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider
     ) {
         this.orderRepository = orderRepository;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
-        this.documentRepository = documentRepository;
         this.documentService = documentService;
         this.userService = userService;
         this.orderBuilderService = orderBuilderService;
@@ -95,10 +91,7 @@ public class OrderServiceImpl implements OrderService {
             String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
-        if (requestOrderDto.getFiles() != null && requestOrderDto.getFiles().length > 10) {
-            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
-            throw new BadRequestException(filesCountError);
-        }
+
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOrders().add(order);
@@ -157,7 +150,7 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getDateStop() != null) {
             LocalDate localDate = updateDto.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
-            if(statusForOrder==StatusForOrder.CLOSED){
+            if (statusForOrder == StatusForOrder.CLOSED) {
                 localDateTime = LocalDateTime.now();
                 order.setDateStop(localDateTime);
             }
@@ -214,6 +207,10 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             MultipartFile[] multipartFiles
     ) {
+        if (multipartFiles != null && multipartFiles.length > 10) {
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (order.getDocuments() != null) {
