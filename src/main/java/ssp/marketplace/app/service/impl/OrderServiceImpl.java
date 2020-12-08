@@ -81,6 +81,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void deleteDocumentFromOrder(UUID id, String name) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        List<Document> documents = DocumentService.selectOnlyActiveDocument(order);
+        List<String> names = new ArrayList<>();
+        for (Document doc : documents
+        ) {
+            names.add(doc.getName());
+        }
+        if(names.contains(name)){
+            documentService.deleteDocument(name);
+        }
+        else {
+            throw new NotFoundException("Документ не найден");
+        }
+    }
+
+    @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
@@ -207,7 +225,11 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             MultipartFile[] multipartFiles
     ) {
-        if (multipartFiles != null && multipartFiles.length > 10) {
+        List<Document> oldDocuments = DocumentService.selectOnlyActiveDocument(order);
+        int countOldDoc = oldDocuments.size();
+        int countNewDoc = multipartFiles.length;
+
+        if(countOldDoc+countNewDoc >10){
             String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }

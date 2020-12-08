@@ -53,7 +53,6 @@ public class OrderBuilderService {
     }
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
-        System.out.println(tagsId.size());
         Set<Tag> orderTags = order.getTags();
         if(orderTags==null){
             orderTags = new HashSet<>();
