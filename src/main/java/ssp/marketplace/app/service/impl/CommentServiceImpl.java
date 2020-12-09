@@ -9,7 +9,7 @@ import ssp.marketplace.app.dto.mappers.*;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
-import ssp.marketplace.app.exceptions.NotFoundException;
+import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
@@ -34,6 +34,7 @@ public class CommentServiceImpl implements CommentService {
                 .findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
 
+        if(question.getStatus() == StatusForComment.DELETED) throw new BadRequestException("Комментарий был удален");
         comment.setQuestion(question);
 
         if(question.getAccessLevel() ==CommentAccessLevel.PRIVATE){
@@ -123,6 +124,7 @@ public class CommentServiceImpl implements CommentService {
         long end = start + pageable.getPageSize() > responseCommentDtoList.size()
                 ? responseCommentDtoList.size()
                 : start + pageable.getPageSize();
+        if(end<start) throw new BadRequestException("Страницы не существует");
 
         Page<ResponseCommentDto> pages = new PageImpl<ResponseCommentDto>(
                 responseCommentDtoList.subList((int)start, (int)end), pageable, responseCommentDtoList.size());

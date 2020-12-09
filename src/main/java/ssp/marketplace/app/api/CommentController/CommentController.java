@@ -23,7 +23,7 @@ public class CommentController {
     @GetMapping("/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public Page<ResponseCommentDto> getComments(
-            @PageableDefault(size = 30, value = 30) Pageable pageable,
+            @PageableDefault(sort = {"creationDate"}, size = 30, direction = Sort.Direction.DESC) Pageable pageable,
             HttpServletRequest req,
             @PathVariable UUID orderId) {
         return commentService.getAll(req, pageable, orderId);
@@ -40,7 +40,7 @@ public class CommentController {
     @GetMapping("/getAllForUser")
     @ResponseStatus(HttpStatus.OK)
     public Page<ResponseCommentDto> getCommentsForUser(
-            @PageableDefault(size = 30, value = 30) Pageable pageable,
+            @PageableDefault(size = 30) Pageable pageable,
             HttpServletRequest req) {
         return commentService.getUsersComments(req, pageable);
     }
