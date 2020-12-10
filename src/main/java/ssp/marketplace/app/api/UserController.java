@@ -6,7 +6,6 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.*;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
@@ -38,7 +37,11 @@ public class UserController {
 
     @PatchMapping(value = "/customer/update")
     @ResponseStatus(HttpStatus.OK)
-    public CustomerResponseDto updateCustomer(HttpServletRequest request, @RequestBody @Valid @NotNull CustomerUpdateRequestDto dto){
+    public CustomerResponseDto updateCustomer(
+            HttpServletRequest request,
+            @RequestBody @Valid @NotNull CustomerUpdateRequestDto dto
+    )
+    {
         return userService.updateCustomer(request, dto);
     }
 

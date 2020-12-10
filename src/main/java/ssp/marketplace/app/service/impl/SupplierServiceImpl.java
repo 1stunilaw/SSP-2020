@@ -53,15 +53,15 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Page<SupplierPageResponseDto> getAllSuppliers() {
-        Pageable pageable = PageRequest.of(0,10, Sort.Direction.ASC, "name");
+    public Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable) {
         List<RoleName> suppliers = new ArrayList<>();
         suppliers.add(RoleName.ROLE_USER);
-        //suppliers.add(RoleName.ROLE_BLANK_USER);
-        Page<Role> page = roleRepository.findByNameIsIn(suppliers, pageable);
-        Set<User> users = page.getContent().stream().map(Role::getUsers).findFirst().get();
-        users.forEach(x -> log.info(x.getEmail()));
-        return new PageImpl<>(page.stream().map(Role::getUsers).map(SupplierPageResponseDto::listOfDto).findFirst().get());
+        suppliers.add(RoleName.ROLE_BLANK_USER);
+        List<Role> page = roleRepository.findByNameIsIn(suppliers);
+        page.stream().map(Role::getName).forEach(x -> log.info(x.toString()));
+        Set<User> users = new HashSet<>();
+        page.stream().map(Role::getUsers).forEach(users::addAll);
+        return new PageImpl<>(SupplierPageResponseDto.listOfDto(users));
     }
 
     @Override

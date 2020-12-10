@@ -25,10 +25,6 @@ public class SupplierPageResponseDto implements Serializable {
     }
 
     public static List<SupplierPageResponseDto> listOfDto(Set<User> users){
-        return users.stream().map(x -> {
-            log.info(x.getEmail());
-            log.info(x.getSupplierDetails() + " in listOfDto");
-            return new SupplierPageResponseDto(x);
-        }).collect(Collectors.toList());
+        return users.stream().map(SupplierPageResponseDto::new).collect(Collectors.toList());
     }
 }

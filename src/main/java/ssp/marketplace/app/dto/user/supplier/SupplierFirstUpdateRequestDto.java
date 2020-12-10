@@ -2,9 +2,6 @@ package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
 import ssp.marketplace.app.service.UserService;
@@ -12,13 +9,13 @@ import ssp.marketplace.app.validation.Unique;
 import ssp.marketplace.app.validation.uuid.*;
 
 import javax.validation.constraints.*;
-import java.util.*;
+import java.util.Set;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
-    @Length(min = 2, max = 255, message = "companyName.errors.length")
+    @Length(min = 2, max = 255, message = "{companyName.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
@@ -42,7 +39,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     private String fio;
 
     @NotBlank(message = "{region.errors.empty}")
-    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{region.errors.regex}")
+    @Pattern(regexp = "^[a-zA-ZА-я0-9\"()][a-zA-ZА-я-.,\":()# ]+$", message = "{region.errors.regex}")
     @Length(min = 5, max = 100, message = "{region.errors.length}")
     private String region;
 
@@ -54,7 +51,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     private Set<String> tags;
 
     @Length(min = 5, max = 500, message = "{contacts.errors.length}")
-    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{contacts.errors.regex}")
+    @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()+@#][a-zA-ZА-я0-9-.,&\":_%$+@#() ]+$", message = "{contacts.errors.regex}")
     private String contacts;
 
     @Size(max = 10, message = "{files.errors.amount}")

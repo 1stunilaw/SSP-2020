@@ -2,14 +2,13 @@ package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
-import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.exceptions.BadRequestException;
-import ssp.marketplace.app.exceptions.response.ErrorResponse;
-import ssp.marketplace.app.service.*;
+import ssp.marketplace.app.service.SupplierService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -27,8 +26,10 @@ public class SupplierController {
     }
 
     @GetMapping()
-    public Page<SupplierPageResponseDto> getAllSuppliers(){
-        return supplierService.getAllSuppliers();
+    public Page<SupplierPageResponseDto> getAllSuppliers(
+            @PageableDefault(sort = {"companyName"}, size = 30, direction = Sort.Direction.ASC) Pageable pageable
+    ) {
+        return supplierService.getAllSuppliers(pageable);
     }
 
     @GetMapping("/{id}")
@@ -41,7 +42,7 @@ public class SupplierController {
             @PathVariable String filename,
             @PathVariable String supplierId,
             HttpServletRequest request
-    ){
+    ) {
         try {
             UUID userId = UUID.fromString(supplierId);
             return supplierService.getSupplierDocument(filename, userId, request);

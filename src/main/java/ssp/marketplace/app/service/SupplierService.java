@@ -1,7 +1,7 @@
 package ssp.marketplace.app.service;
 
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.data.domain.Page;
+import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
 import ssp.marketplace.app.dto.user.supplier.*;
 
@@ -12,7 +12,7 @@ public interface SupplierService {
 
     SupplierResponseDto getSupplier(String id);
 
-    Page<SupplierPageResponseDto> getAllSuppliers();
+    Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable);
 
     ResponseEntity<InputStreamResource> getSupplierDocument(String filename, UUID supplierId, HttpServletRequest request);
 
