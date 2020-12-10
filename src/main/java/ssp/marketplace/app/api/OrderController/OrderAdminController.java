@@ -1,6 +1,6 @@
 package ssp.marketplace.app.api.OrderController;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.requestDto.*;
@@ -65,5 +65,14 @@ public class OrderAdminController {
             @RequestBody @Valid RequestDeleteTags requestDeleteTags
     ) {
         orderService.deleteOrderTags(orderId, requestDeleteTags);
+    }
+
+    @DeleteMapping("/{orderId}/document/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDocumentFromOrder(
+            @PathVariable UUID orderId,
+            @PathVariable String name
+    ) {
+        orderService.deleteDocumentFromOrder(orderId, name);
     }
 }

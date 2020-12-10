@@ -3,7 +3,6 @@ package ssp.marketplace.app.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -17,7 +16,6 @@ import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotBlank;
 import java.time.*;
 import java.util.*;
 
@@ -28,8 +26,6 @@ public class OrderServiceImpl implements OrderService {
     private final OrderRepository orderRepository;
 
     private final UserRepository userRepository;
-
-    private final DocumentRepository documentRepository;
 
     private final DocumentService documentService;
 
@@ -42,15 +38,14 @@ public class OrderServiceImpl implements OrderService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public OrderServiceImpl(
-            OrderRepository orderRepository, Environment env, UserRepository userRepository,
-            DocumentRepository documentRepository, DocumentService documentService,
+            OrderRepository orderRepository, UserRepository userRepository,
+            DocumentService documentService,
             MessageSource messageSource, UserService userService,
             OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider
     ) {
         this.orderRepository = orderRepository;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
-        this.documentRepository = documentRepository;
         this.documentService = documentService;
         this.userService = userService;
         this.orderBuilderService = orderBuilderService;
@@ -86,6 +81,24 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void deleteDocumentFromOrder(UUID id, String name) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        List<Document> documents = DocumentService.selectOnlyActiveDocument(order);
+        List<String> names = new ArrayList<>();
+        for (Document doc : documents
+        ) {
+            names.add(doc.getName());
+        }
+        if(names.contains(name)){
+            documentService.deleteDocument(name);
+        }
+        else {
+            throw new NotFoundException("Документ не найден");
+        }
+    }
+
+    @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
@@ -96,10 +109,7 @@ public class OrderServiceImpl implements OrderService {
             String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
-        if (requestOrderDto.getFiles() != null && requestOrderDto.getFiles().length > 10) {
-            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
-            throw new BadRequestException(filesCountError);
-        }
+
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOrders().add(order);
@@ -140,9 +150,9 @@ public class OrderServiceImpl implements OrderService {
         if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
-
-        if (updateDto.getStatusForOrder() != null) {
-            order.setStatusForOrder(updateDto.getStatusForOrder());
+        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
+        if (statusForOrder != null) {
+            order.setStatusForOrder(statusForOrder);
         }
 
         String description = updateDto.getDescription();
@@ -158,6 +168,10 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getDateStop() != null) {
             LocalDate localDate = updateDto.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
+            if (statusForOrder == StatusForOrder.CLOSED) {
+                localDateTime = LocalDateTime.now();
+                order.setDateStop(localDateTime);
+            }
             order.setDateStop(localDateTime);
         }
 
@@ -211,6 +225,14 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             MultipartFile[] multipartFiles
     ) {
+        List<Document> oldDocuments = DocumentService.selectOnlyActiveDocument(order);
+        int countOldDoc = oldDocuments.size();
+        int countNewDoc = multipartFiles.length;
+
+        if(countOldDoc+countNewDoc >10){
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (order.getDocuments() != null) {

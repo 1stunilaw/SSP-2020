@@ -37,12 +37,4 @@ public class DocumentAdminController {
     ) {
         return documentService.addNewDocumentsInOrder(id, multipartFiles);
     }
-
-    @DeleteMapping("/document/{name}")
-    public ResponseEntity deleteDocument(
-            @PathVariable String name
-    ) {
-        documentService.deleteDocument(name);
-        return new ResponseEntity(HttpStatus.OK);
-    }
 }
