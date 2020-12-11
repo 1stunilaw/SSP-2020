@@ -4,18 +4,23 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
+import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
+import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
+import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
+import java.security.acl.Group;
 import java.time.*;
 import java.util.*;
 
@@ -53,15 +58,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable) {
-        Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String search) {
+        Page<Order> orders;
+        if (search != null && !StringUtils.isBlank(search)) {
+            orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
+//            List<Order> content = orders.getContent();
+//            Set<Order> hSet = new HashSet<>(content);
+//            List<Order> targetList = new ArrayList<>(hSet);
+//            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
+        } else {
+            orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+        }
         if (orders.isEmpty()) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOrderDto> page =
-                orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
+
+
 
     @Override
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
@@ -90,10 +105,9 @@ public class OrderServiceImpl implements OrderService {
         ) {
             names.add(doc.getName());
         }
-        if(names.contains(name)){
+        if (names.contains(name)) {
             documentService.deleteDocument(name);
-        }
-        else {
+        } else {
             throw new NotFoundException("Документ не найден");
         }
     }
@@ -229,7 +243,7 @@ public class OrderServiceImpl implements OrderService {
         int countOldDoc = oldDocuments.size();
         int countNewDoc = multipartFiles.length;
 
-        if(countOldDoc+countNewDoc >10){
+        if (countOldDoc + countNewDoc > 10) {
             String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
@@ -240,6 +254,21 @@ public class OrderServiceImpl implements OrderService {
         } else {
             order.setDocuments(documents);
         }
+
+//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+//                .must(QueryBuilders.termQuery("state", "KA"))
+//                .must(QueryBuilders.termQuery("content", "test4"))
+//                .mustNot(QueryBuilders.termQuery("content", "test2"));
+//
+//        orderRepository.search(boolQueryBuilder);
+
+//        QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery()
+//                .field("name", 2.0f)
+//                .field("email")
+//                .field("title")
+//                .field("jobDescription", 3.0f)
+//                .type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
+
         orderRepository.save(order);
     }
 }

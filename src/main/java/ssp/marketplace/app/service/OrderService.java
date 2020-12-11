@@ -12,7 +12,7 @@ public interface OrderService {
     int MINUTE = 59;
     int HOUR = 23;
 
-    Page<ResponseListOrderDto> getOrders(Pageable pageable);
+    Page<ResponseListOrderDto> getOrders(Pageable pageable, String search);
 
     ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto);
 
