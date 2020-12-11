@@ -75,10 +75,4 @@ public class OrderAdminController {
     ) {
         orderService.deleteDocumentFromOrder(orderId, name);
     }
-
-    @GetMapping("/test/test")
-    public String testtest(
-    ) {
-        return "testtest3";
-    }
 }
