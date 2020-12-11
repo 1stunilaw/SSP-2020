@@ -4,12 +4,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
-import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.*;
@@ -18,9 +16,7 @@ import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
-import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
-import java.security.acl.Group;
 import java.time.*;
 import java.util.*;
 
@@ -62,6 +58,10 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders;
         if (search != null && !StringUtils.isBlank(search)) {
             orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
+            List<Order> content = orders.getContent();
+            Set<Order> hSet = new HashSet<>(content);
+            List<Order> targetList = new ArrayList<>(hSet);
+            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
         } else {
             orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         }
