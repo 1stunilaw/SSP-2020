@@ -79,6 +79,6 @@ public class OrderAdminController {
     @GetMapping("/test/test")
     public String testtest(
     ) {
-        return "testtest";
+        return "testtest2";
     }
 }
