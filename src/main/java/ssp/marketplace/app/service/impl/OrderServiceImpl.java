@@ -62,10 +62,6 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders;
         if (search != null && !StringUtils.isBlank(search)) {
             orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
-//            List<Order> content = orders.getContent();
-//            Set<Order> hSet = new HashSet<>(content);
-//            List<Order> targetList = new ArrayList<>(hSet);
-//            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
         } else {
             orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         }
