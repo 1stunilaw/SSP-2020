@@ -59,7 +59,7 @@ public class OrderServiceImpl implements OrderService {
         if (search != null && !StringUtils.isBlank(search)) {
             orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
             List<Order> content = orders.getContent();
-            Set<Order> hSet = new HashSet<>(content);
+            Set<Order> hSet = new LinkedHashSet<>(content);
             List<Order> targetList = new ArrayList<>(hSet);
             orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
         } else {
@@ -250,21 +250,6 @@ public class OrderServiceImpl implements OrderService {
         } else {
             order.setDocuments(documents);
         }
-
-//        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
-//                .must(QueryBuilders.termQuery("state", "KA"))
-//                .must(QueryBuilders.termQuery("content", "test4"))
-//                .mustNot(QueryBuilders.termQuery("content", "test2"));
-//
-//        orderRepository.search(boolQueryBuilder);
-
-//        QueryBuilder queryBuilder = QueryBuilders.multiMatchQuery()
-//                .field("name", 2.0f)
-//                .field("email")
-//                .field("title")
-//                .field("jobDescription", 3.0f)
-//                .type(MultiMatchQueryBuilder.Type.PHRASE_PREFIX);
-
         orderRepository.save(order);
     }
 }
