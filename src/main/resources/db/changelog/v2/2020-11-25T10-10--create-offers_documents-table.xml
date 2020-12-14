@@ -1,0 +1,41 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-25T10-10--create-offers_documents-table" author="Alina Golubenko">
+        <createTable tableName="offers_documents">
+            <column name="offer_id" type="uuid">
+            </column>
+            <column name="doc_id" type="uuid">
+            </column>
+        </createTable>
+        <rollback>
+            <dropTable tableName="offers_documents"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-25T10-10--add-fk-for-offer_id" author="Alina Golubenko">
+        <addForeignKeyConstraint baseColumnNames="offer_id"
+                                 baseTableName="offers_documents"
+                                 constraintName="fk_offers_documents_offer"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="offers"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="offers_documents"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-25T10-10--add-fk-for-doc_id" author="Alina Golubenko">
+        <addForeignKeyConstraint baseColumnNames="doc_id"
+                                 baseTableName="offers_documents"
+                                 constraintName="fk_offers_documents_document"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="documents"/>
+        <rollback>
+            <dropForeignKeyConstraint baseTableName="offers_documents"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

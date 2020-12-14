@@ -1,0 +1,48 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet id="2020-11-25T09-21--create-offers-table" author="Alina Golubenko">
+        <createTable tableName="offers">
+            <column name="id" type="uuid">
+                <constraints nullable="false"/>
+            </column>
+            <column name="order_id" type="uuid">
+                <constraints nullable="false" references="orders(id)" deleteCascade="true" foreignKeyName="fk_order"/>
+            </column>
+            <column name="user_id" type="uuid">
+                <constraints nullable="false" references="users(id)" deleteCascade="true" foreignKeyName="fk_user"/>
+            </column>
+            <column name="description" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="number" type="BIGINT">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="int" defaultValueNumeric="0">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp with time zone" defaultValueComputed="current_timestamp">
+                <constraints nullable="false"/>
+            </column>
+            <column name="updated_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <rollback>
+            <dropTable tableName="offers"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-25T09-21--add-pk-offers-table" author="Alina Golubenko">
+        <addPrimaryKey tableName="offers" columnNames="id"/>
+        <rollback>
+            <dropPrimaryKey tableName="offers"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2020-11-25T09-21--add-autoincrement-for-number-offers" author="Alina Golubenko">
+        <addAutoIncrement tableName="offers" columnName="number"
+                          incrementBy="1"/>
+    </changeSet>
+</databaseChangeLog>
