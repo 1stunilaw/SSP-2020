@@ -36,11 +36,11 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
         orderDto.setOrganizationName(order.getOrganizationName());
 
         Set<Tag> tags = order.getTags();
-        List<String> tagsName = new ArrayList<>();
+        List<ResponseTag> tagsName = new ArrayList<>();
         if (tags != null) {
             for (Tag tag : tags
             ) {
-                tagsName.add(tag.getTagName());
+                tagsName.add(ResponseTag.getResponseTagFromTag(tag));
             }
             orderDto.setTags(tagsName);
         }

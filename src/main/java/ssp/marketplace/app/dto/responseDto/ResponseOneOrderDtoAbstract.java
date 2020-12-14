@@ -16,7 +16,7 @@ public abstract class ResponseOneOrderDtoAbstract {
 
     private Long number;
 
-    private List<String> tags;
+    private List<ResponseTag> tags;
 
     private StatusForOrder statusForOrder;
 
