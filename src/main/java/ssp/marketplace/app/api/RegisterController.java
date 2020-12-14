@@ -3,10 +3,9 @@ package ssp.marketplace.app.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
 import ssp.marketplace.app.dto.registration.supplier.SupplierRegisterRequestDto;
-import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.service.UserService;
 
 import javax.validation.Valid;

@@ -6,7 +6,7 @@ plugins {
 }
 
 group = 'ssp.marketplace'
-version = '0.0.1-SNAPSHOT'
+version = 'ssp-ion' //Версию не менять, иначе крашнется виртуалка
 sourceCompatibility = '1.8'
 
 

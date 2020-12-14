@@ -6,7 +6,8 @@ import ssp.marketplace.app.service.DocumentService;
 
 import java.util.*;
 
-@Data
+@Setter
+@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

@@ -10,7 +10,7 @@ import javax.validation.constraints.*;
 @Setter
 public class CustomerRegisterRequestDto extends RegisterRequestUserDto {
     @NotBlank(message = "{fio.errors.empty}")
-    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-. ]+$", message = "{fio.errors.regex}")
+    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{fio.errors.regex}")
     @Length(min = 5, max = 150, message = "{fio.errors.length}")
     private String fio;
 

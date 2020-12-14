@@ -2,6 +2,7 @@ package ssp.marketplace.app.service;
 
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.web.multipart.MultipartFile;
+import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
 
@@ -11,7 +12,11 @@ public interface DocumentService {
 
     List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3);
 
+    ResponseNameDocument addNewDocumentsInOrder(UUID id, MultipartFile[] multipartFiles);
+
     void deleteDocument(String name);
+
+    S3ObjectInputStream downloadSupplierFile(String keyName, UUID userId);
 
     S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId);
 

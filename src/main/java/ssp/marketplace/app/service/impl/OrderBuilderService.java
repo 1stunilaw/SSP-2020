@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.exceptions.NotFoundException;
 import ssp.marketplace.app.repository.TagRepository;
 
 import java.time.*;
@@ -31,7 +32,7 @@ public class OrderBuilderService {
         LocalDate localDate = requestOrderDto.getDateStop();
         LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
 
-        List<String> tags = requestOrderDto.getTags();
+        List<UUID> tagsId = requestOrderDto.getTags();
 
         Order order = Order.builder()
                 .name(requestOrderDto.getName())
@@ -41,17 +42,16 @@ public class OrderBuilderService {
                 .statusForOrder(statusForOrder)
                 .organizationName(requestOrderDto.getOrganizationName())
                 .build();
-        setTagForOrder(order, tags);
+        setTagForOrder(order, tagsId);
         return order;
     }
 
-    public Order setTagForOrder(Order order, List<String> tags) {
+    public Order setTagForOrder(Order order, List<UUID> tagsId) {
         List<Tag> orderTags = new ArrayList<>();
-        if (tags != null) {
-            for (String tagName : tags
+        if (tagsId != null) {
+            for (UUID id: tagsId
             ) {
-                Tag tagFromDB = tagRepository.findByTagName(tagName);
-                tagFromDB.getOrdersList().add(order);
+                Tag tagFromDB = tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Тега c id = "+id+" не существует в базе данных"));
                 orderTags.add(tagFromDB);//
                 tagRepository.save(tagFromDB);
             }

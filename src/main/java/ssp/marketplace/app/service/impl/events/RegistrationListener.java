@@ -20,7 +20,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private MessageSource messageSource;
     private JavaMailSender mailSender;
 
-    @Value("${spring.mail.username}")
+    @Value(value = "${spring.mail.username}")
     private String username;
 
 

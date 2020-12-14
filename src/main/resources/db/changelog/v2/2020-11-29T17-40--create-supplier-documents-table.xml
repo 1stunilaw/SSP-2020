@@ -1,0 +1,34 @@
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.4.xsd">
+
+    <changeSet  id="2020-11-29T17-40--create-supplier-documents-table" author="Konstantin Egorov">
+        <createTable tableName="suppliers_documents">
+            <column name="supplier_id" type="UUID"/>
+            <column name="doc_id" type="UUID"/>
+        </createTable>
+        <rollback>
+            <dropTable tableName="suppliers_documents"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2020-11-29T17-42--add-fk-supplier-documents-table-supplier" author="Konstantin Egorov">
+        <addForeignKeyConstraint baseColumnNames="supplier_id"
+                                 baseTableName="suppliers_documents"
+                                 constraintName="fk_suppliers_documents_supplier"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="supplier_details"/>
+    </changeSet>
+    <changeSet id="2020-11-29T17-44--add-fk-supplier-documents-table-documents" author="Konstantin Egorov">
+        <addForeignKeyConstraint baseColumnNames="doc_id"
+                                 baseTableName="suppliers_documents"
+                                 constraintName="fk_suppliers_documents_document"
+                                 onDelete="CASCADE"
+                                 onUpdate="RESTRICT"
+                                 referencedColumnNames="id"
+                                 referencedTableName="documents"/>
+    </changeSet>
+</databaseChangeLog>

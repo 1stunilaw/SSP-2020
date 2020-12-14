@@ -21,21 +21,36 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/register/verify"
     };
 
+    private static final String[] blankUserEndpoints = new String[]{
+            "/api/supplier/fill",
+            "/document/**",
+            "/api/tags",
+            "api/orders/**",
+            "/api/user",
+    };
+
     private static final String[] userEndpoints = new String[]{
             "/api/home",
             "/api/user",
             "/document/**",
+            "/api/supplier/update",
             "api/orders/**",
             "api/offers/**",
+            "/api/tags",
+            "/api/suppliers/{supplierId}/{filename}"
     };
 
     private static final String[] adminEndpoints = new String[]{
             "/api/admin",
+            "/api/customer/update",
             "/api/register/customer",
             "/api/register/lawyer",
             "/api/register/admin",
             "/admin/**",
+            "/api/suppliers",
+            "/api/suppliers/{id}",
             "/api/admin/**",
+            "/api/tags",
     };
 
     @Autowired
@@ -59,9 +74,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(publicEndpoints).permitAll()
-                .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")
+                .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
+                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
+                .antMatchers(publicEndpoints).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))

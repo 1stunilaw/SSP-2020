@@ -5,7 +5,6 @@ import org.springframework.validation.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseOneOrderDtoAdmin;
-import ssp.marketplace.app.exceptions.BadRequest;
 import ssp.marketplace.app.service.OrderService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,11 +57,4 @@ public class OrderAdminController {
     ) {
         return orderService.markDoneOrder(id);
     }
-
-//    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
-//    public void submit(@ModelAttribute FormDataWithFile formDataWithFile) {
-//        System.out.println(formDataWithFile.getName());
-//        System.out.println(formDataWithFile.getEmail());
-//        System.out.println(formDataWithFile.getFile().getOriginalFilename());
-//    }
 }

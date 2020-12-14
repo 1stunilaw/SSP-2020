@@ -5,7 +5,7 @@ import ssp.marketplace.app.service.DocumentService;
 
 import java.util.*;
 
-public class ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
+public class  ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
 
     public static ResponseOneOrderDto responseOrderDtoFromOrder(Order order) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveDocument(order);

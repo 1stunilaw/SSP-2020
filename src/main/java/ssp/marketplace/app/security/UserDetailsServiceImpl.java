@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.exceptions.NotFoundException;
 import ssp.marketplace.app.security.jwt.*;
 import ssp.marketplace.app.service.UserService;
 
@@ -20,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
     }
 
     @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException, NotFoundException {
         User user = userService.findByEmail(username);
 
         UserDetailsImpl jwtUser = UserDetailsFactory.create(user);

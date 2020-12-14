@@ -29,7 +29,7 @@ public class OrderController {
 
     @GetMapping()
     public Page<ResponseListOrderDto> getOrders(
-            @PageableDefault(sort = {"statusForOrder", "dateStart"},
+            @PageableDefault(sort = {"dateStart", "statusForOrder"},
                     size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return orderService.getOrders(pageable);

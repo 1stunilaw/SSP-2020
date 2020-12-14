@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.registration;
+package ssp.marketplace.app.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
