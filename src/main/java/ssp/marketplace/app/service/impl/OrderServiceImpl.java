@@ -160,10 +160,6 @@ public class OrderServiceImpl implements OrderService {
         if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
-        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
-        if (statusForOrder != null) {
-            order.setStatusForOrder(statusForOrder);
-        }
 
         String description = updateDto.getDescription();
         if (description != null && !StringUtils.isBlank(description)) {
@@ -178,16 +174,21 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getDateStop() != null) {
             LocalDate localDate = updateDto.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
-            if (statusForOrder == StatusForOrder.CLOSED) {
-                localDateTime = LocalDateTime.now();
-                order.setDateStop(localDateTime);
-            }
             order.setDateStop(localDateTime);
         }
 
         if (updateDto.getTags() != null) {
             List<UUID> tagsId = updateDto.getTags();
             orderBuilderService.setTagForOrder(order, tagsId);
+        }
+
+        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
+        if (statusForOrder != null) {
+            if (statusForOrder == StatusForOrder.CLOSED) {
+                LocalDateTime localDateTime = LocalDateTime.now();
+                order.setDateStop(localDateTime);
+            }
+            order.setStatusForOrder(statusForOrder);
         }
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
