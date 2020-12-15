@@ -57,15 +57,15 @@ public class OfferController {
     ) {
         return offerService.getOneOffer(id, req);
     }
-/*
-//Разные списки для разных ролей
+
     @GetMapping("/{orderId}")
     public Page<ResponseListOfferDto> getOffers(
             @PageableDefault(sort = {"createdAt"},
-                    size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable
+                    size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable,
+            @PathVariable("orderId") UUID id,
+            HttpServletRequest req
     ) {
-        return offerService.getListOfOffers(pageable);
+        return offerService.getListOfOffers(pageable, id, req);
     }
-    */
 
 }
