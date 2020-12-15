@@ -57,11 +57,15 @@ public class OrderServiceImpl implements OrderService {
     public Page<ResponseListOrderDto> getOrders(Pageable pageable, String search) {
         Page<Order> orders;
         if (search != null && !StringUtils.isBlank(search)) {
-            orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
-            List<Order> content = orders.getContent();
+            List<Order> content = orderRepository.findAll(OrderSpecification.search(search));
             Set<Order> hSet = new LinkedHashSet<>(content);
             List<Order> targetList = new ArrayList<>(hSet);
             orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
+            for (Order o:targetList
+                 ) {
+                System.out.println(o.getNumber());
+            }
+
         } else {
             orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         }
@@ -119,7 +123,6 @@ public class OrderServiceImpl implements OrderService {
             String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
         }
-
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOrders().add(order);
@@ -204,8 +207,7 @@ public class OrderServiceImpl implements OrderService {
         ) {
             try {
                 documentService.deleteDocument(doc.getName());
-            } catch (NotFoundException e) {
-                continue;
+            } catch (NotFoundException ignored) {
             }
         }
         orderRepository.save(order);
