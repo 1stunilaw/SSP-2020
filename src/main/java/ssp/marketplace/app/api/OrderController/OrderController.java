@@ -29,10 +29,11 @@ public class OrderController {
 
     @GetMapping()
     public Page<ResponseListOrderDto> getOrders(
+            @RequestParam(required = false) String search,
             @PageableDefault(sort = {"dateStart", "statusForOrder"},
                     size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable
     ) {
-        return orderService.getOrders(pageable);
+        return orderService.getOrders(pageable, search);
     }
 
     @GetMapping("/{id}")

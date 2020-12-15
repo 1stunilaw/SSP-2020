@@ -51,6 +51,7 @@ public class Order {
     @Column(name = "organization_name")
     private String organizationName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusForOrder statusForOrder;
 

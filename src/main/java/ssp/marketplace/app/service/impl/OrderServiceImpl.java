@@ -14,6 +14,7 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
+import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
@@ -53,15 +54,25 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable) {
-        Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String search) {
+        Page<Order> orders;
+        if (search != null && !StringUtils.isBlank(search)) {
+            orders = orderRepository.findAll(OrderSpecification.search(search), pageable);
+            List<Order> content = orders.getContent();
+            Set<Order> hSet = new LinkedHashSet<>(content);
+            List<Order> targetList = new ArrayList<>(hSet);
+            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
+        } else {
+            orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+        }
         if (orders.isEmpty()) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOrderDto> page =
-                orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
+
+
 
     @Override
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
@@ -90,10 +101,9 @@ public class OrderServiceImpl implements OrderService {
         ) {
             names.add(doc.getName());
         }
-        if(names.contains(name)){
+        if (names.contains(name)) {
             documentService.deleteDocument(name);
-        }
-        else {
+        } else {
             throw new NotFoundException("Документ не найден");
         }
     }
@@ -150,10 +160,6 @@ public class OrderServiceImpl implements OrderService {
         if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
-        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
-        if (statusForOrder != null) {
-            order.setStatusForOrder(statusForOrder);
-        }
 
         String description = updateDto.getDescription();
         if (description != null && !StringUtils.isBlank(description)) {
@@ -168,16 +174,21 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getDateStop() != null) {
             LocalDate localDate = updateDto.getDateStop();
             LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
-            if (statusForOrder == StatusForOrder.CLOSED) {
-                localDateTime = LocalDateTime.now();
-                order.setDateStop(localDateTime);
-            }
             order.setDateStop(localDateTime);
         }
 
         if (updateDto.getTags() != null) {
             List<UUID> tagsId = updateDto.getTags();
             orderBuilderService.setTagForOrder(order, tagsId);
+        }
+
+        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
+        if (statusForOrder != null) {
+            if (statusForOrder == StatusForOrder.CLOSED) {
+                LocalDateTime localDateTime = LocalDateTime.now();
+                order.setDateStop(localDateTime);
+            }
+            order.setStatusForOrder(statusForOrder);
         }
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
@@ -229,7 +240,7 @@ public class OrderServiceImpl implements OrderService {
         int countOldDoc = oldDocuments.size();
         int countNewDoc = multipartFiles.length;
 
-        if(countOldDoc+countNewDoc >10){
+        if (countOldDoc + countNewDoc > 10) {
             String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
