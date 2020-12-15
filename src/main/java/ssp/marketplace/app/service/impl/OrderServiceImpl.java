@@ -14,7 +14,6 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
-import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
@@ -54,13 +53,11 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String search) {
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch) {
         Page<Order> orders;
-        if (search != null && !StringUtils.isBlank(search)) {
-            List<Order> content = orderRepository.findAll(OrderSpecification.search(search));
-            Set<Order> hSet = new LinkedHashSet<>(content);
-            List<Order> targetList = new ArrayList<>(hSet);
-            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
+        if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+            Set<Order> search = orderRepository.search(textSearch);
+            orders = toPages(search, pageable);
         } else {
             orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         }
@@ -71,7 +68,16 @@ public class OrderServiceImpl implements OrderService {
         return page;
     }
 
-
+    private Page<Order> toPages(Set<Order> search, Pageable pageable) {
+        List<Order> targetList = new ArrayList<>(search);
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
+        if (end < start) {
+            throw new BadRequestException("Страницы не существует");
+        }
+        Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
+        return orders;
+    }
 
     @Override
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
