@@ -4,17 +4,20 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
+import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.util.*;
@@ -53,22 +56,40 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch) {
-        Page<Order> orders;
-        if (textSearch != null && !StringUtils.isBlank(textSearch)) {
-            Set<Order> search = orderRepository.search(textSearch);
-            orders = toPages(search, pageable);
-        } else {
-            orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status) {
+        Page<ResponseListOrderDto> page = null;
+        if(textSearch == null && status == null) {
+            Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+            page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         }
-        if (orders.isEmpty()) {
+        else if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch,status);
+            page = mapToDtoAndToPages(search, pageable);
+            return page;
+        }
+
+        else if (status != null && !StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.filterStatus(status);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+
+        else if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+            Set<Order> search = orderRepository.search(textSearch);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+        if(page.isEmpty()||page == null) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
-
-    private Page<Order> toPages(Set<Order> search, Pageable pageable) {
+    public static Specification<Order> filterStatus(String status) {
+        return (root, query, criteriaBuilder) -> {
+            Predicate statusDel = criteriaBuilder.notEqual(root.get("statusForOrder"), StatusForOrder.DELETED);
+            Predicate filterStatus = criteriaBuilder.like(root.get("statusForOrder").as(String.class), "%" + status + "%");
+            return criteriaBuilder.and(statusDel, filterStatus);
+        };
+    }
+    private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
         List<Order> targetList = new ArrayList<>(search);
         int start = (int)pageable.getOffset();
         int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
@@ -76,7 +97,8 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException("Страницы не существует");
         }
         Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
-        return orders;
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        return page;
     }
 
     @Override
