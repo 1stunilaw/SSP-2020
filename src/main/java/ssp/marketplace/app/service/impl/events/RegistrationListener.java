@@ -1,19 +1,18 @@
 package ssp.marketplace.app.service.impl.events;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
-import org.springframework.context.event.EventListener;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.UserService;
 
-import java.util.*;
+import java.util.Locale;
 
-@Slf4j
 @Component
+@Async
 public class RegistrationListener implements ApplicationListener<OnRegistrationCompleteEvent> {
 
     private UserService userService;
@@ -23,6 +22,8 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     @Value(value = "${spring.mail.username}")
     private String username;
 
+    @Value(value = "${frontend.url}")
+    private String frontendUrl;
 
     @Autowired
     public RegistrationListener(UserService userService, MessageSource messageSource, JavaMailSender mailSender) {
@@ -36,14 +37,19 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         confirmRegistration(event);
     }
 
+    @Async
     public void confirmRegistration(OnRegistrationCompleteEvent event){
         User user = event.getUser();
 
         VerificationToken token = userService.createVerificationToken(user);
 
+        sendEmail(user, token);
+    }
+
+    private void sendEmail(User user, VerificationToken token){
         String recipientAddress = "<" + user.getEmail() + ">";
         String subject = "Подтверждение регистрации";
-        String confirmationUrl = event.getAppUrl() + "/api/register/verify?token=" + token.getId();
+        String confirmationUrl = frontendUrl + "/api/register/verify?token=" + token.getId();
         String message = messageSource.getMessage("email.verify.message", null, new Locale("ru", "RU"));
 
         SimpleMailMessage email = new SimpleMailMessage();

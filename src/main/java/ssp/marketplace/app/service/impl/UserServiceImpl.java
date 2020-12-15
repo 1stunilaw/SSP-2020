@@ -196,15 +196,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
-        if (!"email".equals(fieldName)) {
-            throw new UnsupportedOperationException("Данное поле не поддерживается");
-        }
 
-        if (value == null) {
-            return false;
+        switch (fieldName){
+            case "email":
+                return userRepository.existsByEmail(value.toString());
+            case "inn":
+                return userRepository.existsBySupplierDetails_Inn(value.toString());
+            default:
+                throw new UnsupportedOperationException("Данное поле не поддерживается");
         }
-
-        return userRepository.existsByEmail(value.toString());
     }
 
     @Override
@@ -362,7 +362,10 @@ public class UserServiceImpl implements UserService {
                     )
             );
         }
-        user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        if (dto.getCompanyName() != null){
+            user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        }
+
         user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
         user.getSupplierDetails().setContactFio(dto.getFio());

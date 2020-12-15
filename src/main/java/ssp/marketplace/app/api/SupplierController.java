@@ -1,5 +1,6 @@
 package ssp.marketplace.app.api;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
@@ -15,6 +16,7 @@ import java.util.*;
 
 @RestController
 @RequestMapping("/api/suppliers")
+@Slf4j
 public class SupplierController {
 
     private SupplierService supplierService;
@@ -27,7 +29,7 @@ public class SupplierController {
 
     @GetMapping()
     public Page<SupplierPageResponseDto> getAllSuppliers(
-            @PageableDefault(sort = {"companyName"}, size = 30, direction = Sort.Direction.ASC) Pageable pageable
+            @PageableDefault(sort = {"supplierDetails.companyName"}, size = 30, value = 30, direction = Sort.Direction.ASC, page = 0) Pageable pageable
     ) {
         return supplierService.getAllSuppliers(pageable);
     }

@@ -15,8 +15,6 @@ public interface UserService extends FieldValueExists {
 
     UserResponseDto register(RegisterRequestUserDto registerDto);
 
-//    Set<UserResponseDto> getAllUsers();
-
     User findByEmail(String email);
 
     User findById(UUID id);
