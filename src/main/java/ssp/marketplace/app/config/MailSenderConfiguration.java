@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.*;
 import java.util.Properties;
 
 @Configuration
-@Slf4j
 public class MailSenderConfiguration {
     @Value("${spring.mail.host}")
     private String host;

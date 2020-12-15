@@ -21,6 +21,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
 
     @NotBlank(message = "{inn.errors.empty}")
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
+    @Unique(message = "{inn.errors.unique}", service = UserService.class, fieldName = "inn")
     private String inn;
 
     @Length(min = 5, max = 10000, message = "{description.errors.length}")
