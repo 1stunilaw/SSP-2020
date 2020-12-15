@@ -43,7 +43,7 @@ public class OrderController {
         return orderService.getOneOrder(id, req);
     }
 
-    @GetMapping(value = "/{orderId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+   /* @GetMapping(value = "/{orderId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public ResponseEntity<InputStreamResource> getOrderDocument(
             @PathVariable String filename,
             @PathVariable UUID orderId
@@ -52,5 +52,5 @@ public class OrderController {
         return ResponseEntity.ok().contentType(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM_VALUE)).cacheControl(CacheControl.noCache())
                 .header("Content-Disposition", "attachment; filename=" + filename)
                 .body(new InputStreamResource(s3is));
-    }
+    }*/
 }

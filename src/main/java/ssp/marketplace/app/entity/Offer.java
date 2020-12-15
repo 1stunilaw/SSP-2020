@@ -4,12 +4,13 @@ import lombok.*;
 import ssp.marketplace.app.entity.statuses.*;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Table(name = "offers")
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class Offer extends BasicEntity{
 
     /**
@@ -36,9 +37,14 @@ public class Offer extends BasicEntity{
 
     @Column(name = "status")
     private StatusForOffer statusForOffer;
-
+/*
     @Column(name="number", nullable=false, unique=true, insertable = false, updatable = true)
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.IDENTITY)*/
+
+    @Column(name="number", nullable=false, unique=true, insertable = false,
+            updatable = true, columnDefinition = "BIGINT DEFAULT nextval('offers_number_seq')")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "offers_number_seq")
+    @SequenceGenerator(name = "offers_number_seq", sequenceName ="offers_number_seq")
     private Long number;
 
     @ManyToMany(fetch = FetchType.LAZY)

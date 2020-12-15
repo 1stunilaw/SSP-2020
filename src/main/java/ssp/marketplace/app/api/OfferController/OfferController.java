@@ -6,7 +6,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
-import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.service.OfferService;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +49,7 @@ public class OfferController {
         offerService.deleteOffer(id);
     }
 
-    @GetMapping("/{offerId}")
+    @GetMapping("/{offerId}/show")
     public ResponseOfferDtoAbstract getOneOffer(
             @PathVariable("offerId") UUID id,
             HttpServletRequest req
@@ -59,7 +58,7 @@ public class OfferController {
     }
 
     @GetMapping("/{orderId}")
-    public Page<ResponseListOfferDto> getOffers(
+    public Page<ResponseListOfferDto> getListOfOffers(
             @PageableDefault(sort = {"createdAt"},
                     size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable,
             @PathVariable("orderId") UUID id,

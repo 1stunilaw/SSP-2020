@@ -78,12 +78,18 @@ public class OfferServiceImpl implements OfferService {
         if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
         }
-        orderFromDB.getOffers().add(offer);
-        offer.setOrder(orderFromDB);
+/*
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if (role.contains(RoleName.ROLE_USER.toString())){ //если заполнил информацию
+*/
 
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
+
+        orderFromDB.getOffers().add(offer);
+        offer.setOrder(orderFromDB);
 
         offer.setStatusForOffer(StatusForOffer.ACTIVE);
         offer.setDescription(requestOfferDto.getDescription());
@@ -97,6 +103,7 @@ public class OfferServiceImpl implements OfferService {
         orderRepository.save(orderFromDB);
 
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+
     }
 
 
@@ -190,7 +197,7 @@ public class OfferServiceImpl implements OfferService {
 
         Page<Offer> offers;
 
-        String token = jwtTokenProvider.resolveToken(req);
+       String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_ADMIN.toString())){
             offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
