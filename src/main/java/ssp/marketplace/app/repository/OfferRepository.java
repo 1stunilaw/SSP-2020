@@ -14,5 +14,7 @@ public interface OfferRepository extends JpaRepository<Offer, UUID> {
             final Collection<StatusForOffer> statusForOffer
     );
 
-    Page<Offer> findByStatusForOfferNotIn(Pageable pageable, final Collection<StatusForOffer> statusForOffer);
+    Page<Offer> findByOrderIdAndAndUserIdAndStatusForOffer(Pageable pageable, UUID OrderId, UUID UserId, StatusForOffer statusForOffer);
+
+    Page<Offer> findByOrderIdAndStatusForOffer(Pageable pageable, UUID OrderId, StatusForOffer statusForOffer);
 }

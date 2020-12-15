@@ -61,7 +61,7 @@ public class OfferController {
 //Разные списки для разных ролей
     @GetMapping("/{orderId}")
     public Page<ResponseListOfferDto> getOffers(
-            @PageableDefault(sort = {"dateStart"},
+            @PageableDefault(sort = {"createdAt"},
                     size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable
     ) {
         return offerService.getListOfOffers(pageable);

@@ -17,6 +17,6 @@ public interface OfferService {
 
     ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req);
 
-   // Page<ResponseListOfferDto> getListOfOffers(Pageable pageable);
+    Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req);
 
 }

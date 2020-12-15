@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -28,6 +29,8 @@ public class OfferServiceImpl implements OfferService {
 
     private final OrderService orderService;
 
+    private final MessageSource messageSource;
+
     private final DocumentService documentService;
 
     private final DocumentRepository documentRepository;
@@ -37,7 +40,7 @@ public class OfferServiceImpl implements OfferService {
     public OfferServiceImpl(
             OfferRepository offerRepository, OrderRepository orderRepository, UserRepository userRepository,
             UserService userService, OrderService orderService,
-            DocumentService documentService,
+            MessageSource messageSource, DocumentService documentService,
             DocumentRepository documentRepository,
             JwtTokenProvider jwtTokenProvider
     ) {
@@ -47,6 +50,7 @@ public class OfferServiceImpl implements OfferService {
         this.userRepository = userRepository;
         this.userService = userService;
         this.orderService = orderService;
+        this.messageSource = messageSource;
         this.documentService = documentService;
         this.documentRepository = documentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
@@ -127,7 +131,7 @@ public class OfferServiceImpl implements OfferService {
                 if (documentRepository.findByName(docDelName) != null) {
                     documentService.deleteDocument(docDelName);
                 } else {
-                    throw new BadRequest("Файл " + docDelName + " не найден");
+                    throw new BadRequestException("Файл " + docDelName + " не найден");
                 }
             }
         }
@@ -180,18 +184,35 @@ public class OfferServiceImpl implements OfferService {
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
 
     }
-/*
+
     @Override
-    public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable){
-        Page<Offer> offers = offerRepository.findByStatusForOfferNotIn(pageable, Collections.singleton(StatusForOffer.DELETED));
+    public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req){
+
+        Page<Offer> offers;
+
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if (role.contains(RoleName.ROLE_ADMIN.toString())){
+            offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
+            if (offers.isEmpty()) {
+                throw new NotFoundException("Пусто");
+            }
+            Page<ResponseListOfferDto> page =
+                    offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
+            return page;
+        }
+        User user = userService.getUserFromHttpServletRequest(req);
+        offers = offerRepository.findByOrderIdAndAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
         if (offers.isEmpty()) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOfferDto> page =
-                offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
-        return page;
+
+            Page<ResponseListOfferDto> page =
+                    offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
+
+            return page;
     }
-*/
+
     private void addDocumentToOffer(
             Offer offer,
             MultipartFile[] multipartFiles
