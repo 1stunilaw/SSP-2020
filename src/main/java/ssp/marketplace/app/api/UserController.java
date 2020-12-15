@@ -94,4 +94,9 @@ public class UserController {
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
+
+    @InitBinder("customerUpdateRequestDto")
+    public void initBinderForCustomerUpdate(WebDataBinder binder){
+        binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
+    }
 }

@@ -2,10 +2,8 @@ package ssp.marketplace.app.dto.registration;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.factory.annotation.Value;
 import ssp.marketplace.app.service.UserService;
-import ssp.marketplace.app.service.impl.UserServiceImpl;
-import ssp.marketplace.app.validation.Unique;
+import ssp.marketplace.app.validation.unique.Unique;
 
 import javax.validation.constraints.*;
 import java.io.Serializable;

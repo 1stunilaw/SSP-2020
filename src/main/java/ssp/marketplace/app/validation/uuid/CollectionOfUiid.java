@@ -1,7 +1,5 @@
 package ssp.marketplace.app.validation.uuid;
 
-import ssp.marketplace.app.validation.UniqueValidator;
-
 import javax.validation.*;
 import java.lang.annotation.*;
 

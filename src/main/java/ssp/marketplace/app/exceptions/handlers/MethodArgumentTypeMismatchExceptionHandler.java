@@ -12,6 +12,6 @@ public class MethodArgumentTypeMismatchExceptionHandler {
     @ResponseBody
     @ExceptionHandler(MethodArgumentTypeMismatchException.class)
     public ErrorResponse BadRequestHandler(){
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Неправильный путь");
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Ошибка запроса. Проверьте метод, адрес и тело запроса");
     }
 }

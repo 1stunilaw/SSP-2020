@@ -5,7 +5,7 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
 import ssp.marketplace.app.service.UserService;
-import ssp.marketplace.app.validation.Unique;
+import ssp.marketplace.app.validation.unique.Unique;
 import ssp.marketplace.app.validation.uuid.*;
 
 import javax.validation.constraints.*;
@@ -15,6 +15,7 @@ import java.util.Set;
 @Setter
 @RequiredArgsConstructor
 public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
+    @Unique(message = "{companyName.errors.unique}", service = UserService.class, fieldName = "companyName")
     @Length(min = 2, max = 255, message = "{companyName.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
@@ -28,6 +29,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()][a-zA-ZА-я0-9-.,&\":_%$@#() ]+$", message = "{companyName.errors.regex}")
     private String description;
 
+    @Unique(message = "{phone.errors.unique}", service = UserService.class, fieldName = "supplierPhone")
     @NotBlank(message = "{phone.errors.empty}")
     @Length(min = 6, max = 20, message = "{phone.errors.length}")
     @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\-]?)?(\\(?\\d{3}\\)?[\\-]?)?[\\d\\-]{6,15}$", message = "{phone.errors.regex}")

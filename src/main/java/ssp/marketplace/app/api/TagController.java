@@ -1,6 +1,6 @@
 package ssp.marketplace.app.api;
 
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
@@ -21,10 +21,10 @@ public class TagController {
 
     @PostMapping(value = "/admin/tags/add-tag")
     @ResponseStatus(HttpStatus.CREATED)
-    public void addNewTag(
+    public List<ResponseTag> addNewTag(
             @RequestBody @Valid RequestTag requestTag
     ) {
-        tagServices.addNewTag(requestTag);
+        return tagServices.addNewTag(requestTag);
     }
 
     @GetMapping("/tags")
@@ -35,18 +35,22 @@ public class TagController {
 
     @DeleteMapping(value = "/admin/tags/{tagId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTag(
+    public ResponseEntity deleteTag(
             @PathVariable UUID tagId
     ) {
         tagServices.deleteTag(tagId);
+        HashMap response = new HashMap();
+        response.put("status", HttpStatus.OK);
+        response.put("message", "Тег успешно удалён");
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 
     @PatchMapping(value = "/admin/tags/{tagId}")
     @ResponseStatus(HttpStatus.OK)
-    public void updateTag(
+    public ResponseTag updateTag(
             @PathVariable UUID tagId,
             @RequestBody @Valid RequestUpdateTag requestUpdateTag
     ) {
-        tagServices.editTag(tagId, requestUpdateTag);
+        return tagServices.editTag(tagId, requestUpdateTag);
     }
 }

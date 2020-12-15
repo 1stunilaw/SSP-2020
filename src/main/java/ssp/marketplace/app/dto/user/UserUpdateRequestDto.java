@@ -1,11 +1,7 @@
 package ssp.marketplace.app.dto.user;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-import ssp.marketplace.app.service.UserService;
-import ssp.marketplace.app.validation.Unique;
 
-import javax.validation.constraints.*;
 import java.io.Serializable;
 
 @Getter

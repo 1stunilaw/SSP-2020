@@ -9,6 +9,7 @@ import java.util.*;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+
     Optional<User> findByEmail(String email);
 
     Boolean existsByEmail(String email);
@@ -16,4 +17,10 @@ public interface UserRepository extends JpaRepository<User, UUID> {
     Page<User> findByRolesInAndStatus(Pageable pageable, Collection<Role> roles, UserStatus status);
 
     Boolean existsBySupplierDetails_Inn(String inn);
+
+    Boolean existsBySupplierDetails_CompanyName(String companyName);
+
+    Boolean existsBySupplierDetails_Phone(String phone);
+
+    Boolean existsByCustomerDetails_Phone(String phone);
 }

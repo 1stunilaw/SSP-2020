@@ -37,25 +37,27 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
-    public void addNewTag(RequestTag requestTag) {
+    public List<ResponseTag> addNewTag(RequestTag requestTag) {
         List<String> tagName = requestTag.getTagName().stream().map(String::toLowerCase).collect(Collectors.toList());
-        for (String name : tagName
-        ) {
+        List<ResponseTag> response = new ArrayList<>();
+        for (String name : tagName) {
             Optional<Tag> byTagName = tagRepository.findByTagName(name);
+            Tag tag;
             if (byTagName.isPresent()) {
-                Tag tag = byTagName.get();
+                tag = byTagName.get();
                 if(tag.getStatusForTag() == StatusForTag.DELETED){
                     tag.setStatusForTag(StatusForTag.ACTIVE);
-                    tagRepository.save(tag);
                 }
             }
             else {
-                Tag tag = new Tag();
+                tag = new Tag();
                 tag.setTagName(name);
                 tag.setStatusForTag(StatusForTag.ACTIVE);
-                tagRepository.save(tag);
             }
+            response.add(new ResponseTag(tagRepository.save(tag)));
         }
+
+        return response;
     }
 
     @Override
@@ -69,7 +71,7 @@ public class TagServicesImpl implements TagServices {
     }
 
     @Override
-    public void editTag(UUID id, RequestUpdateTag requestUpdateTag) {
+    public ResponseTag editTag(UUID id, RequestUpdateTag requestUpdateTag) {
         Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
                 .orElseThrow(() -> new NotFoundException("Тег не найден"));
         String newTagName = requestUpdateTag.getTagName().toLowerCase();
@@ -77,7 +79,7 @@ public class TagServicesImpl implements TagServices {
             throw new BadRequestException("Тег с именем " + newTagName + " уже существует");
         }
         tag.setTagName(newTagName);
-        tagRepository.save(tag);
+        return new ResponseTag(tagRepository.save(tag));
     }
 
     private void delTagInOrders(Tag tag) {

@@ -9,10 +9,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ssp.marketplace.app.dto.registration.*;
+import ssp.marketplace.app.dto.registration.RegisterRequestUserDto;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
-import ssp.marketplace.app.dto.user.*;
+import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
@@ -27,7 +27,6 @@ import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
-import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -202,6 +201,12 @@ public class UserServiceImpl implements UserService {
                 return userRepository.existsByEmail(value.toString());
             case "inn":
                 return userRepository.existsBySupplierDetails_Inn(value.toString());
+            case "companyName":
+                return userRepository.existsBySupplierDetails_CompanyName(value.toString());
+            case "supplierPhone":
+                return userRepository.existsBySupplierDetails_Phone(value.toString());
+            case "customerPhone":
+                return userRepository.existsByCustomerDetails_Phone(value.toString());
             default:
                 throw new UnsupportedOperationException("Данное поле не поддерживается");
         }
@@ -211,9 +216,8 @@ public class UserServiceImpl implements UserService {
     public User getUserFromHttpServletRequest(HttpServletRequest req) {
         String token = jwtTokenProvider.resolveToken(req);
         String email = jwtTokenProvider.getEmail(token);
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        return user;
     }
 
     @Override
@@ -225,9 +229,12 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getCurrentUser(HttpServletRequest request) {
         User user = getUserFromHttpServletRequest(request);
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+
         if (roles.contains(RoleName.ROLE_ADMIN)) {
             return new CustomerResponseDto(user);
-        } else if (roles.contains(RoleName.ROLE_USER) || roles.contains(RoleName.ROLE_BLANK_USER)) {
+        }
+
+        if (roles.contains(RoleName.ROLE_USER) || roles.contains(RoleName.ROLE_BLANK_USER)) {
             return new SupplierResponseDto(user);
         }
 
@@ -239,11 +246,12 @@ public class UserServiceImpl implements UserService {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
 
-        if (dto.getFio() != null) {
+        if (dto.getFio() != null && !dto.getPhone().trim().isEmpty()) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
 
-        if (dto.getPhone() != null) {
+        log.info(dto.getPhone());
+        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()) {
             user.getCustomerDetails().setPhone(dto.getPhone());
         }
 

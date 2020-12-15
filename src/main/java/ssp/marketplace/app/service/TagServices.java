@@ -9,9 +9,9 @@ public interface TagServices {
 
     List<ResponseTag> getTags();
 
-    void addNewTag(RequestTag requestTag);
+    List<ResponseTag> addNewTag(RequestTag requestTag);
 
     void deleteTag(UUID id);
 
-    void editTag(UUID id, RequestUpdateTag requestUpdateTag);
+    ResponseTag editTag(UUID id, RequestUpdateTag requestUpdateTag);
 }
