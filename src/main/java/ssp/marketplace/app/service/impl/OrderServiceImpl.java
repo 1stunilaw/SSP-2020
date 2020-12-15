@@ -61,11 +61,6 @@ public class OrderServiceImpl implements OrderService {
             Set<Order> hSet = new LinkedHashSet<>(content);
             List<Order> targetList = new ArrayList<>(hSet);
             orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
-            for (Order o:targetList
-                 ) {
-                System.out.println(o.getNumber());
-            }
-
         } else {
             orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
         }
