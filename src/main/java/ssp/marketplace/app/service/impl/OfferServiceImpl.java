@@ -78,12 +78,19 @@ public class OfferServiceImpl implements OfferService {
         if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
         }
+
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if (role.contains(RoleName.ROLE_BLANK_USER.toString())){
+            String filesCountError = messageSource.getMessage("offers.errors.empty", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
 /*
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_USER.toString())){ //если заполнил информацию
 */
-
+        //offer.setNumber(0L);//костыль на время теста
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
