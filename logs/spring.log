@@ -2420,3 +2420,332 @@ org.postgresql.util.PSQLException: ОШИБКА: повторяющееся зн
 
 2020-12-16 02:28:08.337  INFO 10976 --- [http-nio-8080-exec-3] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@71023111 found by email qwe@asd.ru
 2020-12-16 02:28:08.337  INFO 10976 --- [http-nio-8080-exec-3] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:18:43.420  INFO 824 --- [restartedMain] ssp.marketplace.app.AppApplication       : Starting AppApplication on Alina with PID 824 (E:\IdeaProjects\IOn\offer\backend\build\classes\java\main started by Alina in E:\IdeaProjects\IOn\offer\backend)
+2020-12-16 03:18:43.480  INFO 824 --- [restartedMain] ssp.marketplace.app.AppApplication       : No active profile set, falling back to default profiles: default
+2020-12-16 03:18:43.627  INFO 824 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-16 03:18:43.627  INFO 824 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-16 03:18:45.660  INFO 824 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFERRED mode.
+2020-12-16 03:18:45.800  INFO 824 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 133ms. Found 8 JPA repository interfaces.
+2020-12-16 03:18:48.506  INFO 824 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-12-16 03:18:48.519  INFO 824 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-12-16 03:18:48.520  INFO 824 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
+2020-12-16 03:18:48.655  INFO 824 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-12-16 03:18:48.656  INFO 824 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 5029 ms
+2020-12-16 03:18:48.775  INFO 824 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-12-16 03:18:50.017  INFO 824 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-12-16 03:18:53.070  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:18:53.972  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:18:53.978  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT LOCKED FROM public.databasechangeloglock WHERE ID=1
+2020-12-16 03:18:54.552  INFO 824 --- [restartedMain] l.lockservice.StandardLockService        : Successfully acquired change log lock
+2020-12-16 03:19:12.379  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT MD5SUM FROM public.databasechangelog WHERE MD5SUM IS NOT NULL LIMIT 1
+2020-12-16 03:19:12.468  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangelog
+2020-12-16 03:19:12.468  INFO 824 --- [restartedMain] l.c.StandardChangeLogHistoryService      : Reading from public.databasechangelog
+2020-12-16 03:19:12.468  INFO 824 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT * FROM public.databasechangelog ORDER BY DATEEXECUTED ASC, ORDEREXECUTED ASC
+2020-12-16 03:19:13.155  INFO 824 --- [restartedMain] l.lockservice.StandardLockService        : Successfully released change log lock
+2020-12-16 03:19:13.155  INFO 824 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-12-16 03:19:13.155  INFO 824 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-12-16 03:19:13.725  INFO 824 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-16 03:19:15.113  INFO 824 --- [task-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-12-16 03:19:17.197  INFO 824 --- [task-1] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.22.Final
+2020-12-16 03:19:18.810  INFO 824 --- [task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-12-16 03:19:19.465  INFO 824 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2020-12-16 03:19:19.558  INFO 824 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2020-12-16 03:19:19.676  INFO 824 --- [task-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL10Dialect
+2020-12-16 03:19:20.591  WARN 824 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-12-16 03:19:21.107  INFO 824 --- [restartedMain] s.m.app.config.MailSenderConfiguration   : Creating custom JavaMailSender
+2020-12-16 03:19:21.169  INFO 824 --- [restartedMain] s.m.a.s.i.events.RegistrationListener    : Listener created
+2020-12-16 03:19:22.415  INFO 824 --- [task-1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-12-16 03:19:22.424  INFO 824 --- [task-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-12-16 03:19:22.473  INFO 824 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@567b4461, org.springframework.security.web.context.SecurityContextPersistenceFilter@26d7ac76, org.springframework.security.web.header.HeaderWriterFilter@44da499f, org.springframework.web.filter.CorsFilter@5c78cfeb, org.springframework.security.web.authentication.logout.LogoutFilter@10e2125c, ssp.marketplace.app.security.jwt.JwtTokenFilter@a7c41ab, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@11548e53, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@22599594, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6e599787, org.springframework.security.web.session.SessionManagementFilter@b99d002, org.springframework.security.web.access.ExceptionTranslationFilter@af405ae, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@3ec24a32]
+2020-12-16 03:19:22.542  INFO 824 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-12-16 03:19:22.683  INFO 824 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-12-16 03:19:22.685  INFO 824 --- [restartedMain] DeferredRepositoryInitializationListener : Triggering deferred initialization of Spring Data repositories…
+2020-12-16 03:19:23.956  INFO 824 --- [restartedMain] DeferredRepositoryInitializationListener : Spring Data repositories initialized!
+2020-12-16 03:19:24.029  INFO 824 --- [restartedMain] ssp.marketplace.app.AppApplication       : Started AppApplication in 41.158 seconds (JVM running for 43.112)
+2020-12-16 03:20:36.669  INFO 824 --- [http-nio-8080-exec-1] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-12-16 03:20:36.670  INFO 824 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-12-16 03:20:36.690  INFO 824 --- [http-nio-8080-exec-1] o.s.web.servlet.DispatcherServlet        : Completed initialization in 20 ms
+2020-12-16 03:20:37.997  INFO 824 --- [http-nio-8080-exec-1] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@2714837e found by email qwe@asd.ru
+2020-12-16 03:20:37.999  INFO 824 --- [http-nio-8080-exec-1] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:20:38.521  INFO 824 --- [http-nio-8080-exec-1] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@2714837e found by email qwe@asd.ru
+2020-12-16 03:20:56.791  INFO 824 --- [http-nio-8080-exec-3] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@1695c791 found by email qwe@asd.ru
+2020-12-16 03:20:56.791  INFO 824 --- [http-nio-8080-exec-3] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:20:57.231  WARN 824 --- [http-nio-8080-exec-3] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [ssp.marketplace.app.exceptions.BadRequestException: Документ не может быть пустым]
+2020-12-16 03:20:57.235  INFO 824 --- [http-nio-8080-exec-3] o.h.c.i.AbstractPersistentCollection     : HHH000496: Detaching an uninitialized collection with queued operations from a session: [ssp.marketplace.app.entity.Order.offers#9bc00f09-8306-49c1-9d49-e6b6d997460c]
+2020-12-16 03:20:57.235  INFO 824 --- [http-nio-8080-exec-3] o.h.c.i.AbstractPersistentCollection     : HHH000496: Detaching an uninitialized collection with queued operations from a session: [ssp.marketplace.app.entity.User.offers#2249ca67-629a-4671-a0a3-086942d67365]
+2020-12-16 03:21:41.526  INFO 824 --- [http-nio-8080-exec-5] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@1b70c1a2 found by email qwe@asd.ru
+2020-12-16 03:21:41.527  INFO 824 --- [http-nio-8080-exec-5] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:21:43.684  WARN 824 --- [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : SQL Error: 0, SQLState: 23502
+2020-12-16 03:21:43.684 ERROR 824 --- [http-nio-8080-exec-5] o.h.engine.jdbc.spi.SqlExceptionHelper   : ОШИБКА: значение NULL в столбце "number" отношения "offers" нарушает ограничение NOT NULL
+  Подробности: Ошибочная строка содержит (3b70022c-a2f5-4155-a78c-b260231d125c, 9bc00f09-8306-49c1-9d49-e6b6d997460c, 2249ca67-629a-4671-a0a3-086942d67365, Описание предложения, null, 0, 2020-12-16 03:21:43.362+07, 2020-12-16 03:21:43.468+07).
+2020-12-16 03:21:43.761 ERROR 824 --- [http-nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed; nested exception is org.springframework.dao.DataIntegrityViolationException: could not execute statement; SQL [n/a]; constraint [null]; nested exception is org.hibernate.exception.ConstraintViolationException: could not execute statement] with root cause
+
+org.postgresql.util.PSQLException: ОШИБКА: значение NULL в столбце "number" отношения "offers" нарушает ограничение NOT NULL
+  Подробности: Ошибочная строка содержит (3b70022c-a2f5-4155-a78c-b260231d125c, 9bc00f09-8306-49c1-9d49-e6b6d997460c, 2249ca67-629a-4671-a0a3-086942d67365, Описание предложения, null, 0, 2020-12-16 03:21:43.362+07, 2020-12-16 03:21:43.468+07).
+	at org.postgresql.core.v3.QueryExecutorImpl.receiveErrorResponse(QueryExecutorImpl.java:2553) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.core.v3.QueryExecutorImpl.processResults(QueryExecutorImpl.java:2285) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.core.v3.QueryExecutorImpl.execute(QueryExecutorImpl.java:323) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.jdbc.PgStatement.executeInternal(PgStatement.java:473) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.jdbc.PgStatement.execute(PgStatement.java:393) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.jdbc.PgPreparedStatement.executeWithFlags(PgPreparedStatement.java:164) ~[postgresql-42.2.18.jar:42.2.18]
+	at org.postgresql.jdbc.PgPreparedStatement.executeUpdate(PgPreparedStatement.java:130) ~[postgresql-42.2.18.jar:42.2.18]
+	at com.zaxxer.hikari.pool.ProxyPreparedStatement.executeUpdate(ProxyPreparedStatement.java:61) ~[HikariCP-3.4.5.jar:na]
+	at com.zaxxer.hikari.pool.HikariProxyPreparedStatement.executeUpdate(HikariProxyPreparedStatement.java) ~[HikariCP-3.4.5.jar:na]
+	at org.hibernate.engine.jdbc.internal.ResultSetReturnImpl.executeUpdate(ResultSetReturnImpl.java:197) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.persister.entity.AbstractEntityPersister.update(AbstractEntityPersister.java:3455) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.persister.entity.AbstractEntityPersister.updateOrInsert(AbstractEntityPersister.java:3317) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.persister.entity.AbstractEntityPersister.update(AbstractEntityPersister.java:3731) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.action.internal.EntityUpdateAction.execute(EntityUpdateAction.java:201) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:604) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.engine.spi.ActionQueue.lambda$executeActions$1(ActionQueue.java:478) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at java.base/java.util.LinkedHashMap.forEach(LinkedHashMap.java:723) ~[na:na]
+	at org.hibernate.engine.spi.ActionQueue.executeActions(ActionQueue.java:475) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.event.internal.AbstractFlushingEventListener.performExecutions(AbstractFlushingEventListener.java:348) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.event.internal.DefaultFlushEventListener.onFlush(DefaultFlushEventListener.java:40) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.event.service.internal.EventListenerGroupImpl.fireEventOnEachListener(EventListenerGroupImpl.java:102) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.internal.SessionImpl.doFlush(SessionImpl.java:1362) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.internal.SessionImpl.managedFlush(SessionImpl.java:453) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.internal.SessionImpl.flushBeforeTransactionCompletion(SessionImpl.java:3212) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.internal.SessionImpl.beforeTransactionCompletion(SessionImpl.java:2380) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.engine.jdbc.internal.JdbcCoordinatorImpl.beforeTransactionCompletion(JdbcCoordinatorImpl.java:447) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.beforeCompletionCallback(JdbcResourceLocalTransactionCoordinatorImpl.java:183) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl.access$300(JdbcResourceLocalTransactionCoordinatorImpl.java:40) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.resource.transaction.backend.jdbc.internal.JdbcResourceLocalTransactionCoordinatorImpl$TransactionDriverControlImpl.commit(JdbcResourceLocalTransactionCoordinatorImpl.java:281) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.hibernate.engine.transaction.internal.TransactionImpl.commit(TransactionImpl.java:101) ~[hibernate-core-5.4.22.Final.jar:5.4.22.Final]
+	at org.springframework.orm.jpa.JpaTransactionManager.doCommit(JpaTransactionManager.java:534) ~[spring-orm-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.processCommit(AbstractPlatformTransactionManager.java:743) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.transaction.support.AbstractPlatformTransactionManager.commit(AbstractPlatformTransactionManager.java:711) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.commitTransactionAfterReturning(TransactionAspectSupport.java:633) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionAspectSupport.invokeWithinTransaction(TransactionAspectSupport.java:386) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.transaction.interceptor.TransactionInterceptor.invoke(TransactionInterceptor.java:118) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.dao.support.PersistenceExceptionTranslationInterceptor.invoke(PersistenceExceptionTranslationInterceptor.java:139) ~[spring-tx-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.data.jpa.repository.support.CrudMethodMetadataPostProcessor$CrudMethodMetadataPopulatingMethodInterceptor.invoke(CrudMethodMetadataPostProcessor.java:178) ~[spring-data-jpa-2.3.5.RELEASE.jar:2.3.5.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.interceptor.ExposeInvocationInterceptor.invoke(ExposeInvocationInterceptor.java:95) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.framework.ReflectiveMethodInvocation.proceed(ReflectiveMethodInvocation.java:186) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:212) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at com.sun.proxy.$Proxy154.save(Unknown Source) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.aop.support.AopUtils.invokeJoinpointUsingReflection(AopUtils.java:344) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.aop.framework.JdkDynamicAopProxy.invoke(JdkDynamicAopProxy.java:205) ~[spring-aop-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at com.sun.proxy.$Proxy138.save(Unknown Source) ~[na:na]
+	at ssp.marketplace.app.service.impl.OfferServiceImpl.addDocumentToOffer(OfferServiceImpl.java:241) ~[main/:na]
+	at ssp.marketplace.app.service.impl.OfferServiceImpl.createOffer(OfferServiceImpl.java:106) ~[main/:na]
+	at ssp.marketplace.app.api.OfferController.OfferController.createOffer(OfferController.java:32) ~[main/:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method) ~[na:na]
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:64) ~[na:na]
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43) ~[na:na]
+	at java.base/java.lang.reflect.Method.invoke(Method.java:564) ~[na:na]
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:190) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:138) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:105) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:878) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:792) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1040) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:943) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1006) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.servlet.FrameworkServlet.doPost(FrameworkServlet.java:909) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:652) ~[tomcat-embed-core-9.0.39.jar:4.0.FR]
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:883) ~[spring-webmvc-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at javax.servlet.http.HttpServlet.service(HttpServlet.java:733) ~[tomcat-embed-core-9.0.39.jar:4.0.FR]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:53) ~[tomcat-embed-websocket-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:320) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.invoke(FilterSecurityInterceptor.java:126) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.access.intercept.FilterSecurityInterceptor.doFilter(FilterSecurityInterceptor.java:90) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:118) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:137) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:111) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:158) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at ssp.marketplace.app.security.jwt.JwtTokenFilter.doFilter(JwtTokenFilter.java:34) ~[main/:na]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.authentication.logout.LogoutFilter.doFilter(LogoutFilter.java:116) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:92) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:92) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:77) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.context.SecurityContextPersistenceFilter.doFilter(SecurityContextPersistenceFilter.java:105) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:56) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.security.web.FilterChainProxy$VirtualFilterChain.doFilter(FilterChainProxy.java:334) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:215) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:178) ~[spring-security-web-5.3.5.RELEASE.jar:5.3.5.RELEASE]
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:358) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:271) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:119) ~[spring-web-5.2.10.RELEASE.jar:5.2.10.RELEASE]
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:193) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:202) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:97) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:542) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:143) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:92) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:78) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:374) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:868) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1590) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1130) ~[na:na]
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:630) ~[na:na]
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61) ~[tomcat-embed-core-9.0.39.jar:9.0.39]
+	at java.base/java.lang.Thread.run(Thread.java:832) ~[na:na]
+
+2020-12-16 03:21:43.777  INFO 824 --- [http-nio-8080-exec-5] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@627e955 found by email qwe@asd.ru
+2020-12-16 03:21:43.778  INFO 824 --- [http-nio-8080-exec-5] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:23:41.503  INFO 4820 --- [restartedMain] ssp.marketplace.app.AppApplication       : Starting AppApplication on Alina with PID 4820 (E:\IdeaProjects\IOn\offer\backend\build\classes\java\main started by Alina in E:\IdeaProjects\IOn\offer\backend)
+2020-12-16 03:23:41.506  INFO 4820 --- [restartedMain] ssp.marketplace.app.AppApplication       : No active profile set, falling back to default profiles: default
+2020-12-16 03:23:41.593  INFO 4820 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-16 03:23:41.594  INFO 4820 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-16 03:23:42.891  INFO 4820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFERRED mode.
+2020-12-16 03:23:43.080  INFO 4820 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 183ms. Found 8 JPA repository interfaces.
+2020-12-16 03:23:45.118  INFO 4820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-12-16 03:23:45.218  INFO 4820 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-12-16 03:23:45.219  INFO 4820 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
+2020-12-16 03:23:45.716  INFO 4820 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-12-16 03:23:45.716  INFO 4820 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 4122 ms
+2020-12-16 03:23:46.020  INFO 4820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-12-16 03:23:46.759  INFO 4820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-12-16 03:23:49.090  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:23:49.092  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:23:49.093  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT LOCKED FROM public.databasechangeloglock WHERE ID=1
+2020-12-16 03:24:05.760  INFO 4820 --- [restartedMain] l.lockservice.StandardLockService        : Successfully acquired change log lock
+2020-12-16 03:24:26.577  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT MD5SUM FROM public.databasechangelog WHERE MD5SUM IS NOT NULL LIMIT 1
+2020-12-16 03:24:26.577  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangelog
+2020-12-16 03:24:26.577  INFO 4820 --- [restartedMain] l.c.StandardChangeLogHistoryService      : Reading from public.databasechangelog
+2020-12-16 03:24:26.577  INFO 4820 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT * FROM public.databasechangelog ORDER BY DATEEXECUTED ASC, ORDEREXECUTED ASC
+2020-12-16 03:24:27.109  INFO 4820 --- [restartedMain] l.lockservice.StandardLockService        : Successfully released change log lock
+2020-12-16 03:24:27.109  INFO 4820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-12-16 03:24:27.156  INFO 4820 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-12-16 03:24:27.594  INFO 4820 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-16 03:24:28.269  INFO 4820 --- [task-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-12-16 03:24:29.666  INFO 4820 --- [task-1] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.22.Final
+2020-12-16 03:24:33.575  INFO 4820 --- [task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-12-16 03:24:34.012  INFO 4820 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2020-12-16 03:24:34.085  INFO 4820 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2020-12-16 03:24:34.288  INFO 4820 --- [task-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL10Dialect
+2020-12-16 03:24:34.929  WARN 4820 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-12-16 03:24:35.282  INFO 4820 --- [restartedMain] s.m.app.config.MailSenderConfiguration   : Creating custom JavaMailSender
+2020-12-16 03:24:35.354  INFO 4820 --- [restartedMain] s.m.a.s.i.events.RegistrationListener    : Listener created
+2020-12-16 03:24:36.773  INFO 4820 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@69d40b0b, org.springframework.security.web.context.SecurityContextPersistenceFilter@43f8e56e, org.springframework.security.web.header.HeaderWriterFilter@38f16fb7, org.springframework.web.filter.CorsFilter@1a085b57, org.springframework.security.web.authentication.logout.LogoutFilter@24193584, ssp.marketplace.app.security.jwt.JwtTokenFilter@1cac4a7c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@34801a7, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@45b4e7b7, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@29700c4, org.springframework.security.web.session.SessionManagementFilter@1c2fc328, org.springframework.security.web.access.ExceptionTranslationFilter@52627274, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@40395e80]
+2020-12-16 03:24:36.862  INFO 4820 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-12-16 03:24:37.018  INFO 4820 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-12-16 03:24:37.018  INFO 4820 --- [restartedMain] DeferredRepositoryInitializationListener : Triggering deferred initialization of Spring Data repositories…
+2020-12-16 03:24:37.351  INFO 4820 --- [task-1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-12-16 03:24:37.367  INFO 4820 --- [task-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-12-16 03:24:37.959  INFO 4820 --- [restartedMain] DeferredRepositoryInitializationListener : Spring Data repositories initialized!
+2020-12-16 03:24:37.990  INFO 4820 --- [restartedMain] ssp.marketplace.app.AppApplication       : Started AppApplication in 57.597 seconds (JVM running for 65.616)
+2020-12-16 03:25:48.125  INFO 5748 --- [restartedMain] ssp.marketplace.app.AppApplication       : Starting AppApplication on Alina with PID 5748 (E:\IdeaProjects\IOn\offer\backend\build\classes\java\main started by Alina in E:\IdeaProjects\IOn\offer\backend)
+2020-12-16 03:25:48.140  INFO 5748 --- [restartedMain] ssp.marketplace.app.AppApplication       : No active profile set, falling back to default profiles: default
+2020-12-16 03:25:48.181  INFO 5748 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-16 03:25:48.181  INFO 5748 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-16 03:25:49.042  INFO 5748 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data JPA repositories in DEFERRED mode.
+2020-12-16 03:25:49.152  INFO 5748 --- [restartedMain] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 93ms. Found 8 JPA repository interfaces.
+2020-12-16 03:25:49.713  INFO 5748 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8080 (http)
+2020-12-16 03:25:49.713  INFO 5748 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-12-16 03:25:49.713  INFO 5748 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.39]
+2020-12-16 03:25:49.853  INFO 5748 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-12-16 03:25:49.853  INFO 5748 --- [restartedMain] w.s.c.ServletWebServerApplicationContext : Root WebApplicationContext: initialization completed in 1672 ms
+2020-12-16 03:25:49.986  INFO 5748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Starting...
+2020-12-16 03:25:50.174  INFO 5748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Start completed.
+2020-12-16 03:25:51.221  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:25:51.221  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangeloglock
+2020-12-16 03:25:51.221  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT LOCKED FROM public.databasechangeloglock WHERE ID=1
+2020-12-16 03:25:51.237  INFO 5748 --- [restartedMain] l.lockservice.StandardLockService        : Successfully acquired change log lock
+2020-12-16 03:26:01.289  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT MD5SUM FROM public.databasechangelog WHERE MD5SUM IS NOT NULL LIMIT 1
+2020-12-16 03:26:01.291  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT COUNT(*) FROM public.databasechangelog
+2020-12-16 03:26:01.292  INFO 5748 --- [restartedMain] l.c.StandardChangeLogHistoryService      : Reading from public.databasechangelog
+2020-12-16 03:26:01.292  INFO 5748 --- [restartedMain] liquibase.executor.jvm.JdbcExecutor      : SELECT * FROM public.databasechangelog ORDER BY DATEEXECUTED ASC, ORDEREXECUTED ASC
+2020-12-16 03:26:01.381  INFO 5748 --- [restartedMain] l.lockservice.StandardLockService        : Successfully released change log lock
+2020-12-16 03:26:01.381  INFO 5748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown initiated...
+2020-12-16 03:26:01.387  INFO 5748 --- [restartedMain] com.zaxxer.hikari.HikariDataSource       : HikariPool-1 - Shutdown completed.
+2020-12-16 03:26:01.456  INFO 5748 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-16 03:26:01.511  INFO 5748 --- [task-1] o.hibernate.jpa.internal.util.LogHelper  : HHH000204: Processing PersistenceUnitInfo [name: default]
+2020-12-16 03:26:01.562  INFO 5748 --- [task-1] org.hibernate.Version                    : HHH000412: Hibernate ORM core version 5.4.22.Final
+2020-12-16 03:26:01.700  INFO 5748 --- [task-1] o.hibernate.annotations.common.Version   : HCANN000001: Hibernate Commons Annotations {5.1.0.Final}
+2020-12-16 03:26:01.797  INFO 5748 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Starting...
+2020-12-16 03:26:01.875  INFO 5748 --- [task-1] com.zaxxer.hikari.HikariDataSource       : HikariPool-2 - Start completed.
+2020-12-16 03:26:01.903  INFO 5748 --- [task-1] org.hibernate.dialect.Dialect            : HHH000400: Using dialect: org.hibernate.dialect.PostgreSQL10Dialect
+2020-12-16 03:26:02.106  WARN 5748 --- [restartedMain] JpaBaseConfiguration$JpaWebConfiguration : spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2020-12-16 03:26:02.379  INFO 5748 --- [restartedMain] s.m.app.config.MailSenderConfiguration   : Creating custom JavaMailSender
+2020-12-16 03:26:02.391  INFO 5748 --- [restartedMain] s.m.a.s.i.events.RegistrationListener    : Listener created
+2020-12-16 03:26:03.006  INFO 5748 --- [restartedMain] o.s.s.web.DefaultSecurityFilterChain     : Creating filter chain: any request, [org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@1fe722a7, org.springframework.security.web.context.SecurityContextPersistenceFilter@4db02e21, org.springframework.security.web.header.HeaderWriterFilter@404abc67, org.springframework.web.filter.CorsFilter@5ca30933, org.springframework.security.web.authentication.logout.LogoutFilter@5ca6106a, ssp.marketplace.app.security.jwt.JwtTokenFilter@9e5a3a0, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@40ebc63c, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@4fd7e10, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@e7ff2eb, org.springframework.security.web.session.SessionManagementFilter@79df3b96, org.springframework.security.web.access.ExceptionTranslationFilter@3e88938c, org.springframework.security.web.access.intercept.FilterSecurityInterceptor@5e9ceb06]
+2020-12-16 03:26:03.131  INFO 5748 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-12-16 03:26:03.215  INFO 5748 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8080 (http) with context path ''
+2020-12-16 03:26:03.218  INFO 5748 --- [restartedMain] DeferredRepositoryInitializationListener : Triggering deferred initialization of Spring Data repositories…
+2020-12-16 03:26:03.369  INFO 5748 --- [task-1] o.h.e.t.j.p.i.JtaPlatformInitiator       : HHH000490: Using JtaPlatform implementation: [org.hibernate.engine.transaction.jta.platform.internal.NoJtaPlatform]
+2020-12-16 03:26:03.386  INFO 5748 --- [task-1] j.LocalContainerEntityManagerFactoryBean : Initialized JPA EntityManagerFactory for persistence unit 'default'
+2020-12-16 03:26:03.990  INFO 5748 --- [restartedMain] DeferredRepositoryInitializationListener : Spring Data repositories initialized!
+2020-12-16 03:26:04.005  INFO 5748 --- [restartedMain] ssp.marketplace.app.AppApplication       : Started AppApplication in 16.26 seconds (JVM running for 17.22)
+2020-12-16 03:26:07.085  INFO 5748 --- [http-nio-8080-exec-3] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring DispatcherServlet 'dispatcherServlet'
+2020-12-16 03:26:07.085  INFO 5748 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Initializing Servlet 'dispatcherServlet'
+2020-12-16 03:26:07.090  INFO 5748 --- [http-nio-8080-exec-3] o.s.web.servlet.DispatcherServlet        : Completed initialization in 5 ms
+2020-12-16 03:26:07.565  INFO 5748 --- [http-nio-8080-exec-3] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@5f63a89f found by email qwe@asd.ru
+2020-12-16 03:26:07.567  INFO 5748 --- [http-nio-8080-exec-3] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:26:08.070  INFO 5748 --- [http-nio-8080-exec-3] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@5f63a89f found by email qwe@asd.ru
+2020-12-16 03:26:25.505  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@5c6f15a3 found by email qwe@asd.ru
+2020-12-16 03:26:25.505  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:28:07.877  INFO 5748 --- [http-nio-8080-exec-5] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@46cc235b found by email qwe@asd.ru
+2020-12-16 03:28:07.878  INFO 5748 --- [http-nio-8080-exec-5] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:30:31.852  INFO 5748 --- [http-nio-8080-exec-8] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@77656e80 found by email qwe@asd.ru
+2020-12-16 03:30:31.852  INFO 5748 --- [http-nio-8080-exec-8] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:31:14.760  INFO 5748 --- [http-nio-8080-exec-10] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@2976370e found by email qwe@asd.ru
+2020-12-16 03:31:14.760  INFO 5748 --- [http-nio-8080-exec-10] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:31:30.041  INFO 5748 --- [http-nio-8080-exec-1] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@537fdf0 found by email qwe@asd.ru
+2020-12-16 03:31:30.041  INFO 5748 --- [http-nio-8080-exec-1] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:31:30.062  WARN 5748 --- [http-nio-8080-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [ssp.marketplace.app.exceptions.NotFoundException: Пусто]
+2020-12-16 03:31:57.077  INFO 5748 --- [http-nio-8080-exec-3] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@344b6870 found by email qwe@asd.ru
+2020-12-16 03:31:57.077  INFO 5748 --- [http-nio-8080-exec-3] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:32:28.237  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@2abf6b00 found by email qwe@asd.ru
+2020-12-16 03:32:28.238  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:34:27.211  INFO 5748 --- [http-nio-8080-exec-5] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@5636232b found by email qwe@asd.ru
+2020-12-16 03:34:27.211  INFO 5748 --- [http-nio-8080-exec-5] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:53:03.091  INFO 5748 --- [http-nio-8080-exec-8] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@37b13bb7 found by email qwe@asd.ru
+2020-12-16 03:53:03.092  INFO 5748 --- [http-nio-8080-exec-8] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:53:03.625  INFO 5748 --- [http-nio-8080-exec-8] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@37b13bb7 found by email qwe@asd.ru
+2020-12-16 03:53:22.248  INFO 5748 --- [http-nio-8080-exec-10] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@58ac267d found by email qwe@asd.ru
+2020-12-16 03:53:22.248  INFO 5748 --- [http-nio-8080-exec-10] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:53:22.736  INFO 5748 --- [http-nio-8080-exec-10] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@58ac267d found by email qwe@asd.ru
+2020-12-16 03:54:00.697  INFO 5748 --- [http-nio-8080-exec-1] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@13f1450a found by email qwe@asd.ru
+2020-12-16 03:54:00.697  INFO 5748 --- [http-nio-8080-exec-1] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 03:54:00.865  WARN 5748 --- [http-nio-8080-exec-1] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [org.springframework.validation.BindException: org.springframework.validation.BeanPropertyBindingResult: 1 errors
+Field error in object 'requestOfferDto' on field 'description': rejected value []; codes [NotBlank.requestOfferDto.description,NotBlank.description,NotBlank.java.lang.String,NotBlank]; arguments [org.springframework.context.support.DefaultMessageSourceResolvable: codes [requestOfferDto.description,description]; arguments []; default message [description]]; default message [Описание не может быть пустым]]
+2020-12-16 04:24:40.657  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@6d2ea251 found by email qwe@asd.ru
+2020-12-16 04:24:40.660  INFO 5748 --- [http-nio-8080-exec-2] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 04:24:40.710  WARN 5748 --- [http-nio-8080-exec-2] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [ssp.marketplace.app.exceptions.BadRequestException: Документ не может быть пустым]
+2020-12-16 04:24:49.415  INFO 5748 --- [http-nio-8080-exec-4] s.m.app.service.impl.UserServiceImpl     : IN findByEmail - user: ssp.marketplace.app.entity.User@2f0d88ff found by email qwe@asd.ru
+2020-12-16 04:24:49.415  INFO 5748 --- [http-nio-8080-exec-4] s.m.app.security.UserDetailsServiceImpl  : IN loadUserByUsername - user with email: qwe@asd.ru successfully loaded
+2020-12-16 04:24:49.437  WARN 5748 --- [http-nio-8080-exec-4] .m.m.a.ExceptionHandlerExceptionResolver : Resolved [ssp.marketplace.app.exceptions.NotFoundException: Пусто]

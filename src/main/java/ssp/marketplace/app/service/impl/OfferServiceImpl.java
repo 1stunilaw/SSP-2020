@@ -90,13 +90,14 @@ public class OfferServiceImpl implements OfferService {
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_USER.toString())){ //если заполнил информацию
 */
-        //offer.setNumber(0L);//костыль на время теста
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
 
         orderFromDB.getOffers().add(offer);
         offer.setOrder(orderFromDB);
+
+        offer.setNumber(-1L);
 
         offer.setStatusForOffer(StatusForOffer.ACTIVE);
         offer.setDescription(requestOfferDto.getDescription());
