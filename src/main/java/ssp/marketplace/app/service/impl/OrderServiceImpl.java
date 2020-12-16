@@ -79,7 +79,7 @@ public class OrderServiceImpl implements OrderService {
             page = mapToDtoAndToPages(search, pageable);
         }
         if(page.isEmpty()||page == null) {
-            throw new NotFoundException("Пусто");
+            page = null;
         }
         return page;
     }
