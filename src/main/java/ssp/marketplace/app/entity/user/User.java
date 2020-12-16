@@ -1,5 +1,6 @@
 package ssp.marketplace.app.entity.user;
 
+import com.sun.istack.Nullable;
 import lombok.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
@@ -43,6 +44,8 @@ public class User extends BasicEntity {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
     private  List<Comment> comments;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    private List<Offer> offers;
 
     public boolean equals(Object obj) {
         if (this == obj) {

@@ -33,7 +33,7 @@ public class OrderAdminController {
         return orderService.createOrder(req, responseOrderDto);
     }
 
-    @RequestMapping(value = "{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
+    @RequestMapping(value = "/{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin updateOrder(
             @PathVariable("orderId") UUID id,

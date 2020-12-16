@@ -59,6 +59,9 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Offer> offers;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "orders_tags",
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
