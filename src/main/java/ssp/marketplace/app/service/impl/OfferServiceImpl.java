@@ -97,8 +97,6 @@ public class OfferServiceImpl implements OfferService {
         orderFromDB.getOffers().add(offer);
         offer.setOrder(orderFromDB);
 
-        offer.setNumber(-1L);
-
         offer.setStatusForOffer(StatusForOffer.ACTIVE);
         offer.setDescription(requestOfferDto.getDescription());
 
