@@ -21,22 +21,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/register/verify"
     };
 
-    private static final String[] blankUserEndpoints = new String[]{
-            "/api/supplier/fill",
-            "/document/**",
+    private static final String[] generalEndpoints = new String[]{
             "/api/tags",
-            "api/orders/**",
             "/api/user",
+            "/api/orders/**",
+            "/document/**"
+    };
+
+    private static final String[] blankUserEndpoints = new String[]{
+            "/api/supplier/fill"
     };
 
     private static final String[] userEndpoints = new String[]{
             "/api/home",
-            "/api/user",
-            "/document/**",
             "/api/supplier/update",
-            "api/orders/**",
             "api/offers/**",
-            "/api/tags",
             "/api/suppliers/{supplierId}/{filename}"
     };
 
@@ -49,8 +48,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/admin/**",
             "/api/suppliers",
             "/api/suppliers/{id}",
-            "/api/admin/**",
-            "/api/tags",
+            "/api/admin/**"
     };
 
     @Autowired
@@ -74,10 +72,11 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers(adminEndpoints).hasRole("ADMIN")
+                .antMatchers(publicEndpoints).permitAll()
+                .antMatchers(generalEndpoints).hasAnyRole("ADMIN", "USER", "BLANK_USER")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
                 .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
-                .antMatchers(publicEndpoints).permitAll()
+                .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .apply(new JwtConfigurer(jwtTokenProvider))
