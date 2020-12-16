@@ -38,7 +38,7 @@ public class LawStatusServiceImpl implements LawStatusService {
 
     @Override
     public void deleteLawStatus(UUID id) {
-        LawStatus lawStatus = lawStatusRepository.findById(id)
+        LawStatus lawStatus = lawStatusRepository.findByIdAndStatus(id, StatusForTag.ACTIVE)
                 .orElseThrow(()-> new NotFoundException("Юридического статуса с данным ID не существует"));
 
         lawStatus.setStatus(StatusForTag.DELETED);
