@@ -13,6 +13,7 @@ import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
+import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -27,17 +28,23 @@ public class SupplierServiceImpl implements SupplierService {
     private final RoleRepository roleRepository;
     private final DocumentService documentService;
     private final UserService userService;
+    private final JwtTokenProvider jwtTokenProvider;
+
 
     @Autowired
-    public SupplierServiceImpl(UserRepository userRepository, RoleRepository roleRepository, DocumentService documentService,UserService userService) {
+    public SupplierServiceImpl(
+            UserRepository userRepository, RoleRepository roleRepository, DocumentService documentService, UserService userService,
+            JwtTokenProvider jwtTokenProvider
+    ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.documentService = documentService;
         this.userService = userService;
+        this.jwtTokenProvider = jwtTokenProvider;
     }
 
     @Override
-    public SupplierResponseDto getSupplier(String id) {
+    public SupplierResponseDto getSupplier(String id, HttpServletRequest req) {
         try {
             UUID uuid = UUID.fromString(id);
             Optional<User> user = userRepository.findById(uuid);
@@ -45,8 +52,24 @@ public class SupplierServiceImpl implements SupplierService {
             if (!user.isPresent() || user.get().getSupplierDetails() == null){
                 throw new NotFoundException("Поставщик с данным идентификатором не был найден");
             }
+            return new SupplierForAdminResponseDto(user.get());
+        } catch (IllegalArgumentException ex){
+            throw new BadRequestException("Невалидный идентификатор");
+        }
+    }
 
-            return new SupplierResponseDto(user.get());
+    @Override
+    public SupplierForAdminResponseDto addAccreditationStatus(String id, SupplierAddAccreditationRequestDto accreditationStatus) {
+        try {
+            UUID uuid = UUID.fromString(id);
+            Optional<User> user = userRepository.findById(uuid);
+            if (!user.isPresent() || user.get().getSupplierDetails() == null){
+                throw new NotFoundException("Поставщик с данным идентификатором не был найден");
+            }
+            User u = user.get();
+            u.getSupplierDetails().setAccreditationStatus(accreditationStatus.getAccreditationStatus());
+            userRepository.save(u);
+            return new SupplierForAdminResponseDto(u);
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный идентификатор");
         }

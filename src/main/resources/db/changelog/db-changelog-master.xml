@@ -56,4 +56,5 @@
     <include file="v2/2020-12-11T17-47--change-default-status-for-orders-table.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-16T03-38--add-status-to-law-statuses.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-16T04-05--alter-name-law-statuses.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-16T17-05--add-accreditation_status-for-supplier_details.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
