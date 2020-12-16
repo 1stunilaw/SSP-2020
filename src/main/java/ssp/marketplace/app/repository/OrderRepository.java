@@ -19,10 +19,6 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
 
     Optional<Order> findByName(String name);
 
-    @Query(value = "select number from orders where name = ?1", nativeQuery = true)
-        //// TODO: 23.11.2020 исправить получение номера
-    Long getNumber(String name);
-
     @Query(value = "select * from (SELECT * FROM orders_tags " +
             "INNER JOIN orders on orders_tags.order_id = orders.id " +
             "INNER JOIN tags on orders_tags.tag_id = tags.id " +

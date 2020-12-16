@@ -82,24 +82,6 @@ public class OrderServiceImpl implements OrderService {
         }
         return page;
     }
-    public static Specification<Order> filterStatus(String status) {
-        return (root, query, criteriaBuilder) -> {
-            Predicate statusDel = criteriaBuilder.notEqual(root.get("statusForOrder"), StatusForOrder.DELETED);
-            Predicate filterStatus = criteriaBuilder.like(root.get("statusForOrder").as(String.class), "%" + status + "%");
-            return criteriaBuilder.and(statusDel, filterStatus);
-        };
-    }
-    private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
-        List<Order> targetList = new ArrayList<>(search);
-        int start = (int)pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
-        if (end < start) {
-            throw new BadRequestException("Страницы не существует");
-        }
-        Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
-        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
-        return page;
-    }
 
     @Override
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
@@ -156,7 +138,6 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order);
         userRepository.save(userFromDB);
-        order.setNumber(orderRepository.getNumber(order.getName()));/// TODO: 28.11.2020  
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
@@ -277,5 +258,17 @@ public class OrderServiceImpl implements OrderService {
             order.setDocuments(documents);
         }
         orderRepository.save(order);
+    }
+
+    private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
+        List<Order> targetList = new ArrayList<>(search);
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
+        if (end < start) {
+            throw new BadRequestException("Страницы не существует");
+        }
+        Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        return page;
     }
 }
