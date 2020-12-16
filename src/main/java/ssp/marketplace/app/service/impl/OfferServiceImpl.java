@@ -8,6 +8,7 @@ import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
@@ -57,7 +58,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
+    public ResponseOfferDtoAdmin createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
         /**
          * id предложения /
@@ -108,13 +109,13 @@ public class OfferServiceImpl implements OfferService {
         userRepository.save(userFromDB);
         orderRepository.save(orderFromDB);
 
-        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
 
     }
 
 
     @Override
-    public ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto){
+    public ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto){
         /**
          * описание +
          * дата изменения TODO: проверка наличия изменений чуть позже
@@ -159,7 +160,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
     }
 
     @Override
@@ -238,5 +239,22 @@ public class OfferServiceImpl implements OfferService {
             offer.setDocuments(documents);
         }
         offerRepository.save(offer);
+    }
+
+    @Override
+    public void deleteDocumentFromOffer(UUID id, String name) {
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        List<Document> documents = DocumentService.selectOnlyActiveOfferDocument(offer);
+        List<String> names = new ArrayList<>();
+        for (Document doc : documents
+        ) {
+            names.add(doc.getName());
+        }
+        if (names.contains(name)) {
+            documentService.deleteDocument(name);
+        } else {
+            throw new NotFoundException("Документ не найден");
+        }
     }
 }

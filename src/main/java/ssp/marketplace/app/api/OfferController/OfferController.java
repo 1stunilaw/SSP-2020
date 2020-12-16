@@ -24,7 +24,7 @@ public class OfferController {
 
     @RequestMapping(value = "/{orderId}/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseOfferDto createOffer(
+    public ResponseOfferDtoAdmin createOffer(
             @PathVariable("orderId") UUID id,
             @ModelAttribute @Valid RequestOfferDto requestOfferDto,
             HttpServletRequest req
@@ -34,7 +34,7 @@ public class OfferController {
 
     @RequestMapping(value = "/{offerId}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseOfferDto updateOffer(
+    public ResponseOfferDtoAdmin updateOffer(
             @PathVariable("offerId") UUID id,
             @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate
     ) {
@@ -65,6 +65,15 @@ public class OfferController {
             HttpServletRequest req
     ) {
         return offerService.getListOfOffers(pageable, id, req);
+    }
+
+    @DeleteMapping("/{offerId}/document/{name}")
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteDocumentFromOffer(
+            @PathVariable UUID offerId,
+            @PathVariable String name
+    ) {
+        offerService.deleteDocumentFromOffer(offerId, name);
     }
 
 }

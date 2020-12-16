@@ -1,10 +1,15 @@
 package ssp.marketplace.app.entity;
 
 import lombok.*;
-import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.*;
+import org.hibernate.annotations.Generated;
 import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.*;
 
 @Entity
@@ -39,9 +44,7 @@ public class Offer extends BasicEntity{
     @Column(name = "status")
     private StatusForOffer statusForOffer;
 
-    @Column(name="number", nullable=false, unique=true, insertable = false, updatable = true)
-    @SequenceGenerator(name="my_seq", sequenceName="offers_number_seq")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE ,generator="my_seq")
+    @Generated(GenerationTime.INSERT)
     private Long number;
 
     @ManyToMany(fetch = FetchType.LAZY)

@@ -7,7 +7,7 @@ import ssp.marketplace.app.service.DocumentService;
 import java.util.*;
 
 @Data
-@RequiredArgsConstructor
+@Builder
 public class ResponseOfferDtoAdmin extends ResponseOfferDtoAbstract {
 
     /**

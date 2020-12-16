@@ -7,15 +7,14 @@ import ssp.marketplace.app.service.DocumentService;
 import java.util.*;
 
 @Data
-@RequiredArgsConstructor
 public class ResponseOfferDto extends ResponseOfferDtoAbstract {
 
     /**
      * Информация, которая видна поставщику:
      *
      * Дата создания
-     * Описание
      * Документы
+     * Описание
      */
 
     public static ResponseOfferDto responseOfferDtoFromOffer(Offer offer) {
