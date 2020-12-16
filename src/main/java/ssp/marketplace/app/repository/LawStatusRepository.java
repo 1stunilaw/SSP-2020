@@ -10,6 +10,7 @@ import java.util.*;
 @Repository
 public interface LawStatusRepository extends JpaRepository<LawStatus, UUID> {
     Set<LawStatus> findByStatus(StatusForTag status);
+    Optional<LawStatus> findByIdAndStatus(UUID id, StatusForTag status);
     Boolean existsByName(String name);
     Set<LawStatus> findByNameAndStatus(String name, StatusForTag status);
 }

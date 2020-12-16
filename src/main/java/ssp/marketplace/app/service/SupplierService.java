@@ -10,7 +10,9 @@ import java.util.UUID;
 
 public interface SupplierService {
 
-    SupplierResponseDto getSupplier(String id);
+    SupplierResponseDto getSupplier(String id, HttpServletRequest req);
+
+    SupplierResponseDto addAccreditationStatus(String id, SupplierAddAccreditationRequestDto accreditationStatus);
 
     Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable);
 

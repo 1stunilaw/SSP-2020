@@ -12,6 +12,7 @@ import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.SupplierService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import java.util.*;
 
 @RestController
@@ -20,7 +21,6 @@ import java.util.*;
 public class SupplierController {
 
     private SupplierService supplierService;
-
 
     @Autowired
     public SupplierController(SupplierService supplierService) {
@@ -35,8 +35,19 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
-    public SupplierResponseDto getSupplier(@PathVariable("id") String id){
-        return supplierService.getSupplier(id);
+    public SupplierResponseDto getSupplier(
+            @PathVariable("id") String id,
+            HttpServletRequest req
+    ) {
+        return supplierService.getSupplier(id, req);
+    }
+
+    @PostMapping("add-accreditation/{id}")
+    public SupplierResponseDto addAccreditationStatus(
+            @PathVariable("id") String id,
+            @RequestBody @Valid SupplierAddAccreditationRequestDto accreditationStatus
+    ) {
+        return supplierService.addAccreditationStatus(id, accreditationStatus);
     }
 
     @GetMapping(value = "/{supplierId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
@@ -52,7 +63,6 @@ public class SupplierController {
             throw new BadRequestException("Невалидный ID пользователя");
         }
     }
-
 
     @DeleteMapping("/{supplierId}/{filename}")
     public ResponseEntity deleteDocument(

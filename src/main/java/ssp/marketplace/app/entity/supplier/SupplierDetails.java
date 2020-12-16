@@ -4,7 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.user.User;
+import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.entity.user.*;
 
 import javax.persistence.*;
 import java.util.*;
@@ -62,6 +63,10 @@ public class SupplierDetails extends BasicEntity {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="law_status_id")
     private LawStatus lawStatus;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "accreditation_status")
+    private AccreditationStatus accreditationStatus;
 
     /**
      * Конструктор данных поставщика при регистрации
