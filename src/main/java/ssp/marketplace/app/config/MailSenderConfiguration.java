@@ -8,7 +8,6 @@ import org.springframework.mail.javamail.*;
 import java.util.Properties;
 
 @Configuration
-@Slf4j
 public class MailSenderConfiguration {
     @Value("${spring.mail.host}")
     private String host;
@@ -31,7 +30,6 @@ public class MailSenderConfiguration {
 
     @Bean
     public JavaMailSender getJavaMailSender() {
-        log.info("Creating custom JavaMailSender");
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
         mailSender.setHost(host);

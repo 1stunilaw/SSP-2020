@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+
+    <changeSet id="2020-11-19T20-01--create-comment-table" author="Podkorytova Renata">
+        <createTable tableName="comment">
+            <column name="id" type="UUID">
+                <constraints nullable="false" unique="true"/>
+            </column>
+            <column name="status" type="varchar(25)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="text" type="text">
+                <constraints nullable="true"/>
+            </column>
+            <column name="updated_at" type="timestamp with time zone">
+                <constraints nullable="false"/>
+            </column>
+            <column name="user_id" type="UUID">
+                <constraints nullable="false" references="users(id)" deleteCascade="true" foreignKeyName="fk_user"/>
+
+            </column>
+
+            <column name="order_id" type="UUID">
+                <constraints nullable="false" references="orders(id)" deleteCascade="true" foreignKeyName="fk_order"/>
+
+            </column>
+
+        </createTable>
+        <rollback>
+            DROP TABLE comment;
+        </rollback>
+    </changeSet>
+
+
+</databaseChangeLog>

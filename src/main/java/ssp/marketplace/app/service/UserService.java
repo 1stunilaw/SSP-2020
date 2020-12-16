@@ -1,12 +1,11 @@
 package ssp.marketplace.app.service;
 
-import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.registration.*;
 import ssp.marketplace.app.dto.user.*;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
-import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.validation.FieldValueExists;
+import ssp.marketplace.app.entity.user.*;
+import ssp.marketplace.app.validation.unique.FieldValueExists;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -14,8 +13,6 @@ import java.util.*;
 public interface UserService extends FieldValueExists {
 
     UserResponseDto register(RegisterRequestUserDto registerDto);
-
-//    Set<UserResponseDto> getAllUsers();
 
     User findByEmail(String email);
 
@@ -37,6 +34,7 @@ public interface UserService extends FieldValueExists {
 
     SupplierResponseDto updateSupplier(HttpServletRequest request, SupplierUpdateRequestDto dto);
 
-    SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
+    SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto);
 
+    boolean verifyJwt(HttpServletRequest request);
 }

@@ -1,5 +1,6 @@
 package ssp.marketplace.app.dto.responseDto;
 
+import ssp.marketplace.app.dto.user.customer.CustomerResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
 
@@ -24,14 +25,14 @@ public class  ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
         orderDto.setDocuments(stringDocs);
         orderDto.setDescription(order.getDescription());
         orderDto.setNumber(order.getNumber());
-        orderDto.setUser(order.getUser().getCustomerDetails().getFio());
+        orderDto.setUser(new CustomerResponseDto(order.getUser()));
 
-        List<Tag> tags = order.getTags();
-        List<String> tagsName = new ArrayList<>();
+        Set<Tag> tags = order.getTags();
+        List<ResponseTag> tagsName = new ArrayList<>();
         if (tags != null) {
             for (Tag tag : tags
             ) {
-                tagsName.add(tag.getTagName());
+                tagsName.add(ResponseTag.getResponseTagFromTag(tag));
             }
             orderDto.setTags(tagsName);
         }

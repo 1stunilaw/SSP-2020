@@ -2,21 +2,24 @@ package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.*;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-import ssp.marketplace.app.dto.registration.*;
+import ssp.marketplace.app.dto.registration.RegisterRequestUserDto;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
-import ssp.marketplace.app.dto.user.*;
+import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
+import ssp.marketplace.app.entity.statuses.StatusForTag;
 import ssp.marketplace.app.entity.supplier.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
@@ -24,6 +27,7 @@ import ssp.marketplace.app.service.*;
 import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
 import javax.servlet.http.HttpServletRequest;
+import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -41,9 +45,13 @@ public class UserServiceImpl implements UserService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final MessageSource messageSource;
+
     private final LawStatusRepository lawStatusRepository;
 
     private final DocumentService documentService;
+
+    private final TagRepository tagRepository;
 
     @Autowired
     public UserServiceImpl(
@@ -51,14 +59,18 @@ public class UserServiceImpl implements UserService {
             UserRepository userRepository,
             RoleRepository roleRepository,
             TokenRepository tokenRepository,
+            TagRepository tagRepository,
             LawStatusRepository lawStatusRepository,
             DocumentService documentService,
+            MessageSource messageSource,
             @Lazy JwtTokenProvider jwtTokenProvider
     ) {
         this.eventPublisher = eventPublisher;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.tokenRepository = tokenRepository;
+        this.tagRepository = tagRepository;
+        this.messageSource = messageSource;
         this.jwtTokenProvider = jwtTokenProvider;
         this.lawStatusRepository = lawStatusRepository;
         this.documentService = documentService;
@@ -130,7 +142,6 @@ public class UserServiceImpl implements UserService {
     public User findByEmail(String email) {
         User result = userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь с данным email не был найден: " + email));
-        log.info("IN findByEmail - user: {} found by email {}", result, email);
         return result;
     }
 
@@ -185,24 +196,29 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
-        if (!"email".equals(fieldName)) {
-            throw new UnsupportedOperationException("Данное поле не поддерживается");
-        }
 
-        if (value == null) {
-            return false;
+        switch (fieldName){
+            case "email":
+                return userRepository.existsByEmail(value.toString());
+            case "inn":
+                return userRepository.existsBySupplierDetails_Inn(value.toString());
+            case "companyName":
+                return userRepository.existsBySupplierDetails_CompanyName(value.toString());
+            case "supplierPhone":
+                return userRepository.existsBySupplierDetails_Phone(value.toString());
+            case "customerPhone":
+                return userRepository.existsByCustomerDetails_Phone(value.toString());
+            default:
+                throw new UnsupportedOperationException("Данное поле не поддерживается");
         }
-
-        return userRepository.existsByEmail(value.toString());
     }
 
     @Override
     public User getUserFromHttpServletRequest(HttpServletRequest req) {
         String token = jwtTokenProvider.resolveToken(req);
         String email = jwtTokenProvider.getEmail(token);
-        User user = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
-        return user;
     }
 
     @Override
@@ -214,9 +230,12 @@ public class UserServiceImpl implements UserService {
     public UserResponseDto getCurrentUser(HttpServletRequest request) {
         User user = getUserFromHttpServletRequest(request);
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+
         if (roles.contains(RoleName.ROLE_ADMIN)) {
             return new CustomerResponseDto(user);
-        } else if (roles.contains(RoleName.ROLE_USER) || roles.contains(RoleName.ROLE_BLANK_USER)) {
+        }
+
+        if (roles.contains(RoleName.ROLE_USER) || roles.contains(RoleName.ROLE_BLANK_USER)) {
             return new SupplierResponseDto(user);
         }
 
@@ -227,15 +246,17 @@ public class UserServiceImpl implements UserService {
     public CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
-        
-        if (dto.getFio() != null) {
+
+        if (dto.getFio() != null && !dto.getPhone().trim().isEmpty()) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
 
-        if (dto.getPhone() != null) {
+        log.info(dto.getPhone());
+        if (dto.getPhone() != null && !dto.getPhone().trim().isEmpty()) {
             user.getCustomerDetails().setPhone(dto.getPhone());
         }
 
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
         return new CustomerResponseDto(userRepository.save(user));
     }
 
@@ -246,6 +267,26 @@ public class UserServiceImpl implements UserService {
     ) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_USER)) {
+            throw new AccessDeniedException("Доступ запрещён");
+        }
+
+        if (dto.getLawStatusId() != null) {
+            LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
+                    .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
+            user.getSupplierDetails().setLawStatus(status);
+        }
+
+        List<Document> userDocs = user.getSupplierDetails().getDocuments();
+
+        if (userDocs != null && dto.getFiles() != null && userDocs.size() + dto.getFiles().length > 10) {
+            throw new BadRequestException(
+                    messageSource.getMessage(
+                            "files.errors.amount", null, new Locale("ru", "RU")
+                    )
+            );
+        }
 
         if (dto.getDescription() != null) {
             user.getSupplierDetails().setDescription(dto.getDescription());
@@ -259,8 +300,8 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setInn(dto.getInn());
         }
 
-        if (dto.getContactFio() != null) {
-            user.getSupplierDetails().setContactFio(dto.getContactFio());
+        if (dto.getFio() != null) {
+            user.getSupplierDetails().setContactFio(dto.getFio());
         }
 
         if (dto.getPhone() != null) {
@@ -271,10 +312,12 @@ public class UserServiceImpl implements UserService {
             user.getSupplierDetails().setRegion(dto.getRegion());
         }
 
-        if (dto.getLawStatusId() != null) {
-            LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
-                    .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
-            user.getSupplierDetails().setLawStatus(status);
+        if (dto.getContacts() != null) {
+            user.getSupplierDetails().setContacts(dto.getContacts());
+        }
+
+        if (dto.getTags() != null) {
+            addTagsToUser(user, dto.getTags());
         }
 
         MultipartFile[] files = dto.getFiles();
@@ -282,7 +325,16 @@ public class UserServiceImpl implements UserService {
             addDocumentToUser(user, files);
         }
 
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
         return new SupplierResponseDto(userRepository.save(user));
+    }
+
+    private void addTagsToUser(User user, Set<String> setOfId){
+        setOfId.forEach(id -> {
+            Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StatusForTag.DELETED))
+                    .orElseThrow(()->new NotFoundException("Тег с данным id не найден"));
+            user.getSupplierDetails().getTags().add(tag);
+        });
     }
 
     private void addDocumentToUser(
@@ -299,19 +351,41 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SupplierResponseDto fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
+    public SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
         User user = getUserFromHttpServletRequest(request);
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_BLANK_USER)) {
+            throw new AccessDeniedException("Доступ запрещён");
+        }
         // TODO: 03.12.2020 Переделать через MapStruct
-        user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        LawStatus status = lawStatusRepository.findById(
+                UUID.fromString(dto.getLawStatusId())
+        ).orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
+
+        List<Document> userDocs = user.getSupplierDetails().getDocuments();
+
+        if (userDocs != null && dto.getFiles() != null && userDocs.size() + dto.getFiles().length > 10) {
+            throw new BadRequestException(
+                    messageSource.getMessage(
+                            "files.errors.amount", null, new Locale("ru", "RU")
+                    )
+            );
+        }
+        if (dto.getCompanyName() != null){
+            user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        }
+
         user.getSupplierDetails().setDescription(dto.getDescription());
         user.getSupplierDetails().setInn(dto.getInn());
-        user.getSupplierDetails().setContactFio(dto.getContactFio());
+        user.getSupplierDetails().setContactFio(dto.getFio());
         user.getSupplierDetails().setPhone(dto.getPhone());
+        user.getSupplierDetails().setContacts(dto.getContacts());
         user.getSupplierDetails().setRegion(dto.getRegion());
-        LawStatus status = lawStatusRepository.findById(UUID.fromString(dto.getLawStatusId()))
-                .orElseThrow(() -> new NotFoundException("Юридический статус с данным ID не найден"));
         user.getSupplierDetails().setLawStatus(status);
 
+        if (dto.getTags() != null) {
+            addTagsToUser(user, dto.getTags());
+        }
 
         MultipartFile[] files = dto.getFiles();
         if (files != null && files.length != 0) {
@@ -323,8 +397,16 @@ public class UserServiceImpl implements UserService {
 
         user.getRoles().remove(blankUser);
         user.getRoles().add(roleUser);
+        user.setUpdatedAt(new Timestamp(new Date().getTime()));
 
-        return new SupplierResponseDto(userRepository.save(user));
+        String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
+
+        return new SupplierResponseDtoWithNewToken(userRepository.save(user), token);
     }
 
+    @Override
+    public boolean verifyJwt(HttpServletRequest request) {
+        String token = jwtTokenProvider.resolveToken(request);
+        return jwtTokenProvider.validateToken(token);
+    }
 }

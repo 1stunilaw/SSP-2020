@@ -45,7 +45,7 @@ public class ResponseListOrderDto {
                 .user(order.getUser().getCustomerDetails().getFio())
                 .number(order.getNumber())
                 .build();
-        List<Tag> tags = order.getTags();
+        Set<Tag> tags = order.getTags();
         List<String> tagsName = new ArrayList<>();
         if (tags != null) {
             for (Tag tag : tags

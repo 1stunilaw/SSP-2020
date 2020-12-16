@@ -1,4 +1,4 @@
-package ssp.marketplace.app.validation;
+package ssp.marketplace.app.validation.unique;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -27,6 +27,10 @@ public class UniqueValidator implements ConstraintValidator<Unique, Object> {
 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext constraintValidatorContext) {
+        if (value == null){
+            return true;
+        }
+        
         return !this.service.fieldValueExists(value, this.fieldName);
     }
 }

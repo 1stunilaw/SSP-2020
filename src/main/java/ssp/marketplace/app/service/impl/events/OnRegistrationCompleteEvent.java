@@ -3,7 +3,7 @@ package ssp.marketplace.app.service.impl.events;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEvent;
-import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.entity.user.User;
 
 @Getter
 @Setter
@@ -15,7 +15,6 @@ public class OnRegistrationCompleteEvent extends ApplicationEvent {
 
     public OnRegistrationCompleteEvent(User user, String appUrl) {
         super(user);
-        log.info("Event started");
         this.user = user;
         this.appUrl = appUrl;
     }

@@ -1,4 +1,4 @@
-package ssp.marketplace.app.validation;
+package ssp.marketplace.app.validation.unique;
 
 public interface FieldValueExists {
     /**

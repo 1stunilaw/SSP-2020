@@ -1,31 +1,35 @@
 package ssp.marketplace.app.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
-import org.springframework.core.env.Environment;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.Order;
+import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
+import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.util.*;
 
 @Service
+@Slf4j
 public class OrderServiceImpl implements OrderService {
 
     private final OrderRepository orderRepository;
 
     private final UserRepository userRepository;
-
-    private final DocumentRepository documentRepository;
 
     private final DocumentService documentService;
 
@@ -38,15 +42,14 @@ public class OrderServiceImpl implements OrderService {
     private final JwtTokenProvider jwtTokenProvider;
 
     public OrderServiceImpl(
-            OrderRepository orderRepository, Environment env, UserRepository userRepository,
-            DocumentRepository documentRepository, DocumentService documentService,
+            OrderRepository orderRepository, UserRepository userRepository,
+            DocumentService documentService,
             MessageSource messageSource, UserService userService,
             OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider
     ) {
         this.orderRepository = orderRepository;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
-        this.documentRepository = documentRepository;
         this.documentService = documentService;
         this.userService = userService;
         this.orderBuilderService = orderBuilderService;
@@ -54,13 +57,30 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable) {
-        Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
-        if (orders.isEmpty()) {
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status) {
+        Page<ResponseListOrderDto> page = null;
+        if(textSearch == null && status == null) {
+            Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+            page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        }
+        else if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch,status);
+            page = mapToDtoAndToPages(search, pageable);
+            return page;
+        }
+
+        else if (status != null && !StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.filterStatus(status);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+
+        else if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+            Set<Order> search = orderRepository.search(textSearch);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+        if(page.isEmpty()||page == null) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOrderDto> page =
-                orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
 
@@ -82,19 +102,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
+    public void deleteDocumentFromOrder(UUID id, String name) {
+        Order order = orderRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        List<Document> documents = DocumentService.selectOnlyActiveDocument(order);
+        List<String> names = new ArrayList<>();
+        for (Document doc : documents
+        ) {
+            names.add(doc.getName());
+        }
+        if (names.contains(name)) {
+            documentService.deleteDocument(name);
+        } else {
+            throw new NotFoundException("Документ не найден");
+        }
+    }
+
+    @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = requestOrderDto.getDateStop();
-        if(dateStop.isBefore(now)){
-            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
+        if (dateStop.isBefore(now)) {
+            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
-        }
-        if(requestOrderDto.getFiles()!= null && requestOrderDto.getFiles().length>10){
-            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
-            throw new BadRequestException(filesCountError);
         }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
@@ -106,7 +139,6 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order);
         userRepository.save(userFromDB);
-        order.setNumber(orderRepository.getNumber(order.getName()));/// TODO: 28.11.2020  
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
@@ -123,30 +155,9 @@ public class OrderServiceImpl implements OrderService {
         }
         LocalDate now = LocalDate.now();
         LocalDate dateStop = updateDto.getDateStop();
-        if(dateStop.isBefore(now)){
-            String dateError = messageSource.getMessage("date.error", null, new Locale("ru", "RU"));
+        if (dateStop != null && dateStop.isBefore(now)) {
+            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
             throw new BadRequestException(dateError);
-        }
-        List<Document> documents = order.getDocuments();
-        List<String> documentsUpdate = updateDto.getDocuments();
-        if (documents != null && documentsUpdate != null) {
-            List<String> documentsOld = new ArrayList<>();
-            for (Document doc : documents
-            ) {
-                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
-                    documentsOld.add(doc.getName());
-                }
-            }
-            List<String> docDelete = new ArrayList<>(documentsOld);
-            docDelete.removeAll(documentsUpdate);
-            for (String docDelName : docDelete
-            ) {
-                if (documentRepository.findByName(docDelName) != null) {
-                    documentService.deleteDocument(docDelName);
-                } else {
-                    throw new BadRequestException("Файл " + docDelName + " не найден");
-                }
-            }
         }
 
         MultipartFile[] multipartFiles = updateDto.getFiles();
@@ -154,20 +165,18 @@ public class OrderServiceImpl implements OrderService {
             addDocumentToOrder(order, multipartFiles);
         }
 
-        if (updateName != null) {
+        if (updateName != null && !StringUtils.isBlank(updateName)) {
             order.setName(updateName);
         }
 
-        if (updateDto.getStatusForOrder() != null) {
-            order.setStatusForOrder(updateDto.getStatusForOrder());
+        String description = updateDto.getDescription();
+        if (description != null && !StringUtils.isBlank(description)) {
+            order.setDescription(description);
         }
 
-        if (updateDto.getDescription() != null) {
-            order.setDescription(updateDto.getDescription());
-        }
-
-        if (updateDto.getOrganizationName() != null) {
-            order.setOrganizationName(updateDto.getOrganizationName());
+        String organizationName = updateDto.getOrganizationName();
+        if (organizationName != null && !StringUtils.isBlank(organizationName)) {
+            order.setOrganizationName(organizationName);
         }
 
         if (updateDto.getDateStop() != null) {
@@ -179,6 +188,15 @@ public class OrderServiceImpl implements OrderService {
         if (updateDto.getTags() != null) {
             List<UUID> tagsId = updateDto.getTags();
             orderBuilderService.setTagForOrder(order, tagsId);
+        }
+
+        StatusForOrder statusForOrder = updateDto.getStatusForOrder();
+        if (statusForOrder != null) {
+            if (statusForOrder == StatusForOrder.CLOSED) {
+                LocalDateTime localDateTime = LocalDateTime.now();
+                order.setDateStop(localDateTime);
+            }
+            order.setStatusForOrder(statusForOrder);
         }
         orderRepository.save(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
@@ -194,10 +212,20 @@ public class OrderServiceImpl implements OrderService {
         ) {
             try {
                 documentService.deleteDocument(doc.getName());
-            } catch (NotFoundException e) {
-                continue;
+            } catch (NotFoundException ignored) {
             }
         }
+        orderRepository.save(order);
+    }
+
+    @Override
+    public void deleteOrderTags(UUID id, RequestDeleteTags requestDeleteTags) {
+        Order order = orderRepository.findByIdAndStatusForOrderNotIn(id, Collections.singleton(StatusForOrder.DELETED))
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        Set<UUID> tagsId = requestDeleteTags.getTagsId();
+        Set<Tag> tags = order.getTags();
+        tags.removeIf(t -> tagsId.contains(t.getId()));
+        order.setTags(tags);
         orderRepository.save(order);
     }
 
@@ -215,6 +243,14 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             MultipartFile[] multipartFiles
     ) {
+        List<Document> oldDocuments = DocumentService.selectOnlyActiveDocument(order);
+        int countOldDoc = oldDocuments.size();
+        int countNewDoc = multipartFiles.length;
+
+        if (countOldDoc + countNewDoc > 10) {
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (order.getDocuments() != null) {
@@ -223,5 +259,17 @@ public class OrderServiceImpl implements OrderService {
             order.setDocuments(documents);
         }
         orderRepository.save(order);
+    }
+
+    private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
+        List<Order> targetList = new ArrayList<>(search);
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
+        if (end < start) {
+            throw new BadRequestException("Страницы не существует");
+        }
+        Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        return page;
     }
 }

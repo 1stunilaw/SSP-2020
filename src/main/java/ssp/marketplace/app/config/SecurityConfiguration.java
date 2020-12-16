@@ -18,18 +18,20 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
     private static final String[] publicEndpoints = new String[]{
             "/api/login",
             "/api/register/supplier",
-            "/api/register/verify"
+            "/api/register/verify",
+            "/api/tags",
     };
 
     private static final String[] generalEndpoints = new String[]{
             "/api/tags",
             "/api/user",
+            "/api/user/token",
+            "/api/law-statuses",
             "/api/orders/**",
-            "/document/**"
-    };
+            "/api/supplier/fill",
+            "/document/**",
+            "api/comments/**"
 
-    private static final String[] blankUserEndpoints = new String[]{
-            "/api/supplier/fill"
     };
 
     private static final String[] userEndpoints = new String[]{
@@ -37,6 +39,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/api/supplier/update",
             "api/offers/**",
             "/api/suppliers/{supplierId}/{filename}"
+
     };
 
     private static final String[] adminEndpoints = new String[]{
@@ -48,7 +51,8 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
             "/admin/**",
             "/api/suppliers",
             "/api/suppliers/{id}",
-            "/api/admin/**"
+            "/api/admin/**",
+            "/api/law-statuses/*",
     };
 
     @Autowired
@@ -75,7 +79,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter implemen
                 .antMatchers(publicEndpoints).permitAll()
                 .antMatchers(generalEndpoints).hasAnyRole("ADMIN", "USER", "BLANK_USER")
                 .antMatchers(userEndpoints).hasAnyRole("USER", "ADMIN")
-                .antMatchers(blankUserEndpoints).hasRole("BLANK_USER")
                 .antMatchers(adminEndpoints).hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

@@ -1,9 +1,10 @@
 package ssp.marketplace.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Generated;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;
@@ -14,7 +15,8 @@ import java.util.*;
 
 @Entity
 @Table(name = "orders")
-@Data
+@Setter
+@Getter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -40,18 +42,18 @@ public class Order {
     @Column(name = "description")
     private String description;
 
-//    @JsonProperty("number")
-    @Column(name="number", nullable=false, unique=true, insertable = false,
-            updatable = true, columnDefinition = "BIGINT DEFAULT nextval('orders_number_seq')")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "orders_number_seq")
-    @SequenceGenerator(name = "orders_number_seq", sequenceName ="orders_number_seq")
+    @Generated(GenerationTime.INSERT)
     private Long number;
 
     @Column(name = "organization_name")
     private String organizationName;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private StatusForOrder statusForOrder;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "order", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
@@ -64,7 +66,7 @@ public class Order {
     @JoinTable(name = "orders_tags",
             joinColumns = {@JoinColumn(name = "order_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "orders_documents",

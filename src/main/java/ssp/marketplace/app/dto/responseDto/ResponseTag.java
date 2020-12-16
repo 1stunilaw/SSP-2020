@@ -23,4 +23,9 @@ public class ResponseTag {
                 .build();
         return responseTag;
     }
+
+    public ResponseTag(Tag tag) {
+        id = tag.getId();
+        tagName = tag.getTagName();
+    }
 }

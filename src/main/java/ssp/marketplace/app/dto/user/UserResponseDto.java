@@ -2,7 +2,7 @@ package ssp.marketplace.app.dto.user;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.entity.user.User;
 
 import java.io.Serializable;
 import java.sql.Timestamp;

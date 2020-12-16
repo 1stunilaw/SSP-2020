@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
 import ssp.marketplace.app.entity.*;
@@ -34,26 +35,38 @@ public class OrderBuilderService {
 
         List<UUID> tagsId = requestOrderDto.getTags();
 
+        String organizationName = null;
+        if(!StringUtils.isBlank(requestOrderDto.getOrganizationName())){
+            organizationName = requestOrderDto.getOrganizationName();
+        }
+
         Order order = Order.builder()
                 .name(requestOrderDto.getName())
-                .dateStart(LocalDateTime.now())
+                .dateStart(LocalDateTime.now().withSecond(0).withNano(0))
                 .dateStop(localDateTime)
                 .description(requestOrderDto.getDescription())
                 .statusForOrder(statusForOrder)
-                .organizationName(requestOrderDto.getOrganizationName())
+                .organizationName(organizationName)
                 .build();
         setTagForOrder(order, tagsId);
         return order;
     }
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
-        List<Tag> orderTags = new ArrayList<>();
+        Set<Tag> orderTags = order.getTags();
+        if(orderTags==null){
+            orderTags = new HashSet<>();
+        }
         if (tagsId != null) {
-            for (UUID id: tagsId
+            for (UUID id : tagsId
             ) {
-                Tag tagFromDB = tagRepository.findById(id).orElseThrow(() -> new NotFoundException("Тега c id = "+id+" не существует в базе данных"));
-                orderTags.add(tagFromDB);//
-                tagRepository.save(tagFromDB);
+                if(id==null){
+                    continue;
+                }
+                Tag tagFromDB = tagRepository.findById(id).orElseThrow(
+                        () -> new NotFoundException("Тега c id = " + id + " не существует в базе данных"));
+                    orderTags.add(tagFromDB);//
+                    tagRepository.save(tagFromDB);
             }
         }
         order.setTags(orderTags);

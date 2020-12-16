@@ -4,9 +4,10 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
-import java.util.List;
+import java.util.*;
 
 @Entity
 @Getter
@@ -41,6 +42,9 @@ public class SupplierDetails extends BasicEntity {
     @Column(name = "nda", length = 50)
     private String nda;
 
+    @Column(name = "contacts", length = 500)
+    private String contacts;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "suppliers_documents",
             joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},
@@ -51,13 +55,12 @@ public class SupplierDetails extends BasicEntity {
     @JoinTable(name = "suppliers_tags",
             joinColumns = {@JoinColumn(name = "supplier_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "tag_id", referencedColumnName = "id")})
-    private List<Tag> tags;
+    private Set<Tag> tags;
 
 
     @Nullable
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name="law_status_id")
-    @JsonBackReference
     private LawStatus lawStatus;
 
     /**

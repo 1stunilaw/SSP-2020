@@ -2,7 +2,7 @@ package ssp.marketplace.app.dto.user.customer;
 
 import lombok.*;
 import ssp.marketplace.app.dto.user.UserResponseDto;
-import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.entity.user.User;
 
 @Getter
 @Setter

@@ -1,4 +1,4 @@
-package ssp.marketplace.app.entity;
+package ssp.marketplace.app.entity.user;
 
 public enum  RoleName {
     ROLE_BLANK_USER,

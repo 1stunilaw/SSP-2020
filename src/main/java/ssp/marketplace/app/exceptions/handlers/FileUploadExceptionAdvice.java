@@ -18,6 +18,6 @@ public class FileUploadExceptionAdvice {
     public ErrorResponse FileUploadExceptionAdvice(
             MaxUploadSizeExceededException ex
     ) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Превышен максимальный размер файла "+size);
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), "Суммарный размер файлов не должен превышать "+size);
     }
 }

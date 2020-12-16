@@ -2,7 +2,12 @@ package ssp.marketplace.app.dto.user.customer;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
+import org.springframework.beans.propertyeditors.StringTrimmerEditor;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
+import ssp.marketplace.app.service.UserService;
+import ssp.marketplace.app.validation.unique.Unique;
 
 import javax.validation.constraints.*;
 
@@ -10,11 +15,10 @@ import javax.validation.constraints.*;
 @Setter
 @RequiredArgsConstructor
 public class CustomerUpdateRequestDto extends UserUpdateRequestDto {
-    @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{fio.errors.regex}")
-    @Length(min = 5, max = 150, message = "{fio.errors.length}")
+    @Pattern(regexp = "^$|^[a-zA-ZА-я][a-zA-ZА-я-.\" ]{4,149}+$", message = "{fio.errors.regex}")
     private String fio;
 
-    @Length(min = 6, max = 20, message = "{phone.errors.length}")
-    @Pattern(regexp = "^((8|\\+[0-9]{1,3})[\\- ]?)?(\\(?\\d{3}\\)?[\\- ]?)?[\\d\\- ]{6,15}$", message = "{phone.errors.regex}")
+    @Unique(message = "{phone.errors.unique}", service = UserService.class, fieldName = "customerPhone")
+    @Pattern(regexp = "^$|^((8|\\+[0-9]{1,3})[\\-]?)?(\\(?\\d{3}\\)?[\\-]?)?[\\d\\-]{6,15}$", message = "{phone.errors.regex}")
     private String phone;
 }

@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;
@@ -63,7 +64,7 @@ public class DocumentServiceImpl implements DocumentService {
         int countActiveDocs = DocumentService.selectOnlyActiveDocument(order).size();
         int countNewDocs = multipartFiles.length;
         if (countActiveDocs + countNewDocs > 10) {
-            String filesCountError = messageSource.getMessage("files.max.count", null, new Locale("ru", "RU"));
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();

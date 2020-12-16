@@ -1,17 +1,13 @@
 package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.*;
-import ssp.marketplace.app.entity.User;
+import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.UserService;
-
-import java.util.*;
 
 @RestController
 @RequestMapping(value = "api/")

@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
+import org.springframework.data.web.*;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.responseDto.*;
@@ -29,10 +29,12 @@ public class OrderController {
 
     @GetMapping()
     public Page<ResponseListOrderDto> getOrders(
+            @RequestParam(required = false) String search,
+            @RequestParam(required = false) String status,
             @PageableDefault(sort = {"dateStart", "statusForOrder"},
-                    size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable
+                    size = 30, value = 30, direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        return orderService.getOrders(pageable);
+        return orderService.getOrders(pageable, search, status);
     }
 
     @GetMapping("/{id}")

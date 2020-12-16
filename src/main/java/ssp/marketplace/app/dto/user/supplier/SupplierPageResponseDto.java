@@ -1,9 +1,9 @@
-package ssp.marketplace.app.dto.suppliers;
+package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.user.User;
 
 import java.io.Serializable;
 import java.util.*;
@@ -26,10 +26,6 @@ public class SupplierPageResponseDto implements Serializable {
     }
 
     public static List<SupplierPageResponseDto> listOfDto(Set<User> users){
-        return users.stream().map(x -> {
-            log.info(x.getEmail());
-            log.info(x.getSupplierDetails() + " in listOfDto");
-            return new SupplierPageResponseDto(x);
-        }).collect(Collectors.toList());
+        return users.stream().map(SupplierPageResponseDto::new).collect(Collectors.toList());
     }
 }

@@ -1,6 +1,8 @@
 package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
+import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.user.customer.CustomerResponseDto;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
 import java.util.*;
@@ -16,7 +18,7 @@ public abstract class ResponseOneOrderDtoAbstract {
 
     private Long number;
 
-    private List<String> tags;
+    private List<ResponseTag> tags;
 
     private StatusForOrder statusForOrder;
 
@@ -28,5 +30,5 @@ public abstract class ResponseOneOrderDtoAbstract {
 
     private List<String> documents;
 
-    private String user;
+    private CustomerResponseDto user;
 }

@@ -8,15 +8,16 @@ import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.suppliers.*;
-import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
+import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Slf4j
@@ -52,15 +53,11 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public Page<SupplierPageResponseDto> getAllSuppliers() {
-        Pageable pageable = PageRequest.of(0,10, Sort.Direction.ASC, "name");
-        List<RoleName> suppliers = new ArrayList<>();
-        suppliers.add(RoleName.ROLE_USER);
-        //suppliers.add(RoleName.ROLE_BLANK_USER);
-        Page<Role> page = roleRepository.findByNameIsIn(suppliers, pageable);
-        Set<User> users = page.getContent().stream().map(Role::getUsers).findFirst().get();
-        users.forEach(x -> log.info(x.getEmail()));
-        return new PageImpl<>(page.stream().map(Role::getUsers).map(SupplierPageResponseDto::listOfDto).findFirst().get());
+    public Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable) {
+        List<Role> roles = roleRepository.findByNameIsIn(Arrays.asList(RoleName.ROLE_USER, RoleName.ROLE_BLANK_USER));
+        Page<User> userPage = userRepository.findByRolesInAndStatus(pageable, roles, UserStatus.ACTIVE);
+
+        return new PageImpl<>(userPage.stream().map(SupplierPageResponseDto::new).collect(Collectors.toList()), pageable, userPage.getTotalElements());
     }
 
     @Override
@@ -78,5 +75,30 @@ public class SupplierServiceImpl implements SupplierService {
         return ResponseEntity.ok().contentType(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM_VALUE)).cacheControl(CacheControl.noCache())
                 .header("Content-Disposition", "attachment; filename=" + filename)
                 .body(new InputStreamResource(s3is));
+    }
+
+    @Override
+    public void deleteDocument(UUID supplierId, String filename, HttpServletRequest request) {
+        User user = userService.getUserFromHttpServletRequest(request);
+        if (!user.getId().equals(supplierId)) {
+            throw new AccessDeniedException("Доступ запрещён");
+        }
+        documentService.deleteDocument(filename);
+    }
+
+    @Override
+    public void deleteTagFromSupplier(HttpServletRequest request, UUID tagId) {
+        User user = userService.getUserFromHttpServletRequest(request);
+        Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
+        if (!roles.contains(RoleName.ROLE_USER)) {
+            throw new AccessDeniedException("Доступ запрещён");
+        }
+        Optional<Tag> tagToDelete = user.getSupplierDetails().getTags().stream().filter(x -> x.getId().equals(tagId)).findFirst();
+        if (tagToDelete.isPresent()){
+            user.getSupplierDetails().getTags().remove(tagToDelete.get());
+            userRepository.save(user);
+        } else {
+            throw new NotFoundException("Тега с данным ID нет в списке ваших тегов");
+        }
     }
 }

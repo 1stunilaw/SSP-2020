@@ -4,9 +4,8 @@ import lombok.*;
 import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
-import ssp.marketplace.app.entity.supplier.LawStatus;
+import ssp.marketplace.app.entity.user.User;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -18,7 +17,8 @@ public class SupplierResponseDto extends UserResponseDto {
     private String description;
     private String inn;
     private String phone;
-    private String contactFio;
+    private String fio;
+    private String contacts;
     private String region;
     private String nda;
     private String lawStatus;
@@ -34,7 +34,8 @@ public class SupplierResponseDto extends UserResponseDto {
         companyName = user.getSupplierDetails().getCompanyName();
         inn = user.getSupplierDetails().getInn();
         phone = user.getSupplierDetails().getPhone();
-        contactFio = user.getSupplierDetails().getContactFio();
+        fio = user.getSupplierDetails().getContactFio();
+        contacts = user.getSupplierDetails().getContacts();
         region = user.getSupplierDetails().getRegion();
         nda = user.getSupplierDetails().getNda();
         if(user.getSupplierDetails().getLawStatus() != null){

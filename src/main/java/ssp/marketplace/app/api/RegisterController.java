@@ -1,7 +1,7 @@
 package ssp.marketplace.app.api;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
 import ssp.marketplace.app.dto.registration.supplier.SupplierRegisterRequestDto;
@@ -10,6 +10,7 @@ import ssp.marketplace.app.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/register")
@@ -41,7 +42,11 @@ public class RegisterController {
 //    }
 
     @GetMapping("/verify")
-    public void confirmRegister(@RequestParam("token") String token){
+    public ResponseEntity confirmRegister(@RequestParam("token") String token){
         userService.confirmRegister(token);
+        HashMap response = new HashMap();
+        response.put("status", HttpStatus.OK);
+        response.put("message", "Регистрация успешно подтверждена");
+        return new ResponseEntity(response, HttpStatus.OK);
     }
 }

@@ -5,12 +5,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.*;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.BadRequestException;
 
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.*;
 
@@ -21,7 +22,8 @@ import java.util.*;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RequestOrderUpdateDto {
 
-    @Size(max = 250)
+    @Length(max = 250, message = "{name.errors.length.max}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{name.errors.regex}")
     private String name;
 
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
@@ -30,32 +32,17 @@ public class RequestOrderUpdateDto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate dateStop;
 
-    @Size(max = 10000)
+    @Length(max = 10000, message = "{description.errors.length}")
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{description.errors.regex}")
     private String description;
 
     private StatusForOrder statusForOrder;
 
     private List<UUID> tags;
 
+    @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{organizationName.errors.regex}")
+    @Length(max = 250, message = "{organizationName.errors.length}")
     private String organizationName;
 
-    private List<String> documents;
-
-    public static RequestOrderUpdateDto convert(String requestOrderDto) {
-        if (requestOrderDto == null) {
-            throw new BadRequestException("order не может быть пустым");
-        }
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JavaTimeModule());
-        RequestOrderUpdateDto dtoObject;
-        try {
-            dtoObject = mapper.readValue(requestOrderDto, RequestOrderUpdateDto.class);
-        } catch (JsonProcessingException e) {
-            throw new BadRequestException("Ключи для полей заполнены неверно");
-        }
-        return dtoObject;
-    }
-
     private MultipartFile[] files;
-
 }
