@@ -1,12 +1,7 @@
 package ssp.marketplace.app.dto.user.supplier;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.UserResponseDto;
-import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import ssp.marketplace.app.entity.user.User;
 
 @Getter
 @Setter

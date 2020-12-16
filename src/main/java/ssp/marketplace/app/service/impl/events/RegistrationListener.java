@@ -6,7 +6,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
-import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.service.UserService;
 
 import java.util.Locale;

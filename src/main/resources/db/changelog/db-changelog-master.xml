@@ -54,4 +54,6 @@
     <include file="v2/2020-12-08T00-19--alter-description-column-supplier-details.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-11T03-11--fix-mistake-in-user-roles.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-11T17-47--change-default-status-for-orders-table.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-16T03-38--add-status-to-law-statuses.xml" relativeToChangelogFile="true"/>
+    <include file="v2/2020-12-16T04-05--alter-name-law-statuses.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

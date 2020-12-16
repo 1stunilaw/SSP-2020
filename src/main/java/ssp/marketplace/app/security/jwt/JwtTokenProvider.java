@@ -10,7 +10,7 @@ import org.springframework.security.core.*;
 import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
-import ssp.marketplace.app.entity.Role;
+import ssp.marketplace.app.entity.user.Role;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;

@@ -1,11 +1,11 @@
-package ssp.marketplace.app.entity;
+package ssp.marketplace.app.entity.user;
 
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
 import java.sql.*;
-import java.sql.Date;
 import java.util.*;
 
 @Entity

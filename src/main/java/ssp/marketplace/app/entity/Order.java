@@ -1,9 +1,9 @@
 package ssp.marketplace.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
 import javax.persistence.CascadeType;

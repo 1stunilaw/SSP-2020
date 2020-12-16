@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import org.springframework.lang.Nullable;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
 import java.util.*;

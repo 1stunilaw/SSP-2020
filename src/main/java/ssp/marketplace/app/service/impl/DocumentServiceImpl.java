@@ -7,6 +7,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;

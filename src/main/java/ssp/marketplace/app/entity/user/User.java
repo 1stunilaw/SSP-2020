@@ -1,7 +1,7 @@
-package ssp.marketplace.app.entity;
+package ssp.marketplace.app.entity.user;
 
-import com.sun.istack.Nullable;
 import lombok.*;
+import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
 

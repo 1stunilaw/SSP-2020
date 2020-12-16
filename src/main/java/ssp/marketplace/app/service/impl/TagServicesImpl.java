@@ -7,6 +7,7 @@ import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForTag;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
+import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.TagServices;

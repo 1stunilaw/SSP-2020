@@ -1,7 +1,8 @@
-package ssp.marketplace.app.entity;
+package ssp.marketplace.app.entity.user;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
+import ssp.marketplace.app.entity.*;
 
 import javax.persistence.*;
 import java.util.*;

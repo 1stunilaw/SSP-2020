@@ -3,6 +3,7 @@ package ssp.marketplace.app.dto.user.supplier;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.User;
 
 import java.io.Serializable;
 import java.util.*;

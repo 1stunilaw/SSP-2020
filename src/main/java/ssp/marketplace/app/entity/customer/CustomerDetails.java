@@ -3,9 +3,9 @@ package ssp.marketplace.app.entity.customer;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
-import java.util.UUID;
 
 @Entity
 @Getter

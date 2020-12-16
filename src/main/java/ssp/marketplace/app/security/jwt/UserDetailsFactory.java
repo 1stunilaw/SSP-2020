@@ -2,7 +2,7 @@ package ssp.marketplace.app.security.jwt;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.user.*;
 
 import java.util.*;
 import java.util.stream.Collectors;

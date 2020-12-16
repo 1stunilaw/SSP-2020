@@ -1,8 +1,8 @@
 package ssp.marketplace.app.entity;
 
 import lombok.*;
-import org.hibernate.annotations.CreationTimestamp;
 import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.user.User;
 
 import javax.persistence.*;
 import java.util.*;

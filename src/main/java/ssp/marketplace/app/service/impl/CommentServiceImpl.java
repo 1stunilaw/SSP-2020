@@ -9,6 +9,7 @@ import ssp.marketplace.app.dto.mappers.*;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;

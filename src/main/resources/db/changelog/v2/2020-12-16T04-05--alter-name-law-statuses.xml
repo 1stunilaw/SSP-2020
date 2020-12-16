@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:pro="http://www.liquibase.org/xml/ns/pro"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.1.xsd
+    http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-4.1.xsd ">
+    <changeSet id="2020-12-16T04-05--alter-name-law-statuses" author="Konstantin Egorov">
+        <modifyDataType tableName="law_statuses" columnName="name" newDataType="varchar(100)"/>
+    </changeSet>
+    <changeSet id="2020-12-16T04-05--drop-unique-name-law-statuses" author="Kosntantin Egorov">
+        <dropUniqueConstraint constraintName="law_statuses_name_key" tableName="law_statuses"  uniqueColumns="name"/>
+    </changeSet>
+    <changeSet id="2020-12-16T04-05--drop-second-unique-constraint-law-statuses" author="Kosntantin Egorov">
+        <dropUniqueConstraint constraintName="law_statuses_name_key1" tableName="law_statuses"  uniqueColumns="name"/>
+    </changeSet>
+</databaseChangeLog>

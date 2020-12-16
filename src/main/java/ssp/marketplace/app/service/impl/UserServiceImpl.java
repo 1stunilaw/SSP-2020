@@ -19,6 +19,7 @@ import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.statuses.StatusForTag;
 import ssp.marketplace.app.entity.supplier.*;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;

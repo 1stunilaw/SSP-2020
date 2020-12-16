@@ -4,9 +4,8 @@ import lombok.*;
 import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
-import ssp.marketplace.app.entity.supplier.LawStatus;
+import ssp.marketplace.app.entity.user.User;
 
-import java.io.Serializable;
 import java.util.*;
 import java.util.stream.Collectors;
 
