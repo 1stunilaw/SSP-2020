@@ -2,6 +2,7 @@ package ssp.marketplace.app.entity;
 
 import lombok.*;
 import org.hibernate.annotations.*;
+import org.hibernate.annotations.Generated;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.entity.user.User;
 
@@ -41,11 +42,7 @@ public class Order {
     @Column(name = "description")
     private String description;
 
-//    @JsonProperty("number")
-    @Column(name="number", nullable=false, unique=true, insertable = false,
-            updatable = true, columnDefinition = "BIGINT DEFAULT nextval('orders_number_seq')")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "orders_number_seq")
-    @SequenceGenerator(name = "orders_number_seq", sequenceName ="orders_number_seq")
+    @Generated(GenerationTime.INSERT)
     private Long number;
 
     @Column(name = "organization_name")

@@ -4,19 +4,21 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
+import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
-import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
+import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.util.*;
@@ -55,24 +57,32 @@ public class OrderServiceImpl implements OrderService {
     }
 
     @Override
-    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String search) {
-        Page<Order> orders;
-        if (search != null && !StringUtils.isBlank(search)) {
-            List<Order> content = orderRepository.findAll(OrderSpecification.search(search));
-            Set<Order> hSet = new LinkedHashSet<>(content);
-            List<Order> targetList = new ArrayList<>(hSet);
-            orders = new PageImpl<>(targetList, pageable, (long)targetList.size());
-        } else {
-            orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+    public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status) {
+        Page<ResponseListOrderDto> page = null;
+        if(textSearch == null && status == null) {
+            Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
+            page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         }
-        if (orders.isEmpty()) {
+        else if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch,status);
+            page = mapToDtoAndToPages(search, pageable);
+            return page;
+        }
+
+        else if (status != null && !StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.filterStatus(status);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+
+        else if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+            Set<Order> search = orderRepository.search(textSearch);
+            page = mapToDtoAndToPages(search, pageable);
+        }
+        if(page.isEmpty()||page == null) {
             throw new NotFoundException("Пусто");
         }
-        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
     }
-
-
 
     @Override
     public ResponseOneOrderDtoAbstract getOneOrder(UUID id, HttpServletRequest req) {
@@ -129,7 +139,6 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order);
         userRepository.save(userFromDB);
-        order.setNumber(orderRepository.getNumber(order.getName()));/// TODO: 28.11.2020  
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
@@ -250,5 +259,17 @@ public class OrderServiceImpl implements OrderService {
             order.setDocuments(documents);
         }
         orderRepository.save(order);
+    }
+
+    private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
+        List<Order> targetList = new ArrayList<>(search);
+        int start = (int)pageable.getOffset();
+        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
+        if (end < start) {
+            throw new BadRequestException("Страницы не существует");
+        }
+        Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
+        Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+        return page;
     }
 }
