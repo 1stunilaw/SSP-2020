@@ -6,6 +6,7 @@ import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.CommentDto;
 import ssp.marketplace.app.dto.mappers.*;
+import ssp.marketplace.app.dto.requestDto.RequestCommentDto;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
@@ -28,19 +29,20 @@ public class CommentServiceImpl implements CommentService {
     private final CommentDtoMapper mapper = Mappers.getMapper(CommentDtoMapper.class);
 
     @Override
-    public CommentDto addComment(HttpServletRequest request, CommentDto commentDto, UUID parentId) {
+    public CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto, UUID parentId) {
         Comment comment = newComment(request, commentDto);
+        if(commentDto.getAccessLevel()==CommentAccessLevel.PUBLIC) comment.setAccessLevel(commentDto.getAccessLevel());
 
         Comment question = commentRepository
                 .findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
 
         if(question.getStatus() == StatusForComment.DELETED) throw new BadRequestException("Комментарий был удален");
-        comment.setQuestion(question);
 
         if(question.getAccessLevel() ==CommentAccessLevel.PRIVATE){
-            question.setAccessLevel(commentDto.getAccessLevel());
+            question.setAccessLevel(comment.getAccessLevel());
         }
+        comment.setQuestion(question);
         commentRepository.save(question);
 
         comment = commentRepository.save(comment);
@@ -50,7 +52,9 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Page<ResponseCommentDto> getUsersComments(HttpServletRequest req, Pageable pageable) {
         User user = userService.getUserFromHttpServletRequest(req);
-        return MapToDtoAndToPages(user.getComments(), pageable);
+        ResponseCommentDtoMapper responseCommentDtoMapper = Mappers.getMapper(ResponseCommentDtoMapper.class);
+        List<ResponseCommentDto> responseCommentDtoList = responseCommentDtoMapper.createDtoFromComments(user.getComments());
+        return mapToDtoAndToPages(responseCommentDtoList, pageable);
     }
 
 //    @Override
@@ -63,14 +67,14 @@ public class CommentServiceImpl implements CommentService {
 //    }
 
     @Override
-    public CommentDto addComment(HttpServletRequest request, CommentDto commentDto) {
+    public CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto) {
         Comment comment = newComment(request, commentDto);
         comment = commentRepository.save(comment);
 
         return mapper.commentToCommentDto(comment);
     }
 
-    private Comment newComment(HttpServletRequest request, CommentDto commentDto) {
+    private Comment newComment(HttpServletRequest request, RequestCommentDto commentDto) {
         User user  = userService.getUserFromHttpServletRequest(request);
 
         Comment comment = new Comment();
@@ -107,18 +111,26 @@ public class CommentServiceImpl implements CommentService {
     }
 
     private Page<ResponseCommentDto> getAllForUser(HttpServletRequest request, Pageable pageable, UUID orderId) {
+        ResponseCommentDtoMapper responseCommentDtoMapper = Mappers.getMapper(ResponseCommentDtoMapper.class);
         User user  = userService.getUserFromHttpServletRequest(request);
-        return MapToDtoAndToPages(commentRepository.findAllByOrderIdAndUserId(orderId, user.getId()), pageable);
+        List<Comment> lpublic = commentRepository.findAllByOrderIdPublic(orderId);
+        List<Comment> lprivate = commentRepository.findAllByOrderIdAndUserId(orderId, user.getId());
+        List<ResponseCommentDto> comments = responseCommentDtoMapper.createDtoFromPublicComments(lpublic, user.getId());
+        comments.addAll(responseCommentDtoMapper.createDtoFromComments(lprivate));
+        return mapToDtoAndToPages(comments, pageable);
+
     }
 
     private Page<ResponseCommentDto> getAllForAdmin(Pageable pageable, UUID orderId) {
-        return MapToDtoAndToPages(commentRepository.findByOrderId(orderId), pageable);
-    }
-
-    private Page<ResponseCommentDto> MapToDtoAndToPages(List<Comment> comments, Pageable pageable)
-    {
+        List<Comment> comments = commentRepository.findByOrderId(orderId);
         ResponseCommentDtoMapper responseCommentDtoMapper = Mappers.getMapper(ResponseCommentDtoMapper.class);
         List<ResponseCommentDto> responseCommentDtoList = responseCommentDtoMapper.createDtoFromComments(comments);
+        return mapToDtoAndToPages(responseCommentDtoList, pageable);
+    }
+
+    private Page<ResponseCommentDto> mapToDtoAndToPages(List<ResponseCommentDto> responseCommentDtoList, Pageable pageable)
+    {
+        Collections.sort(responseCommentDtoList, Collections.reverseOrder());
         if(responseCommentDtoList.isEmpty()) throw new NotFoundException("К заказу нет комментариев");
 
         long start = pageable.getOffset();
