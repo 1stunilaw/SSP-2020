@@ -8,5 +8,7 @@ public interface MailService {
 
     void sendMail(String templateName, String mailSubject, Map<String, Object> data, User toUser);
 
+    void sendMailAnyway(String templateName, String mailSubject, Map<String, Object> data, User toUser);
+
     void sendMassMail(String templateName, String mailSubject, Map<String, Object> data, List<User> toUsers);
 }
