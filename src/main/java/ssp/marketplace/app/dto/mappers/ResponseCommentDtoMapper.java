@@ -94,6 +94,7 @@ public class ResponseCommentDtoMapper {
             }
         }
         responseCommentDto.setAnswers(answersList);
+        responseCommentDto.setCreationDate(question.getCreatedAt().toString());
         return responseCommentDto;
     }
 
