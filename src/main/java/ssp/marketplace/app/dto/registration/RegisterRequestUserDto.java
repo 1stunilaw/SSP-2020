@@ -27,4 +27,7 @@ public abstract class RegisterRequestUserDto implements Serializable {
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$)(?=[\\x21-\\x7E]+$).{10,25}$",
             message = "{password.errors.validation}")
     private String password;
+
+    @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
+    private String sendEmail;
 }

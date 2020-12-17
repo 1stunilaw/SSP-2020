@@ -32,6 +32,10 @@ public class User extends BasicEntity {
     @Enumerated(EnumType.STRING)
     private UserStatus status = UserStatus.UNACTIVATED;
 
+    @Column(name = "send_email")
+    @Enumerated(EnumType.STRING)
+    private MailAgreement sendEmail = MailAgreement.YES;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "user_roles",
             joinColumns = @JoinColumn(name = "user_id"),

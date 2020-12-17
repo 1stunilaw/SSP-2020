@@ -21,4 +21,7 @@ public class CustomerUpdateRequestDto extends UserUpdateRequestDto {
     @Unique(message = "{phone.errors.unique}", service = UserService.class, fieldName = "customerPhone")
     @Pattern(regexp = "^$|^((8|\\+[0-9]{1,3})[\\-]?)?(\\(?\\d{3}\\)?[\\-]?)?[\\d\\-]{6,15}$", message = "{phone.errors.regex}")
     private String phone;
+
+    @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
+    private String sendEmail;
 }
