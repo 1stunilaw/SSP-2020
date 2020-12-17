@@ -32,7 +32,7 @@ public class OfferController {
         return offerService.createOffer(id, req, requestOfferDto);
     }
 
-    @RequestMapping(value = "/{offerId}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @RequestMapping(value = "/{offerId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOfferDtoAdmin updateOffer(
             @PathVariable("offerId") UUID id,
