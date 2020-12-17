@@ -37,12 +37,5 @@ public class AdminCommentController {
         commentService.deleteComment(commentId);
     }
 
-//    @GetMapping("/getAllForAdmin")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Page<ResponseCommentDto> getComments(
-//            @PageableDefault(size = 30, value = 30) Pageable pageable,
-//            HttpServletRequest req,
-//            @PathVariable UUID orderId) {
-//        return commentService.getAllForAdmin(req, pageable, orderId);
-//    }
+
 }

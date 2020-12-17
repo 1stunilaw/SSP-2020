@@ -7,6 +7,7 @@ import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.statuses.CommentAccessLevel;
+import ssp.marketplace.app.entity.supplier.SupplierDetails;
 import ssp.marketplace.app.entity.user.User;
 
 import java.util.*;
@@ -85,7 +86,7 @@ public class ResponseCommentDtoMapper {
 
         for (Comment answer : answers) {
             if (answer.getAccessLevel() == CommentAccessLevel.PUBLIC) {
-                CommentDto commentDto = new CommentDto();
+                CommentDto commentDto = mapper.commentToCommentDto(answer);
                 User answerUser = answer.getUser();
                 commentDto.setUserName(getName(answerUser));
                 answersList.add(commentDto);
@@ -98,7 +99,11 @@ public class ResponseCommentDtoMapper {
 
     public String getName(User user) {
         CustomerDetails details = user.getCustomerDetails();
-        if(details == null) return  user.getSupplierDetails().getCompanyName();
+        if(details == null) {
+            SupplierDetails details1 = user.getSupplierDetails();
+            if(details1 == null) return null;
+            return  details1.getCompanyName();
+        }
         return details.getFio();
 
     }

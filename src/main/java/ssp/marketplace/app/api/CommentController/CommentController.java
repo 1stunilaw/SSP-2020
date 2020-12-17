@@ -52,25 +52,4 @@ public class CommentController {
         return commentService.getUsersComments(req, pageable);
     }
 
-//    @GetMapping("/offer/{offerId}")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Page<ResponseCommentDto> getCommentsForOffer(
-//            @PageableDefault(sort = {"creationDate"}, size = 30, direction = Sort.Direction.DESC) Pageable pageable,
-//            HttpServletRequest req,
-//            @PathVariable UUID offerId) {
-//        return commentService.getAll(req, pageable, offerId);
-//    }
-//
-//
-//    @PostMapping("/{parentId}/addAnswerForOffer")
-//    @ResponseStatus(HttpStatus.CREATED)
-//    public CommentDto addNewAnswerForOffer(
-//            @Valid @NotNull @RequestBody CommentDto commentDto,
-//            HttpServletRequest request,
-//            @PathVariable UUID parentId) {
-//        return commentService.addComment(request, commentDto, parentId);
-//    }
-
-
-
 }
