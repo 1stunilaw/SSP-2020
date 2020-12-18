@@ -2,12 +2,11 @@ package ssp.marketplace.app.service.impl;
 
 import freemarker.template.*;
 import org.springframework.beans.factory.annotation.*;
-import org.springframework.context.MessageSource;
 import org.springframework.mail.javamail.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
-import ssp.marketplace.app.entity.user.User;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.service.*;
 
 import javax.mail.MessagingException;
@@ -35,8 +34,16 @@ public class MailSenderImpl implements MailService {
 
     @Async
     @Override
-    public void sendMail(String templateName, String mailSubject, Map<String, Object> data, User user) {
-        String recipientAddress = "<" + user.getEmail() + ">";
+    public void sendMail(String templateName, String mailSubject, Map<String, Object> data, User toUser) {
+        if (toUser.getSendEmail().equals(MailAgreement.NO)){
+            return;
+        }
+        sendMailAnyway(templateName, mailSubject, data, toUser);
+    }
+
+    @Override
+    public void sendMailAnyway(String templateName, String mailSubject, Map<String, Object> data, User toUser) {
+        String recipientAddress = "<" + toUser.getEmail() + ">";
         try {
             MimeMessage message = mailSender.createMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, MimeMessageHelper.MULTIPART_MODE_MIXED_RELATED, StandardCharsets.UTF_8.name());
@@ -62,6 +69,9 @@ public class MailSenderImpl implements MailService {
             String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, data);
 
             for (int i = 0; i < messages.length; i++) {
+                if (toUsers.get(i).getSendEmail().equals(MailAgreement.NO)){
+                    continue;
+                }
                 String recipientAddress = "<" + toUsers.get(i).getEmail() + ">";
 
                 MimeMessage message = mailSender.createMimeMessage();

@@ -2,6 +2,8 @@ package ssp.marketplace.app.service.impl;
 
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.offer.requestDto.*;
@@ -82,9 +84,12 @@ public class OfferServiceImpl implements OfferService {
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if (role.contains(RoleName.ROLE_BLANK_USER.toString())){
+        if (role.contains(RoleName.ROLE_BLANK_USER.toString())) {
             String filesCountError = messageSource.getMessage("offers.errors.empty", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
+        }
+        if (role.contains(RoleName.ROLE_ADMIN.toString())) {
+            throw new AccessDeniedException("Доступ закрыт");
         }
 /*
         String token = jwtTokenProvider.resolveToken(req);
@@ -110,12 +115,10 @@ public class OfferServiceImpl implements OfferService {
         orderRepository.save(orderFromDB);
 
         return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
-
     }
 
-
     @Override
-    public ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto){
+    public ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
         /**
          * описание +
          * дата изменения TODO: проверка наличия изменений чуть позже
@@ -126,6 +129,12 @@ public class OfferServiceImpl implements OfferService {
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
         if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
             throw new NotFoundException("Предложение удалено");
+        }
+
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
+            throw new AccessDeniedException("Доступ закрыт");
         }
 
         List<Document> documents = offer.getDocuments();
@@ -164,9 +173,16 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void deleteOffer(UUID id){
+    public void deleteOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
+
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && (role.contains(RoleName.ROLE_USER.toString()))) {
+            throw new AccessDeniedException("Доступ закрыт");
+        }
+
         offer.setStatusForOffer(StatusForOffer.DELETED);
         List<Document> documents = offer.getDocuments();
         for (Document doc : documents
@@ -181,32 +197,34 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req){
+    public ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
         if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
             throw new NotFoundException("Предложение удалено");
         }
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && (role.contains(RoleName.ROLE_USER.toString()))) {
+            throw new AccessDeniedException("Доступ закрыт");
+        }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
         offer.setDocuments(activeDocuments);
 
-        String token = jwtTokenProvider.resolveToken(req);
-        List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
         }
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
-
     }
 
     @Override
-    public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req){
+    public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req) {
 
         Page<Offer> offers;
 
-       String token = jwtTokenProvider.resolveToken(req);
+        String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if (role.contains(RoleName.ROLE_ADMIN.toString())){
+        if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
             if (offers.isEmpty()) {
                 throw new NotFoundException("Пусто");
@@ -221,10 +239,10 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Пусто");
         }
 
-            Page<ResponseListOfferDto> page =
-                    offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
+        Page<ResponseListOfferDto> page =
+                offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
 
-            return page;
+        return page;
     }
 
     private void addDocumentToOffer(
@@ -242,9 +260,15 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void deleteDocumentFromOffer(UUID id, String name) {
+    public void deleteDocumentFromOffer(UUID id, String name, HttpServletRequest req) {
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
+            throw new AccessDeniedException("Доступ закрыт");
+        }
         List<Document> documents = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> names = new ArrayList<>();
         for (Document doc : documents

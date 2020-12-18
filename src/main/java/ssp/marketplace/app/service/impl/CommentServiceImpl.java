@@ -94,7 +94,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void deleteComment(UUID id) {
         Comment comment = commentRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("Комментарий не найденd"));
+                .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
         comment.setStatus(StatusForComment.DELETED);
 
         commentRepository.save(comment);
