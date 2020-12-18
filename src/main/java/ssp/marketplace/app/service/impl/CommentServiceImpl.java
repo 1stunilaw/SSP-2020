@@ -131,7 +131,6 @@ public class CommentServiceImpl implements CommentService {
     private Page<ResponseCommentDto> mapToDtoAndToPages(List<ResponseCommentDto> responseCommentDtoList, Pageable pageable)
     {
         Collections.sort(responseCommentDtoList, Collections.reverseOrder());
-        if(responseCommentDtoList.isEmpty()) throw new NotFoundException("К заказу нет комментариев");
 
         long start = pageable.getOffset();
         long end = start + pageable.getPageSize() > responseCommentDtoList.size()
