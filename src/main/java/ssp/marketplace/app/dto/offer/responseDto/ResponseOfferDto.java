@@ -6,7 +6,6 @@ import ssp.marketplace.app.service.DocumentService;
 
 import java.util.*;
 
-@Data
 public class ResponseOfferDto extends ResponseOfferDtoAbstract {
 
     /**

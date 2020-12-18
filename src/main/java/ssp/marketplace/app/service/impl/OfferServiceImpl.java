@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
+import ssp.marketplace.app.dto.responseDto.ResponseListOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
 import ssp.marketplace.app.entity.user.*;
@@ -91,11 +92,7 @@ public class OfferServiceImpl implements OfferService {
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
-/*
-        String token = jwtTokenProvider.resolveToken(req);
-        List<String> role = jwtTokenProvider.getRole(token);
-        if (role.contains(RoleName.ROLE_USER.toString())){ //если заполнил информацию
-*/
+
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
@@ -179,7 +176,7 @@ public class OfferServiceImpl implements OfferService {
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && (role.contains(RoleName.ROLE_USER.toString()))) {
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && !(role.contains(RoleName.ROLE_ADMIN.toString()))) {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
@@ -205,7 +202,7 @@ public class OfferServiceImpl implements OfferService {
         }
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && (role.contains(RoleName.ROLE_USER.toString()))) {
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && !(role.contains(RoleName.ROLE_ADMIN.toString()))) {
             throw new AccessDeniedException("Доступ закрыт");
         }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
@@ -221,6 +218,7 @@ public class OfferServiceImpl implements OfferService {
     public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req) {
 
         Page<Offer> offers;
+        Page<ResponseListOfferDto> page = null;
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
@@ -229,18 +227,16 @@ public class OfferServiceImpl implements OfferService {
             if (offers.isEmpty()) {
                 throw new NotFoundException("Пусто");
             }
-            Page<ResponseListOfferDto> page =
-                    offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
+            page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
             return page;
         }
         User user = userService.getUserFromHttpServletRequest(req);
-        offers = offerRepository.findByOrderIdAndAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
+        offers = offerRepository.findByOrderIdAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
         if (offers.isEmpty()) {
             throw new NotFoundException("Пусто");
         }
 
-        Page<ResponseListOfferDto> page =
-                offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
+        page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
 
         return page;
     }
