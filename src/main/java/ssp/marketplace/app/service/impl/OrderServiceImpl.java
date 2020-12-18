@@ -2,15 +2,15 @@ package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.context.MessageSource;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.*;
 import org.springframework.data.domain.*;
-import org.springframework.data.jpa.domain.Specification;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.*;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.Order;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
@@ -18,7 +18,6 @@ import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
 
-import javax.persistence.criteria.*;
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.util.*;
@@ -27,7 +26,14 @@ import java.util.*;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
     private final OrderRepository orderRepository;
+
+    private final ApplicationEventPublisher eventPublisher;
+
+    private final MailService mailService;
 
     private final UserRepository userRepository;
 
@@ -41,31 +47,38 @@ public class OrderServiceImpl implements OrderService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final RoleRepository roleRepository;
+
     public OrderServiceImpl(
-            OrderRepository orderRepository, UserRepository userRepository,
+            OrderRepository orderRepository, ApplicationEventPublisher eventPublisher, MailService mailService,
+            UserRepository userRepository,
             DocumentService documentService,
             MessageSource messageSource, UserService userService,
-            OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider
+            OrderBuilderService orderBuilderService, JwtTokenProvider jwtTokenProvider,
+            RoleRepository roleRepository
     ) {
         this.orderRepository = orderRepository;
+        this.eventPublisher = eventPublisher;
+        this.mailService = mailService;
         this.messageSource = messageSource;
         this.userRepository = userRepository;
         this.documentService = documentService;
         this.userService = userService;
         this.orderBuilderService = orderBuilderService;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.roleRepository = roleRepository;
     }
 
     @Override
     public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status) {
         Page<ResponseListOrderDto> page = null;
-        if(StringUtils.isBlank(textSearch) && StringUtils.isBlank(status)) {
+        if (StringUtils.isBlank(textSearch) && StringUtils.isBlank(status)) {
             Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
             page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
             return page;
         }
-        if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
-            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch,status);
+        if (textSearch != null && status != null && !StringUtils.isBlank(textSearch) && !StringUtils.isBlank(status)) {
+            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch, status);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
@@ -138,6 +151,7 @@ public class OrderServiceImpl implements OrderService {
         }
         orderRepository.save(order);
         userRepository.save(userFromDB);
+        sendConfirmationEmail(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
@@ -270,5 +284,19 @@ public class OrderServiceImpl implements OrderService {
         Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
         Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
         return page;
+    }
+
+    @Async
+    public void sendConfirmationEmail(Order order) {
+        try {
+            List<Role> roles = roleRepository.findByNameIsIn(Arrays.asList(RoleName.ROLE_USER, RoleName.ROLE_BLANK_USER));
+            List<User> userList = userRepository.findByRolesInAndStatus(roles, UserStatus.ACTIVE);
+            Map<String, Object> data = new HashMap<>();
+            String orderId = order.getId().toString();
+            data.put("url", frontendUrl + "/orders/" + orderId);
+            data.put("theme", order.getName());
+            mailService.sendMassMail("new_order", "Доступен новый заказ", data, userList);
+        } catch (Exception ignored) {
+        }
     }
 }

@@ -16,6 +16,8 @@ public interface UserRepository extends JpaRepository<User, UUID> {
 
     Page<User> findByRolesInAndStatus(Pageable pageable, Collection<Role> roles, UserStatus status);
 
+    List<User> findByRolesInAndStatus(Collection<Role> roles, UserStatus status);
+
     Boolean existsBySupplierDetails_Inn(String inn);
 
     Boolean existsBySupplierDetails_CompanyName(String companyName);
