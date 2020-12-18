@@ -1,14 +1,15 @@
 package ssp.marketplace.app.config;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
 import org.springframework.mail.javamail.*;
+import org.springframework.ui.freemarker.FreeMarkerConfigurationFactoryBean;
 
 import java.util.Properties;
 
 @Configuration
 public class MailSenderConfiguration {
+
     @Value("${spring.mail.host}")
     private String host;
 
@@ -27,11 +28,11 @@ public class MailSenderConfiguration {
     @Value("${mail.debug}")
     private String debug;
 
-
     @Bean
     public JavaMailSender getJavaMailSender() {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
 
+        mailSender.setDefaultEncoding("UTF-8");
         mailSender.setHost(host);
         mailSender.setPort(port);
         mailSender.setUsername(username);
@@ -43,5 +44,13 @@ public class MailSenderConfiguration {
         properties.setProperty("mail.debug", debug);
 
         return mailSender;
+    }
+
+    @Primary
+    @Bean
+    public FreeMarkerConfigurationFactoryBean factoryBean(){
+        FreeMarkerConfigurationFactoryBean bean = new FreeMarkerConfigurationFactoryBean();
+        bean.setTemplateLoaderPath("classpath:/templates");
+        return bean;
     }
 }

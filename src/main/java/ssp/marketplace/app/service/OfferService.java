@@ -11,14 +11,14 @@ public interface OfferService {
 
     ResponseOfferDtoAdmin createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto);
 
-    ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto);
+    ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req);
 
-    void deleteOffer(UUID id);
+    void deleteOffer(UUID id, HttpServletRequest req);
 
     ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req);
 
     Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req);
 
-    void deleteDocumentFromOffer(UUID id, String name);
+    void deleteDocumentFromOffer(UUID id, String name, HttpServletRequest req);
 
 }

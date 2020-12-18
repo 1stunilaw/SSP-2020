@@ -6,6 +6,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.CommentDto;
+import ssp.marketplace.app.dto.requestDto.RequestCommentDto;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.service.CommentService;
 
@@ -24,7 +25,7 @@ public class AdminCommentController {
     @PostMapping("/{parentId}/addAnswer")
     @ResponseStatus(HttpStatus.CREATED)
     public CommentDto addNewAnswer(
-            @Valid @NotNull @RequestBody CommentDto commentDto,
+            @Valid @NotNull @RequestBody RequestCommentDto commentDto,
             HttpServletRequest request,
             @PathVariable UUID parentId) {
         return commentService.addComment(request, commentDto, parentId);
@@ -36,12 +37,5 @@ public class AdminCommentController {
         commentService.deleteComment(commentId);
     }
 
-//    @GetMapping("/getAllForAdmin")
-//    @ResponseStatus(HttpStatus.OK)
-//    public Page<ResponseCommentDto> getComments(
-//            @PageableDefault(size = 30, value = 30) Pageable pageable,
-//            HttpServletRequest req,
-//            @PathVariable UUID orderId) {
-//        return commentService.getAllForAdmin(req, pageable, orderId);
-//    }
+
 }

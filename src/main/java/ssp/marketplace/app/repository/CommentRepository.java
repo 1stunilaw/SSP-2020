@@ -13,6 +13,9 @@ public interface CommentRepository extends JpaRepository<Comment, UUID> {
     @Query("SELECT c FROM Comment c WHERE c.order.id = ?1 AND c.question IS NULL")
     List<Comment> findByOrderId(UUID orderId);
 
-    @Query("SELECT c FROM Comment c WHERE c.order.id = ?1 AND (c.user.id = ?2 OR c.accessLevel = 'PUBLIC') AND c.question IS NULL")
+    @Query("SELECT c FROM Comment c WHERE c.order.id = ?1 AND c.user.id = ?2 AND c.accessLevel = 'PRIVATE' AND c.question IS NULL")
     List<Comment> findAllByOrderIdAndUserId(UUID orderId, UUID userId);
+
+    @Query("SELECT c FROM Comment c WHERE c.order.id = ?1 AND  c.accessLevel = 'PUBLIC' AND c.question IS NULL")
+    List<Comment> findAllByOrderIdPublic(UUID orderId);
 }

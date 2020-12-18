@@ -20,8 +20,6 @@ public interface UserService extends FieldValueExists {
 
     void deleteUser(UUID id);
 
-    VerificationToken createVerificationToken(User user);
-
     void confirmRegister(String token);
 
     User getUserFromHttpServletRequest(HttpServletRequest req);

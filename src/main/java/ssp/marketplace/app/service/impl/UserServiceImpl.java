@@ -1,9 +1,10 @@
 package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.*;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +25,6 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
-import ssp.marketplace.app.service.impl.events.OnRegistrationCompleteEvent;
 
 import javax.servlet.http.HttpServletRequest;
 import java.sql.Timestamp;
@@ -47,11 +47,16 @@ public class UserServiceImpl implements UserService {
 
     private final MessageSource messageSource;
 
+    private final MailService mailService;
+
     private final LawStatusRepository lawStatusRepository;
 
     private final DocumentService documentService;
 
     private final TagRepository tagRepository;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
 
     @Autowired
     public UserServiceImpl(
@@ -63,6 +68,7 @@ public class UserServiceImpl implements UserService {
             LawStatusRepository lawStatusRepository,
             DocumentService documentService,
             MessageSource messageSource,
+            MailService mailService,
             @Lazy JwtTokenProvider jwtTokenProvider
     ) {
         this.eventPublisher = eventPublisher;
@@ -71,6 +77,7 @@ public class UserServiceImpl implements UserService {
         this.tokenRepository = tokenRepository;
         this.tagRepository = tagRepository;
         this.messageSource = messageSource;
+        this.mailService = mailService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.lawStatusRepository = lawStatusRepository;
         this.documentService = documentService;
@@ -78,15 +85,13 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDto register(RegisterRequestUserDto registerDto) {
-
         if (registerDto instanceof CustomerRegisterRequestDto) {
             User user = registerCustomer((CustomerRegisterRequestDto)registerDto);
             log.info("IN register - user: {} successfully registered", user);
             return new CustomerRegisterResponseDto(user);
         } else if (registerDto instanceof SupplierRegisterRequestDto) {
             User user = registerSupplier((SupplierRegisterRequestDto)registerDto);
-            String baseUrl = ServletUriComponentsBuilder.fromCurrentContextPath().build().toUriString();
-            eventPublisher.publishEvent(new OnRegistrationCompleteEvent(user, baseUrl));
+            sendConfirmationEmail(user, createVerificationToken(user));
             log.info("IN register - user: {} successfully registered", user);
             return new SupplierRegisterResponseDto(user);
         }
@@ -105,6 +110,9 @@ public class UserServiceImpl implements UserService {
         user.setEmail(dto.getEmail());
         user.setPassword(new BCryptPasswordEncoder().encode(dto.getPassword()));
         user.setRoles(userRoles);
+        if (dto.getSendEmail() != null && "false".equals(dto.getSendEmail())) {
+            user.setSendEmail(MailAgreement.NO);
+        }
         CustomerDetails details = new CustomerDetails(user, dto.getFio(), dto.getPhone());
         user.setCustomerDetails(details);
         details.setUser(user);
@@ -127,8 +135,11 @@ public class UserServiceImpl implements UserService {
         user.setRoles(userRoles);
         SupplierDetails details = new SupplierDetails(user, dto.getCompanyName());
 
+        if (dto.getSendEmail() != null && "false".equals(dto.getSendEmail())) {
+            user.setSendEmail(MailAgreement.NO);
+        }
+
         user.setSupplierDetails(details);
-        details.setUser(user);
 
         return userRepository.save(user);
     }
@@ -162,8 +173,8 @@ public class UserServiceImpl implements UserService {
         log.info("IN deleteUser - user with id {} was successfully disabled", id);
     }
 
-    @Override
-    public VerificationToken createVerificationToken(User user) {
+
+    private VerificationToken createVerificationToken(User user) {
         VerificationToken token = new VerificationToken(user);
         return tokenRepository.save(token);
     }
@@ -197,7 +208,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
 
-        switch (fieldName){
+        switch (fieldName) {
             case "email":
                 return userRepository.existsByEmail(value.toString());
             case "inn":
@@ -247,6 +258,14 @@ public class UserServiceImpl implements UserService {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
 
+        if (dto.getSendEmail() != null) {
+            if ("true".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.YES);
+            } else if ("false".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.NO);
+            }
+        }
+
         if (dto.getFio() != null && !dto.getPhone().trim().isEmpty()) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
@@ -286,6 +305,14 @@ public class UserServiceImpl implements UserService {
                             "files.errors.amount", null, new Locale("ru", "RU")
                     )
             );
+        }
+
+        if (dto.getSendEmail() != null) {
+            if ("true".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.YES);
+            } else if ("false".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.NO);
+            }
         }
 
         if (dto.getDescription() != null) {
@@ -329,10 +356,10 @@ public class UserServiceImpl implements UserService {
         return new SupplierResponseDto(userRepository.save(user));
     }
 
-    private void addTagsToUser(User user, Set<String> setOfId){
+    private void addTagsToUser(User user, Set<String> setOfId) {
         setOfId.forEach(id -> {
             Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StatusForTag.DELETED))
-                    .orElseThrow(()->new NotFoundException("Тег с данным id не найден"));
+                    .orElseThrow(() -> new NotFoundException("Тег с данным id не найден"));
             user.getSupplierDetails().getTags().add(tag);
         });
     }
@@ -371,8 +398,16 @@ public class UserServiceImpl implements UserService {
                     )
             );
         }
-        if (dto.getCompanyName() != null){
+        if (dto.getCompanyName() != null) {
             user.getSupplierDetails().setCompanyName(dto.getCompanyName());
+        }
+
+        if (dto.getSendEmail() != null) {
+            if ("true".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.YES);
+            } else if ("false".equals(dto.getSendEmail())) {
+                user.setSendEmail(MailAgreement.NO);
+            }
         }
 
         user.getSupplierDetails().setDescription(dto.getDescription());
@@ -408,5 +443,13 @@ public class UserServiceImpl implements UserService {
     public boolean verifyJwt(HttpServletRequest request) {
         String token = jwtTokenProvider.resolveToken(request);
         return jwtTokenProvider.validateToken(token);
+    }
+
+    @Async
+    public void sendConfirmationEmail(User user, VerificationToken token){
+        Map<String, Object> data = new HashMap<>();
+        data.put("url", frontendUrl + "/verify");
+        data.put("token", token.getId().toString());
+        mailService.sendMailAnyway("verification", "Подтверждение регистрации", data, user);
     }
 }

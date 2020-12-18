@@ -32,21 +32,23 @@ public class OfferController {
         return offerService.createOffer(id, req, requestOfferDto);
     }
 
-    @RequestMapping(value = "/{offerId}", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @RequestMapping(value = "/{offerId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOfferDtoAdmin updateOffer(
             @PathVariable("offerId") UUID id,
-            @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate
+            @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate,
+            HttpServletRequest req
     ) {
-        return offerService.updateOffer(id, requestOfferDtoUpdate);
+        return offerService.updateOffer(id, requestOfferDtoUpdate, req);
     }
 
     @DeleteMapping(value = "/{offerId}")
     @ResponseStatus(HttpStatus.OK)
     public void deleteOffer(
-            @PathVariable("offerId") UUID id
+            @PathVariable("offerId") UUID id,
+            HttpServletRequest req
     ) {
-        offerService.deleteOffer(id);
+        offerService.deleteOffer(id, req);
     }
 
     @GetMapping("/{offerId}/show")
@@ -71,9 +73,10 @@ public class OfferController {
     @ResponseStatus(HttpStatus.OK)
     public void deleteDocumentFromOffer(
             @PathVariable UUID offerId,
-            @PathVariable String name
+            @PathVariable String name,
+            HttpServletRequest req
     ) {
-        offerService.deleteDocumentFromOffer(offerId, name);
+        offerService.deleteDocumentFromOffer(offerId, name, req);
     }
 
 }
