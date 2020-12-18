@@ -42,7 +42,7 @@ public class SupplierController {
         return supplierService.getSupplier(id, req);
     }
 
-    @PostMapping("add-accreditation/{id}")
+    @PostMapping("{id}")
     public SupplierResponseDto addAccreditationStatus(
             @PathVariable("id") String id,
             @RequestBody @Valid SupplierAddAccreditationRequestDto accreditationStatus
