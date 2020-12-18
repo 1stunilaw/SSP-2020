@@ -14,9 +14,9 @@ import java.util.*;
 
 @Entity
 @Table(name = "offers")
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
+@Getter
+@Setter
+@RequiredArgsConstructor
 public class Offer extends BasicEntity{
 
     /**
@@ -34,7 +34,7 @@ public class Offer extends BasicEntity{
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id")
     private User user;
 

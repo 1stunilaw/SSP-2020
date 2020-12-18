@@ -2,6 +2,7 @@ package ssp.marketplace.app.dto.offer.responseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
 import ssp.marketplace.app.entity.statuses.*;
 
 import java.io.Serializable;
@@ -25,9 +26,9 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
      */
     private UUID id;
 
-    private String order;
+    private Long order;
 
-    private String user;
+    private SupplierResponseDto user;
 
     private Long number;
 
@@ -35,10 +36,8 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
 
     private StatusForOffer statusForOffer;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     private Timestamp createdAt;
 
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     private Timestamp updatedAt;
 
     private List<String> documents;
