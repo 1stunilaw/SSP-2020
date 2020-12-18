@@ -59,27 +59,26 @@ public class OrderServiceImpl implements OrderService {
     @Override
     public Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status) {
         Page<ResponseListOrderDto> page = null;
-        if(textSearch == null && status == null) {
+        if(StringUtils.isBlank(textSearch) && StringUtils.isBlank(status)) {
             Page<Order> orders = orderRepository.findByStatusForOrderNotIn(pageable, Collections.singleton(StatusForOrder.DELETED));
             page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+            return page;
         }
-        else if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
+        if (textSearch != null && status != null &&!StringUtils.isBlank(textSearch) &&!StringUtils.isBlank(status)) {
             Set<Order> search = orderRepository.searchAndFilterStatus(textSearch,status);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
-
-        else if (status != null && !StringUtils.isBlank(status)) {
+        if (status != null && !StringUtils.isBlank(status)) {
             Set<Order> search = orderRepository.filterStatus(status);
             page = mapToDtoAndToPages(search, pageable);
+            return page;
         }
 
-        else if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+        if (textSearch != null && !StringUtils.isBlank(textSearch)) {
             Set<Order> search = orderRepository.search(textSearch);
             page = mapToDtoAndToPages(search, pageable);
-        }
-        if(page.isEmpty()||page == null) {
-            page = null;
+            return page;
         }
         return page;
     }
