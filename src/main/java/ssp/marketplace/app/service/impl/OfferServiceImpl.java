@@ -126,8 +126,6 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Предложение удалено");
         }
 
-        String token = jwtTokenProvider.resolveToken(req);
-        List<String> role = jwtTokenProvider.getRole(token);
         if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
@@ -192,7 +190,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req) {
+    public ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
         if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
@@ -205,7 +203,7 @@ public class OfferServiceImpl implements OfferService {
         }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
         offer.setDocuments(activeDocuments);
-        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDtoShow.responseOfferDtoFromOffer(offer);
     }
 
     @Override

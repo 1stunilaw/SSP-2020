@@ -26,8 +26,6 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
      */
     private UUID id;
 
-    private UUID order;
-
     private SupplierResponseDto user;
 
     private Long number;

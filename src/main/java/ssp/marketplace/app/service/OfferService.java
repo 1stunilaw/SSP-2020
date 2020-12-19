@@ -15,7 +15,7 @@ public interface OfferService {
 
     void deleteOffer(UUID id, HttpServletRequest req);
 
-    ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req);
+    ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req);
 
     Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req);
 

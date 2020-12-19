@@ -12,7 +12,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ResponseOfferDto extends ResponseOfferDtoAbstract {
+public class ResponseOfferDtoShow extends ResponseOfferDtoAbstract {
 
     /**
      * Информация, которая видна заказчику:
@@ -28,18 +28,18 @@ public class ResponseOfferDto extends ResponseOfferDtoAbstract {
      * документы
      */
 
-    private Long order;
+    private UUID order;
 
-    public static ResponseOfferDto responseOfferDtoFromOffer(Offer offer) {
+    public static ResponseOfferDtoShow responseOfferDtoFromOffer(Offer offer) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> stringDocs = new ArrayList<>();
         for (Document doc : activeDocument
         ) {
             stringDocs.add(doc.getName());
         }
-        ResponseOfferDto offerDto = new ResponseOfferDto();
+        ResponseOfferDtoShow offerDto = new ResponseOfferDtoShow();
         offerDto.setId(offer.getId());
-        offerDto.setOrder(offer.getOrder().getNumber());
+        offerDto.setOrder(offer.getOrder().getId());
         offerDto.setUser(new SupplierResponseDto(offer.getUser()));
         offerDto.setCreatedAt(offer.getCreatedAt());
         //offerDto.setUpdatedAt(offer.getUpdatedAt());

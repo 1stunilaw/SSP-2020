@@ -52,7 +52,7 @@ public class OfferController {
     }
 
     @GetMapping("/{offerId}/show")
-    public ResponseOfferDtoAbstract getOneOffer(
+    public ResponseOfferDtoShow getOneOffer(
             @PathVariable("offerId") UUID id,
             HttpServletRequest req
     ) {
