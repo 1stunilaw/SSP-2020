@@ -16,7 +16,7 @@ public class RequestOfferDtoUpdate {
      * Список загруженных документов
      * Документы
      */
-    @NotBlank(message = "{description.errors.empty}")
+
     private String description;
 
     private List<String> documents;

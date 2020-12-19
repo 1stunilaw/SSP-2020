@@ -62,7 +62,7 @@ public class OfferController {
     @GetMapping("/{orderId}")
     public Page<ResponseListOfferDto> getListOfOffers(
             @PageableDefault(sort = {"createdAt"},
-                    size = 30, value = 30, direction = Sort.Direction.ASC) Pageable pageable,
+                    size = 30, value = 30, direction = Sort.Direction.DESC) Pageable pageable,
             @PathVariable("orderId") UUID id,
             HttpServletRequest req
     ) {

@@ -228,10 +228,7 @@ public class OfferServiceImpl implements OfferService {
         return page;
     }
 
-    private void addDocumentToOffer(
-            Offer offer,
-            MultipartFile[] multipartFiles
-    ) {
+    private void addDocumentToOffer(Offer offer, MultipartFile[] multipartFiles) {
         String pathS3 = "/" + offer.getClass().getSimpleName() + "/" + offer.getNumber(); // "/Offer/{уникальный номер}"
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (offer.getDocuments() != null) {
