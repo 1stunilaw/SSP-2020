@@ -50,7 +50,7 @@ public class OrderAdminController {
         orderService.deleteOrder(id);
     }
 
-    @PostMapping("/{id}/mark-done")//// TODO: 17.11.2020 Добавить победителя и предложение
+    @PostMapping("/{id}/mark-done")
     @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin markDoneOrder(
             @PathVariable UUID id

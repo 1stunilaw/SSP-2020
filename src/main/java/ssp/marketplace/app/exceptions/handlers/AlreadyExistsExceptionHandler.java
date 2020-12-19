@@ -11,6 +11,6 @@ public class AlreadyExistsExceptionHandler {
     @ResponseBody
     @ExceptionHandler(AlreadyExistsException.class)
     public ErrorResponse AlreadyExistException(AlreadyExistsException ex){
-        return new ErrorResponse(HttpStatus.NOT_FOUND.value(), ex.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST.value(), ex.getMessage());
     }
 }

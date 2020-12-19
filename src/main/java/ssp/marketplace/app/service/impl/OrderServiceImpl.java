@@ -77,18 +77,18 @@ public class OrderServiceImpl implements OrderService {
             page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
             return page;
         }
-        if (textSearch != null && status != null && !StringUtils.isBlank(textSearch) && !StringUtils.isBlank(status)) {
+        if (!StringUtils.isBlank(textSearch) && !StringUtils.isBlank(status)) {
             Set<Order> search = orderRepository.searchAndFilterStatus(textSearch, status);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
-        if (status != null && !StringUtils.isBlank(status)) {
+        if (!StringUtils.isBlank(status)) {
             Set<Order> search = orderRepository.filterStatus(status);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
 
-        if (textSearch != null && !StringUtils.isBlank(textSearch)) {
+        if (!StringUtils.isBlank(textSearch)) {
             Set<Order> search = orderRepository.search(textSearch);
             page = mapToDtoAndToPages(search, pageable);
             return page;
@@ -279,7 +279,9 @@ public class OrderServiceImpl implements OrderService {
         int start = (int)pageable.getOffset();
         int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
         if (end < start) {
-            throw new BadRequestException("Страницы не существует");
+            Page<Order> orders = new PageImpl<>(targetList.subList(0, 0), pageable, 0);
+            Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
+            return page;
         }
         Page<Order> orders = new PageImpl<>(targetList.subList(start, end), pageable, (long)targetList.size());
         Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
