@@ -177,8 +177,11 @@ public class OfferServiceImpl implements OfferService {
     public ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
-        if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
+        /*if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
             throw new NotFoundException("Предложение удалено");
+        }*/
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
         }
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
@@ -192,7 +195,12 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req) {
-
+/*
+        Order orderFromDB = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
+        }*/
         Page<Offer> offers;
         Page<ResponseListOfferDto> page = null;
 
