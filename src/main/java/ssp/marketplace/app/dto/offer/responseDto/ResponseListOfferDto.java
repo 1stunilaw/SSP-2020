@@ -33,7 +33,7 @@ public class ResponseListOfferDto{
         ResponseListOfferDto responseListOfferDto = builder()
                 .id(offer.getId())
                 .number(offer.getNumber())
-                .user(offer.getUser().getSupplierDetails().getCompanyName())
+              //  .user(offer.getUser().getSupplierDetails().getCompanyName())
                 .createdAt(offer.getCreatedAt())
                 .build();
 
