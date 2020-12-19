@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.security.access.AccessDeniedException;
@@ -130,34 +131,13 @@ public class OfferServiceImpl implements OfferService {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
-        List<Document> documents = offer.getDocuments();
-        List<String> documentsUpdate = updateOfferDto.getDocuments();
-        if (documents != null && documentsUpdate != null) {
-            List<String> documentsOld = new ArrayList<>();
-            for (Document doc : documents
-            ) {
-                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
-                    documentsOld.add(doc.getName());
-                }
-            }
-            List<String> docDelete = new ArrayList<>(documentsOld);
-            docDelete.removeAll(documentsUpdate);
-            for (String docDelName : docDelete
-            ) {
-                if (documentRepository.findByName(docDelName) != null) {
-                    documentService.deleteDocument(docDelName);
-                } else {
-                    throw new BadRequestException("Файл " + docDelName + " не найден");
-                }
-            }
-        }
-
         MultipartFile[] multipartFiles = updateOfferDto.getFiles();
         if (multipartFiles != null) {
             addDocumentToOffer(offer, multipartFiles);
         }
 
-        if (updateOfferDto.getDescription() != null) {
+        String description = updateOfferDto.getDescription();
+        if (updateOfferDto.getDescription() != null && !StringUtils.isBlank(description)) {
             offer.setDescription(updateOfferDto.getDescription());
         }
 
@@ -227,6 +207,11 @@ public class OfferServiceImpl implements OfferService {
     }
 
     private void addDocumentToOffer(Offer offer, MultipartFile[] multipartFiles) {
+        List<Document> oldDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
+     if ((oldDocuments.size() + multipartFiles.length) > 10) {
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
         String pathS3 = "/" + offer.getClass().getSimpleName() + "/" + offer.getNumber(); // "/Offer/{уникальный номер}"
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (offer.getDocuments() != null) {
