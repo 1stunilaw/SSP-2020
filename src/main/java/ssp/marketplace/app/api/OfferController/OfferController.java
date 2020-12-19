@@ -24,7 +24,7 @@ public class OfferController {
 
     @RequestMapping(value = "/{orderId}/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseOfferDtoAdmin createOffer(
+    public ResponseOfferDto createOffer(
             @PathVariable("orderId") UUID id,
             @ModelAttribute @Valid RequestOfferDto requestOfferDto,
             HttpServletRequest req
@@ -34,7 +34,7 @@ public class OfferController {
 
     @RequestMapping(value = "/{offerId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
-    public ResponseOfferDtoAdmin updateOffer(
+    public ResponseOfferDto updateOffer(
             @PathVariable("offerId") UUID id,
             @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate,
             HttpServletRequest req

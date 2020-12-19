@@ -3,12 +3,10 @@ package ssp.marketplace.app.service.impl;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseListOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
 import ssp.marketplace.app.entity.user.*;
@@ -61,7 +59,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoAdmin createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
+    public ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
         /**
          * id предложения /
@@ -111,11 +109,11 @@ public class OfferServiceImpl implements OfferService {
         userRepository.save(userFromDB);
         orderRepository.save(orderFromDB);
 
-        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
     @Override
-    public ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
+    public ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
         /**
          * описание +
          * дата изменения TODO: проверка наличия изменений чуть позже
@@ -166,7 +164,7 @@ public class OfferServiceImpl implements OfferService {
         }
 
         offerRepository.save(offer);
-        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
     @Override
@@ -207,10 +205,6 @@ public class OfferServiceImpl implements OfferService {
         }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
         offer.setDocuments(activeDocuments);
-
-        if (role.contains(RoleName.ROLE_ADMIN.toString())) {
-            return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
-        }
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 

@@ -9,9 +9,9 @@ import java.util.UUID;
 
 public interface OfferService {
 
-    ResponseOfferDtoAdmin createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto);
+    ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto);
 
-    ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req);
+    ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req);
 
     void deleteOffer(UUID id, HttpServletRequest req);
 
