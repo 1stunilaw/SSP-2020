@@ -224,18 +224,11 @@ public class OfferServiceImpl implements OfferService {
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
-            if (offers.isEmpty()) {
-                throw new NotFoundException("Пусто");
-            }
             page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
             return page;
         }
         User user = userService.getUserFromHttpServletRequest(req);
         offers = offerRepository.findByOrderIdAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
-        if (offers.isEmpty()) {
-            throw new NotFoundException("Пусто");
-        }
-
         page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
 
         return page;
