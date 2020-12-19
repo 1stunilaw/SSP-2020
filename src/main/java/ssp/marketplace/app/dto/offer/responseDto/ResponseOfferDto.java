@@ -36,7 +36,7 @@ public class ResponseOfferDto extends ResponseOfferDtoAbstract {
         }
         ResponseOfferDto offerDto = new ResponseOfferDto();
         offerDto.setId(offer.getId());
-        offerDto.setOrder(offer.getOrder().getNumber());
+        offerDto.setOrder(offer.getOrder().getId());
         offerDto.setUser(new SupplierResponseDto(offer.getUser()));
         offerDto.setCreatedAt(offer.getCreatedAt());
         //offerDto.setUpdatedAt(offer.getUpdatedAt());
