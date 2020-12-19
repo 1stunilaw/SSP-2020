@@ -1,14 +1,13 @@
 package ssp.marketplace.app.service.impl;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseListOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.*;
 import ssp.marketplace.app.entity.user.*;
@@ -61,7 +60,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoAdmin createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
+    public ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
         /**
          * id предложения /
@@ -111,11 +110,11 @@ public class OfferServiceImpl implements OfferService {
         userRepository.save(userFromDB);
         orderRepository.save(orderFromDB);
 
-        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
     @Override
-    public ResponseOfferDtoAdmin updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
+    public ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
         /**
          * описание +
          * дата изменения TODO: проверка наличия изменений чуть позже
@@ -128,32 +127,12 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Предложение удалено");
         }
 
-        String token = jwtTokenProvider.resolveToken(req);
-        List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
-            throw new AccessDeniedException("Доступ закрыт");
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
         }
 
-        List<Document> documents = offer.getDocuments();
-        List<String> documentsUpdate = updateOfferDto.getDocuments();
-        if (documents != null && documentsUpdate != null) {
-            List<String> documentsOld = new ArrayList<>();
-            for (Document doc : documents
-            ) {
-                if (doc.getStatusForDocument() != StatusForDocument.DELETED) {
-                    documentsOld.add(doc.getName());
-                }
-            }
-            List<String> docDelete = new ArrayList<>(documentsOld);
-            docDelete.removeAll(documentsUpdate);
-            for (String docDelName : docDelete
-            ) {
-                if (documentRepository.findByName(docDelName) != null) {
-                    documentService.deleteDocument(docDelName);
-                } else {
-                    throw new BadRequestException("Файл " + docDelName + " не найден");
-                }
-            }
+        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
+            throw new AccessDeniedException("Доступ закрыт");
         }
 
         MultipartFile[] multipartFiles = updateOfferDto.getFiles();
@@ -161,18 +140,23 @@ public class OfferServiceImpl implements OfferService {
             addDocumentToOffer(offer, multipartFiles);
         }
 
-        if (updateOfferDto.getDescription() != null) {
+        String description = updateOfferDto.getDescription();
+        if (updateOfferDto.getDescription() != null && !StringUtils.isBlank(description)) {
             offer.setDescription(updateOfferDto.getDescription());
         }
 
         offerRepository.save(offer);
-        return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
     @Override
     public void deleteOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
+
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
+        }
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
@@ -194,11 +178,14 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoAbstract getOneOffer(UUID id, HttpServletRequest req) {
+    public ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
         if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
             throw new NotFoundException("Предложение удалено");
+        }
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
         }
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
@@ -207,16 +194,17 @@ public class OfferServiceImpl implements OfferService {
         }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
         offer.setDocuments(activeDocuments);
-
-        if (role.contains(RoleName.ROLE_ADMIN.toString())) {
-            return ResponseOfferDtoAdmin.responseOfferDtoFromOffer(offer);
-        }
-        return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+        return ResponseOfferDtoShow.responseOfferDtoFromOffer(offer);
     }
 
     @Override
     public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req) {
 
+        Order orderFromDB = orderRepository.findById(orderId)
+                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+        if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
+        }
         Page<Offer> offers;
         Page<ResponseListOfferDto> page = null;
 
@@ -224,27 +212,22 @@ public class OfferServiceImpl implements OfferService {
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
-            if (offers.isEmpty()) {
-                throw new NotFoundException("Пусто");
-            }
             page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
             return page;
         }
         User user = userService.getUserFromHttpServletRequest(req);
         offers = offerRepository.findByOrderIdAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
-        if (offers.isEmpty()) {
-            throw new NotFoundException("Пусто");
-        }
-
         page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
 
         return page;
     }
 
-    private void addDocumentToOffer(
-            Offer offer,
-            MultipartFile[] multipartFiles
-    ) {
+    private void addDocumentToOffer(Offer offer, MultipartFile[] multipartFiles) {
+        List<Document> oldDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
+     if ((oldDocuments.size() + multipartFiles.length) > 10) {
+            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
+            throw new BadRequestException(filesCountError);
+        }
         String pathS3 = "/" + offer.getClass().getSimpleName() + "/" + offer.getNumber(); // "/Offer/{уникальный номер}"
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (offer.getDocuments() != null) {

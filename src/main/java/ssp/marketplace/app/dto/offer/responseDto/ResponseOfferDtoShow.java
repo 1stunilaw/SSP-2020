@@ -1,7 +1,6 @@
 package ssp.marketplace.app.dto.offer.responseDto;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.customer.CustomerResponseDto;
 import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
@@ -11,9 +10,9 @@ import java.util.*;
 @Setter
 @Getter
 @AllArgsConstructor
-//@NoArgsConstructor
+@NoArgsConstructor
 @Builder
-public class ResponseOfferDtoAdmin extends ResponseOfferDtoAbstract {
+public class ResponseOfferDtoShow extends ResponseOfferDtoAbstract {
 
     /**
      * Информация, которая видна заказчику:
@@ -28,19 +27,22 @@ public class ResponseOfferDtoAdmin extends ResponseOfferDtoAbstract {
      * дата изменения
      * документы
      */
-    public static ResponseOfferDtoAdmin responseOfferDtoFromOffer(Offer offer) {
+
+    private UUID order;
+
+    public static ResponseOfferDtoShow responseOfferDtoFromOffer(Offer offer) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> stringDocs = new ArrayList<>();
         for (Document doc : activeDocument
         ) {
             stringDocs.add(doc.getName());
         }
-        ResponseOfferDtoAdmin offerDto = new ResponseOfferDtoAdmin();
+        ResponseOfferDtoShow offerDto = new ResponseOfferDtoShow();
         offerDto.setId(offer.getId());
-        offerDto.setOrder(offer.getOrder().getNumber());
+        offerDto.setOrder(offer.getOrder().getId());
         offerDto.setUser(new SupplierResponseDto(offer.getUser()));
         offerDto.setCreatedAt(offer.getCreatedAt());
-        offerDto.setUpdatedAt(offer.getUpdatedAt());
+        //offerDto.setUpdatedAt(offer.getUpdatedAt());
         offerDto.setNumber(offer.getNumber());
         offerDto.setDescription(offer.getDescription());
         offerDto.setStatusForOffer(offer.getStatusForOffer());

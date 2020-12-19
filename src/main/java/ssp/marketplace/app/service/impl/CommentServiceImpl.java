@@ -1,8 +1,10 @@
 package ssp.marketplace.app.service.impl;
 
-import lombok.AllArgsConstructor;
 import org.mapstruct.factory.Mappers;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.CommentDto;
 import ssp.marketplace.app.dto.mappers.*;
@@ -18,15 +20,35 @@ import ssp.marketplace.app.service.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-@AllArgsConstructor
+
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final OrderRepository orderRepository;
+    private final ApplicationEventPublisher eventPublisher;
+    private final MailService mailService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
 
     private final CommentDtoMapper mapper = Mappers.getMapper(CommentDtoMapper.class);
+
+    public CommentServiceImpl(
+            CommentRepository commentRepository, JwtTokenProvider jwtTokenProvider, UserService userService,
+            OrderRepository orderRepository,
+            ApplicationEventPublisher eventPublisher,
+            MailService mailService
+    ) {
+        this.commentRepository = commentRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+        this.userService = userService;
+        this.orderRepository = orderRepository;
+        this.eventPublisher = eventPublisher;
+        this.mailService = mailService;
+    }
 
     @Override
     public CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto, UUID parentId) {
@@ -37,6 +59,11 @@ public class CommentServiceImpl implements CommentService {
                 .findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
 
+        if(question.getOrder().getId() != comment.getOrder().getId())
+        {
+            throw new BadRequestException("Заказ ответа не совпадает с заказом вопроса");
+        }
+
         if(question.getStatus() == StatusForComment.DELETED) throw new BadRequestException("Комментарий был удален");
 
         if(question.getAccessLevel() ==CommentAccessLevel.PRIVATE){
@@ -46,6 +73,7 @@ public class CommentServiceImpl implements CommentService {
         commentRepository.save(question);
 
         comment = commentRepository.save(comment);
+        sendConfirmationEmailForSupplier(comment);
         return mapper.commentToCommentDto(comment);
     }
 
@@ -57,19 +85,12 @@ public class CommentServiceImpl implements CommentService {
         return mapToDtoAndToPages(responseCommentDtoList, pageable);
     }
 
-//    @Override
-//    public Page<ResponseCommentDto> getAllForAdmin(HttpServletRequest req, Pageable pageable) {
-//
-//        User user = userService.getUserFromHttpServletRequest(req);
-//
-//
-//        return null;
-//    }
 
     @Override
     public CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto) {
         Comment comment = newComment(request, commentDto);
         comment = commentRepository.save(comment);
+        sendConfirmationEmailForCustomer(comment);
 
         return mapper.commentToCommentDto(comment);
     }
@@ -141,5 +162,36 @@ public class CommentServiceImpl implements CommentService {
         Page<ResponseCommentDto> pages = new PageImpl<ResponseCommentDto>(
                 responseCommentDtoList.subList((int)start, (int)end), pageable, responseCommentDtoList.size());
         return pages;
+    }
+
+    @Async
+    public void sendConfirmationEmailForSupplier(Comment comment) {
+        User user = comment.getQuestion().getUser();
+        sendConfirmationEmail(user,
+                "new_answer",
+                "Пришел новый ответ на ваш комментарий",
+                comment.getOrder().getId());
+    }
+
+    @Async
+    public void sendConfirmationEmailForCustomer(Comment comment) {
+        User user = comment.getOrder().getUser();
+        sendConfirmationEmail(user,
+                "new_question",
+                "Пришел новый комментарий",
+                comment.getOrder().getId());
+    }
+
+    @Async
+    public void sendConfirmationEmail(User user, String templateName, String mailSubject, UUID orderId)
+    {
+        try {
+            Map<String, Object> data = new HashMap<>();
+            data.put("url", frontendUrl + "/comments/" + orderId);
+
+            mailService.sendMail(templateName, mailSubject, data, user);
+        }
+        catch (Exception ignored) {
+        }
     }
 }

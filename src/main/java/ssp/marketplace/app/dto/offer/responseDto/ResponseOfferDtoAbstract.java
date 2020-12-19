@@ -21,12 +21,10 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
      * описание
      * статус
      * дата создания
-     * дата изменения
+     * //дата изменения
      * документы
      */
     private UUID id;
-
-    private Long order;
 
     private SupplierResponseDto user;
 
@@ -38,7 +36,7 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
 
     private Timestamp createdAt;
 
-    private Timestamp updatedAt;
+    //private Timestamp updatedAt;
 
     private List<String> documents;
 }
