@@ -127,6 +127,10 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Предложение удалено");
         }
 
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
+        }
+
         if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
