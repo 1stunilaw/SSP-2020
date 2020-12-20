@@ -3,8 +3,8 @@ package ssp.marketplace.app.service.impl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.lawStatus.LawStatusCreateRequestDto;
-import ssp.marketplace.app.dto.user.supplier.LawStatusResponseDto;
+import ssp.marketplace.app.dto.lawStatus.RequestLawStatusCreateDto;
+import ssp.marketplace.app.dto.lawStatus.ResponseLawStatusDto;
 import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.supplier.LawStatus;
 import ssp.marketplace.app.exceptions.NotFoundException;
@@ -26,14 +26,14 @@ public class LawStatusServiceImpl implements LawStatusService {
     }
 
     @Override
-    public List<LawStatusResponseDto> getAllStatuses() {
-        return lawStatusRepository.findByStatus(StateStatus.ACTIVE).stream().map(LawStatusResponseDto::new).collect(Collectors.toList());
+    public List<ResponseLawStatusDto> getAllStatuses() {
+        return lawStatusRepository.findByStatus(StateStatus.ACTIVE).stream().map(ResponseLawStatusDto::new).collect(Collectors.toList());
     }
 
     @Override
-    public LawStatusResponseDto createLawStatus(LawStatusCreateRequestDto dto) {
+    public ResponseLawStatusDto createLawStatus(RequestLawStatusCreateDto dto) {
         LawStatus lawStatus = new LawStatus(dto.getName());
-        return new LawStatusResponseDto(lawStatusRepository.save(lawStatus));
+        return new ResponseLawStatusDto(lawStatusRepository.save(lawStatus));
     }
 
     @Override

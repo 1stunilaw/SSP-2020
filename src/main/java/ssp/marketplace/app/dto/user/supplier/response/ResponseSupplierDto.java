@@ -1,7 +1,7 @@
-package ssp.marketplace.app.dto.user.supplier;
+package ssp.marketplace.app.dto.user.supplier.response;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForDocument;
 import ssp.marketplace.app.entity.user.User;
@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class SupplierResponseDto extends UserResponseDto {
+public class ResponseSupplierDto extends ResponseUserDto {
     private String companyName;
     private String description;
     private String inn;
@@ -27,7 +27,7 @@ public class SupplierResponseDto extends UserResponseDto {
     private List<String> tags;
     private List<String> documents;
 
-    public SupplierResponseDto(User user) {
+    public ResponseSupplierDto(User user) {
         super(user);
 
         description = user.getSupplierDetails().getDescription();

@@ -8,7 +8,8 @@ import org.springframework.data.domain.*;
 import org.springframework.http.*;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.user.supplier.*;
+import ssp.marketplace.app.dto.user.supplier.request.RequestSupplierAddAccreditationDto;
+import ssp.marketplace.app.dto.user.supplier.response.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
@@ -46,7 +47,7 @@ public class SupplierServiceImpl implements SupplierService {
     }
 
     @Override
-    public SupplierResponseDto getSupplier(String id, HttpServletRequest req) {
+    public ResponseSupplierDto getSupplier(String id, HttpServletRequest req) {
         try {
             UUID uuid = UUID.fromString(id);
             Optional<User> user = userRepository.findById(uuid);
@@ -54,14 +55,14 @@ public class SupplierServiceImpl implements SupplierService {
             if (!user.isPresent() || user.get().getSupplierDetails() == null){
                 throw new NotFoundException("Поставщик с данным идентификатором не был найден");
             }
-            return new SupplierForAdminResponseDto(user.get());
+            return new ResponseSupplierForAdminDto(user.get());
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный идентификатор");
         }
     }
 
     @Override
-    public SupplierForAdminResponseDto addAccreditationStatus(String id, SupplierAddAccreditationRequestDto accreditationStatus) {
+    public ResponseSupplierForAdminDto addAccreditationStatus(String id, RequestSupplierAddAccreditationDto accreditationStatus) {
         try {
             UUID uuid = UUID.fromString(id);
             Optional<User> user = userRepository.findById(uuid);
@@ -71,18 +72,18 @@ public class SupplierServiceImpl implements SupplierService {
             User u = user.get();
             u.getSupplierDetails().setAccreditationStatus(accreditationStatus.getAccreditationStatus());
             userRepository.save(u);
-            return new SupplierForAdminResponseDto(u);
+            return new ResponseSupplierForAdminDto(u);
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный идентификатор");
         }
     }
 
     @Override
-    public Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable) {
+    public Page<ResponseSupplierPageDto> getAllSuppliers(Pageable pageable) {
         List<Role> roles = roleRepository.findByNameIsIn(Arrays.asList(RoleName.ROLE_USER, RoleName.ROLE_BLANK_USER));
         Page<User> userPage = userRepository.findByRolesInAndStatus(pageable, roles, UserStatus.ACTIVE);
 
-        return new PageImpl<>(userPage.stream().map(SupplierPageResponseDto::new).collect(Collectors.toList()), pageable, userPage.getTotalElements());
+        return new PageImpl<>(userPage.stream().map(ResponseSupplierPageDto::new).collect(Collectors.toList()), pageable, userPage.getTotalElements());
     }
 
     @Override

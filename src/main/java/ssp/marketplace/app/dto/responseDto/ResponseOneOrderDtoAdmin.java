@@ -1,7 +1,7 @@
 package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.customer.CustomerResponseDto;
+import ssp.marketplace.app.dto.user.customer.ResponseCustomerDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
 
@@ -29,7 +29,7 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
         orderDto.setDateStart(order.getDateStart().withSecond(0).withNano(0).toString());
         orderDto.setDateStop(order.getDateStop().withSecond(0).withNano(0).toString());
         orderDto.setName(order.getName());
-        orderDto.setUser(new CustomerResponseDto(order.getUser()));
+        orderDto.setUser(new ResponseCustomerDto(order.getUser()));
         orderDto.setStatusForOrder(order.getStatusForOrder());
         orderDto.setDocuments(stringDocs);
         orderDto.setDescription(order.getDescription());

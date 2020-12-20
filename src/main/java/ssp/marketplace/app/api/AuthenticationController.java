@@ -1,11 +1,10 @@
 package ssp.marketplace.app.api;
 
-import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.*;
+import ssp.marketplace.app.dto.auth.*;
 import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.UserService;
@@ -26,7 +25,7 @@ public class AuthenticationController {
     }
 
     @PostMapping("login")
-    public AuthenticationResponseDto login(@RequestBody AuthenticationRequestDto requestDto){
+    public ResponseAuthenticationDto login(@RequestBody RequestAuthenticationDto requestDto){
         try {
             String email = requestDto.getEmail();
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, requestDto.getPassword()));
@@ -34,7 +33,7 @@ public class AuthenticationController {
 
             String token = userService.createToken(user);
 
-            return new AuthenticationResponseDto(email, token);
+            return new ResponseAuthenticationDto(email, token);
         } catch (AuthenticationException e){
             throw new BadCredentialsException("Неверный email или пароль");
         }

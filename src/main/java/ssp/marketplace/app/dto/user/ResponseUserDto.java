@@ -12,7 +12,7 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public abstract class UserResponseDto implements Serializable {
+public abstract class ResponseUserDto implements Serializable {
     private UUID id;
     private String email;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
@@ -20,7 +20,7 @@ public abstract class UserResponseDto implements Serializable {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     private Timestamp updatedAt;
 
-    public UserResponseDto(User user) {
+    public ResponseUserDto(User user) {
         id = user.getId();
         email = user.getEmail();
         createdAt = user.getCreatedAt();

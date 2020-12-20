@@ -3,18 +3,19 @@ package ssp.marketplace.app.service;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
 import org.springframework.http.ResponseEntity;
-import ssp.marketplace.app.dto.user.supplier.*;
+import ssp.marketplace.app.dto.user.supplier.request.RequestSupplierAddAccreditationDto;
+import ssp.marketplace.app.dto.user.supplier.response.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.UUID;
 
 public interface SupplierService {
 
-    SupplierResponseDto getSupplier(String id, HttpServletRequest req);
+    ResponseSupplierDto getSupplier(String id, HttpServletRequest req);
 
-    SupplierResponseDto addAccreditationStatus(String id, SupplierAddAccreditationRequestDto accreditationStatus);
+    ResponseSupplierDto addAccreditationStatus(String id, RequestSupplierAddAccreditationDto accreditationStatus);
 
-    Page<SupplierPageResponseDto> getAllSuppliers(Pageable pageable);
+    Page<ResponseSupplierPageDto> getAllSuppliers(Pageable pageable);
 
     ResponseEntity<InputStreamResource> getSupplierDocument(String filename, UUID supplierId, HttpServletRequest request);
 

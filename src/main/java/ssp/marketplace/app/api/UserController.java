@@ -7,9 +7,10 @@ import org.springframework.http.*;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.dto.user.customer.*;
-import ssp.marketplace.app.dto.user.supplier.*;
+import ssp.marketplace.app.dto.user.supplier.request.*;
+import ssp.marketplace.app.dto.user.supplier.response.*;
 import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.*;
 
@@ -32,15 +33,15 @@ public class UserController {
     }
 
     @GetMapping("/user")
-    public UserResponseDto getCurrentUser(HttpServletRequest request){
+    public ResponseUserDto getCurrentUser(HttpServletRequest request){
         return userService.getCurrentUser(request);
     }
 
     @PatchMapping(value = "/customer/update")
     @ResponseStatus(HttpStatus.OK)
-    public CustomerResponseDto updateCustomer(
+    public ResponseCustomerDto updateCustomer(
             HttpServletRequest request,
-            @RequestBody @Valid @NotNull CustomerUpdateRequestDto dto
+            @RequestBody @Valid @NotNull RequestCustomerUpdateDto dto
     )
     {
         return userService.updateCustomer(request, dto);
@@ -48,9 +49,9 @@ public class UserController {
 
     @PatchMapping(value = "/supplier/update", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.OK)
-    public SupplierResponseDto updateSupplier(
+    public ResponseSupplierDto updateSupplier(
             HttpServletRequest request,
-            @ModelAttribute @Valid @NotNull SupplierUpdateRequestDto dto
+            @ModelAttribute @Valid @NotNull RequestSupplierUpdateDto dto
     )
     {
         return userService.updateSupplier(request, dto);
@@ -58,9 +59,9 @@ public class UserController {
 
     @PatchMapping(value = "/supplier/fill", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.OK)
-    public SupplierResponseDtoWithNewToken fillSupplier(
+    public ResponseSupplierDtoWithNewToken fillSupplier(
             HttpServletRequest request,
-            @ModelAttribute @Valid @NotNull SupplierFirstUpdateRequestDto dto
+            @ModelAttribute @Valid @NotNull RequestSupplierFirstUpdateDto dto
     )
     {
         return userService.fillSupplier(request, dto);

@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public abstract class UserUpdateRequestDto implements Serializable {
+public abstract class RequestUserUpdateDto implements Serializable {
     @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
     private String sendEmail;
 }

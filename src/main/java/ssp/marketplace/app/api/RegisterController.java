@@ -4,14 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
-import ssp.marketplace.app.dto.registration.supplier.SupplierRegisterRequestDto;
-import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.registration.customer.RequestCustomerRegisterDto;
+import ssp.marketplace.app.dto.registration.supplier.RequestSupplierRegisterDto;
+import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.service.UserService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
-import java.util.HashMap;
 
 @RestController
 @RequestMapping("/api/register")
@@ -26,13 +25,13 @@ public class RegisterController {
 
     @PostMapping("/supplier")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto registerSupplier(@RequestBody @Valid @NotNull SupplierRegisterRequestDto registerUserDto){
+    public ResponseUserDto registerSupplier(@RequestBody @Valid @NotNull RequestSupplierRegisterDto registerUserDto){
         return userService.register(registerUserDto);
     }
 
     @PostMapping("/customer")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserResponseDto registerCustomer(@RequestBody @Valid @NotNull CustomerRegisterRequestDto registerCustomerDto){
+    public ResponseUserDto registerCustomer(@RequestBody @Valid @NotNull RequestCustomerRegisterDto registerCustomerDto){
         return userService.register(registerCustomerDto);
     }
 

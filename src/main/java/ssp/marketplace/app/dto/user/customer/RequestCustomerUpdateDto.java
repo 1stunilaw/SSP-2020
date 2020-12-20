@@ -1,11 +1,7 @@
 package ssp.marketplace.app.dto.user.customer;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-import org.springframework.beans.propertyeditors.StringTrimmerEditor;
-import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.InitBinder;
-import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
+import ssp.marketplace.app.dto.user.RequestUserUpdateDto;
 import ssp.marketplace.app.service.UserService;
 import ssp.marketplace.app.validation.unique.Unique;
 
@@ -14,7 +10,7 @@ import javax.validation.constraints.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CustomerUpdateRequestDto extends UserUpdateRequestDto {
+public class RequestCustomerUpdateDto extends RequestUserUpdateDto {
     @Pattern(regexp = "^$|^[a-zA-ZА-я][a-zA-ZА-я-.\" ]{4,149}+$", message = "{fio.errors.regex}")
     private String fio;
 

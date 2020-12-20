@@ -2,13 +2,13 @@ package ssp.marketplace.app.dto.registration.customer;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
-import ssp.marketplace.app.dto.registration.RegisterRequestUserDto;
+import ssp.marketplace.app.dto.registration.RequestRegisterUserDto;
 
 import javax.validation.constraints.*;
 
 @Getter
 @Setter
-public class CustomerRegisterRequestDto extends RegisterRequestUserDto {
+public class RequestCustomerRegisterDto extends RequestRegisterUserDto {
     @NotBlank(message = "{fio.errors.empty}")
     @Pattern(regexp = "^[a-zA-ZА-я][a-zA-ZА-я-.\" ]+$", message = "{fio.errors.regex}")
     @Length(min = 5, max = 150, message = "{fio.errors.length}")

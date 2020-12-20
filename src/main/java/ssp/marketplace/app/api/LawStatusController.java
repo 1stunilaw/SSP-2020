@@ -4,13 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.dto.lawStatus.LawStatusCreateRequestDto;
-import ssp.marketplace.app.dto.user.supplier.LawStatusResponseDto;
+import ssp.marketplace.app.dto.lawStatus.RequestLawStatusCreateDto;
+import ssp.marketplace.app.dto.lawStatus.ResponseLawStatusDto;
 import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.LawStatusService;
 
 import javax.validation.Valid;
-import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -26,13 +25,13 @@ public class LawStatusController {
 
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public List<LawStatusResponseDto> getAllStatuses(){
+    public List<ResponseLawStatusDto> getAllStatuses(){
         return lawStatusService.getAllStatuses();
     }
 
     @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
-    public LawStatusResponseDto createLawStatus(@RequestBody @Valid LawStatusCreateRequestDto dto){
+    public ResponseLawStatusDto createLawStatus(@RequestBody @Valid RequestLawStatusCreateDto dto){
         return lawStatusService.createLawStatus(dto);
     }
 
