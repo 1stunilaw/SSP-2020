@@ -3,6 +3,7 @@ package ssp.marketplace.app.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import ssp.marketplace.app.dto.SimpleResponse;
 import ssp.marketplace.app.dto.registration.customer.CustomerRegisterRequestDto;
 import ssp.marketplace.app.dto.registration.supplier.SupplierRegisterRequestDto;
 import ssp.marketplace.app.dto.user.UserResponseDto;
@@ -43,12 +44,8 @@ public class RegisterController {
 
     @GetMapping("/verify")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity confirmRegister(@RequestParam("token") String token){
+    public SimpleResponse confirmRegister(@RequestParam("token") String token){
         userService.confirmRegister(token);
-        // TODO: 20.12.2020 Переделать в дто
-        HashMap response = new HashMap();
-        response.put("status", HttpStatus.OK);
-        response.put("message", "Регистрация успешно подтверждена");
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new SimpleResponse(HttpStatus.OK.value(), "Регистрация успешно подтверждена");
     }
 }

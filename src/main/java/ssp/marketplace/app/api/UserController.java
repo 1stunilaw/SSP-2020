@@ -6,6 +6,7 @@ import org.springframework.beans.propertyeditors.StringTrimmerEditor;
 import org.springframework.http.*;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import ssp.marketplace.app.dto.SimpleResponse;
 import ssp.marketplace.app.dto.user.UserResponseDto;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
@@ -67,7 +68,7 @@ public class UserController {
 
     @DeleteMapping(value = "/supplier/tags/{tagId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity deleteTagFromSupplier(
+    public SimpleResponse deleteTagFromSupplier(
             HttpServletRequest request,
             @PathVariable String tagId
     )
@@ -75,11 +76,7 @@ public class UserController {
         try {
             UUID id = UUID.fromString(tagId);
             supplierService.deleteTagFromSupplier(request, id);
-            // TODO: 20.12.2020 Переделать в дто
-            HashMap response = new HashMap();
-            response.put("status", HttpStatus.OK.value());
-            response.put("message", "Тег успешно удалён");
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new SimpleResponse(HttpStatus.OK.value(), "Тег успешно откреплён");
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID тега");
         }

@@ -1,8 +1,10 @@
 package ssp.marketplace.app.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.MessageSource;
 import org.springframework.data.domain.*;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -41,14 +43,20 @@ public class OfferServiceImpl implements OfferService {
 
     private final JwtTokenProvider jwtTokenProvider;
 
+    private final MailService mailService;
+
+    @Value("${frontend.url}")
+    private String frontendUrl;
+
+    @Autowired
     public OfferServiceImpl(
             OfferRepository offerRepository, OrderRepository orderRepository, UserRepository userRepository,
             UserService userService, OrderService orderService,
             MessageSource messageSource, DocumentService documentService,
             DocumentRepository documentRepository,
-            JwtTokenProvider jwtTokenProvider
+            JwtTokenProvider jwtTokenProvider,
+            MailService mailService
     ) {
-
         this.offerRepository = offerRepository;
         this.orderRepository = orderRepository;
         this.userRepository = userRepository;
@@ -58,6 +66,7 @@ public class OfferServiceImpl implements OfferService {
         this.documentService = documentService;
         this.documentRepository = documentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
+        this.mailService = mailService;
     }
 
     @Override
@@ -109,11 +118,21 @@ public class OfferServiceImpl implements OfferService {
         if (multipartFiles != null) {
             addDocumentToOffer(offer, multipartFiles);
         }
-        offerRepository.save(offer);
+        Offer savedOffer = offerRepository.save(offer);
         userRepository.save(userFromDB);
         orderRepository.save(orderFromDB);
-
+        sendOfferNotification(savedOffer);
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
+    }
+
+    @Async
+    private void sendOfferNotification(Offer offer){
+        HashMap<String, Object> data = new HashMap<>();
+        data.put("companyName", offer.getUser().getSupplierDetails().getCompanyName());
+        data.put("orderUrl", frontendUrl + "/orders/" + offer.getOrder().getId());
+        data.put("offerUrl", frontendUrl + "/offers/" + offer.getId() + "/show");
+
+        mailService.sendMail("new_offer", "Новое предложение к вашему заказу", data, offer.getOrder().getUser());
     }
 
     @Override

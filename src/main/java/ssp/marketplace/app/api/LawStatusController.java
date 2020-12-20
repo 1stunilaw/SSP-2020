@@ -3,6 +3,7 @@ package ssp.marketplace.app.api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import ssp.marketplace.app.dto.SimpleResponse;
 import ssp.marketplace.app.dto.lawStatus.LawStatusCreateRequestDto;
 import ssp.marketplace.app.dto.user.supplier.LawStatusResponseDto;
 import ssp.marketplace.app.exceptions.BadRequestException;
@@ -37,15 +38,10 @@ public class LawStatusController {
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity deleteLawStatus(@PathVariable("id") String id){
+    public SimpleResponse deleteLawStatus(@PathVariable("id") String id){
         try {
             lawStatusService.deleteLawStatus(UUID.fromString(id));
-
-            // TODO: 20.12.2020 Переделать в дто
-            HashMap response = new HashMap();
-            response.put("status", HttpStatus.OK);
-            response.put("message", "Юридический статус успешно удалён");
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new SimpleResponse(HttpStatus.OK.value(), "Юридический статус успешно удалён");
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID юридического статуса");
         }

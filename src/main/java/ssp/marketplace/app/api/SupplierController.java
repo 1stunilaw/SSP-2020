@@ -7,6 +7,7 @@ import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import ssp.marketplace.app.dto.SimpleResponse;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.SupplierService;
@@ -65,7 +66,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/{supplierId}/{filename}")
-    public ResponseEntity deleteDocument(
+    public SimpleResponse deleteDocument(
             @PathVariable String supplierId,
             @PathVariable String filename,
             HttpServletRequest request
@@ -73,11 +74,7 @@ public class SupplierController {
         try {
             UUID userId = UUID.fromString(supplierId);
             supplierService.deleteDocument(userId, filename, request);
-            // TODO: 20.12.2020 Переделать в дто
-            HashMap response = new HashMap();
-            response.put("status", HttpStatus.OK);
-            response.put("message", "Документ успешно удалён");
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID пользователя");
         }
