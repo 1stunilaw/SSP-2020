@@ -2,6 +2,7 @@ package ssp.marketplace.app.api;
 
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import ssp.marketplace.app.dto.SimpleResponse;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.service.TagServices;
@@ -35,16 +36,12 @@ public class TagController {
 
     @DeleteMapping(value = "/admin/tags/{tagId}")
     @ResponseStatus(HttpStatus.OK)
-    public ResponseEntity deleteTag(
+    public SimpleResponse deleteTag(
             @PathVariable UUID tagId
     ) {
         tagServices.deleteTag(tagId);
-        // TODO: 20.12.2020 Переделать в дто
-        HashMap response = new HashMap();
-        response.put("status", HttpStatus.OK);
-        response.put("message", "Тег успешно удалён");
         // TODO: 20.12.2020 Статус
-        return new ResponseEntity(response, HttpStatus.OK);
+        return new SimpleResponse(HttpStatus.OK.value(), "Тег успешно удалён");
     }
 
     @PatchMapping(value = "/admin/tags/{tagId}")

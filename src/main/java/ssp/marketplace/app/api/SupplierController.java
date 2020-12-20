@@ -7,7 +7,9 @@ import org.springframework.data.domain.*;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.user.supplier.*;
+import ssp.marketplace.app.dto.SimpleResponse;
+import ssp.marketplace.app.dto.user.supplier.request.RequestSupplierAddAccreditationDto;
+import ssp.marketplace.app.dto.user.supplier.response.*;
 import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.SupplierService;
 
@@ -28,14 +30,14 @@ public class SupplierController {
     }
 
     @GetMapping()
-    public Page<SupplierPageResponseDto> getAllSuppliers(
+    public Page<ResponseSupplierPageDto> getAllSuppliers(
             @PageableDefault(sort = {"supplierDetails.companyName"}, size = 30, value = 30, direction = Sort.Direction.ASC, page = 0) Pageable pageable
     ) {
         return supplierService.getAllSuppliers(pageable);
     }
 
     @GetMapping("/{id}")
-    public SupplierResponseDto getSupplier(
+    public ResponseSupplierDto getSupplier(
             @PathVariable("id") String id,
             HttpServletRequest req
     ) {
@@ -43,9 +45,9 @@ public class SupplierController {
     }
 
     @PostMapping("{id}")
-    public SupplierResponseDto addAccreditationStatus(
+    public ResponseSupplierDto addAccreditationStatus(
             @PathVariable("id") String id,
-            @RequestBody @Valid SupplierAddAccreditationRequestDto accreditationStatus
+            @RequestBody @Valid RequestSupplierAddAccreditationDto accreditationStatus
     ) {
         return supplierService.addAccreditationStatus(id, accreditationStatus);
     }
@@ -65,7 +67,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/{supplierId}/{filename}")
-    public ResponseEntity deleteDocument(
+    public SimpleResponse deleteDocument(
             @PathVariable String supplierId,
             @PathVariable String filename,
             HttpServletRequest request
@@ -73,11 +75,7 @@ public class SupplierController {
         try {
             UUID userId = UUID.fromString(supplierId);
             supplierService.deleteDocument(userId, filename, request);
-            // TODO: 20.12.2020 Переделать в дто
-            HashMap response = new HashMap();
-            response.put("status", HttpStatus.OK);
-            response.put("message", "Документ успешно удалён");
-            return new ResponseEntity(response, HttpStatus.OK);
+            return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID пользователя");
         }

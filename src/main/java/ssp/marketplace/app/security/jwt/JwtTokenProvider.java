@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.*;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 import ssp.marketplace.app.entity.user.Role;
+import ssp.marketplace.app.exceptions.JwtAuthenticationException;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -84,7 +85,7 @@ public class JwtTokenProvider {
                 .get("roles");
     }
 
-    public boolean validateToken(String token) throws JwtAuthenticationException{
+    public boolean validateToken(String token) throws JwtAuthenticationException {
         try {
             Jws<Claims> claims = Jwts.parserBuilder().setSigningKey(secret).build().parseClaimsJws(token);
 

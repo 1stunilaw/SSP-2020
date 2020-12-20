@@ -11,7 +11,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public abstract class RegisterRequestUserDto implements Serializable {
+public abstract class RequestRegisterUserDto implements Serializable {
     @NotBlank(message = "{email.errors.empty}")
     @Pattern(regexp = "^[\\w!#$%&’*+/=?`{|}~^-]+(?:\\.[\\w!#$%&’*+/=?`{|}~^-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,6}$",
             flags = Pattern.Flag.CASE_INSENSITIVE,

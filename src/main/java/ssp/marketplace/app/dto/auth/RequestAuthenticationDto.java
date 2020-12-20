@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto;
+package ssp.marketplace.app.dto.auth;
 
 import lombok.*;
 
@@ -8,7 +8,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class AuthenticationRequestDto implements Serializable {
+public class RequestAuthenticationDto implements Serializable {
 
     // TODO: 20.12.2020 Добавить сообщения
     @NotBlank

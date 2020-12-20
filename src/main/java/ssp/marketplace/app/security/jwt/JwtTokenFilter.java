@@ -3,6 +3,7 @@ package ssp.marketplace.app.security.jwt;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
+import ssp.marketplace.app.exceptions.JwtAuthenticationException;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;

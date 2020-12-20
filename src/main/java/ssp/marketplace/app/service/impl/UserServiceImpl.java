@@ -9,12 +9,13 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.registration.RegisterRequestUserDto;
+import ssp.marketplace.app.dto.registration.RequestRegisterUserDto;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
-import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.dto.user.customer.*;
-import ssp.marketplace.app.dto.user.supplier.*;
+import ssp.marketplace.app.dto.user.supplier.request.*;
+import ssp.marketplace.app.dto.user.supplier.response.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.statuses.StateStatus;
@@ -84,22 +85,22 @@ public class UserServiceImpl implements UserService {
 
     // TODO: 20.12.2020 Убрать лишние логи
     @Override
-    public UserResponseDto register(RegisterRequestUserDto registerDto) {
-        if (registerDto instanceof CustomerRegisterRequestDto) {
-            User user = registerCustomer((CustomerRegisterRequestDto)registerDto);
+    public ResponseUserDto register(RequestRegisterUserDto registerDto) {
+        if (registerDto instanceof RequestCustomerRegisterDto) {
+            User user = registerCustomer((RequestCustomerRegisterDto)registerDto);
             log.info("IN register - user: {} successfully registered", user);
-            return new CustomerRegisterResponseDto(user);
-        } else if (registerDto instanceof SupplierRegisterRequestDto) {
-            User user = registerSupplier((SupplierRegisterRequestDto)registerDto);
+            return new ResponseCustomerRegisterDto(user);
+        } else if (registerDto instanceof RequestSupplierRegisterDto) {
+            User user = registerSupplier((RequestSupplierRegisterDto)registerDto);
             sendConfirmationEmail(user, createVerificationToken(user));
             log.info("IN register - user: {} successfully registered", user);
-            return new SupplierRegisterResponseDto(user);
+            return new ResponseSupplierRegisterDto(user);
         }
 
         throw new NotFoundException("Role was not found");
     }
 
-    private User registerCustomer(CustomerRegisterRequestDto dto) {
+    private User registerCustomer(RequestCustomerRegisterDto dto) {
         Role roleAdmin = getRoleFromRepository(RoleName.ROLE_ADMIN);
         Set<Role> userRoles = new HashSet<>();
         userRoles.add(roleAdmin);
@@ -122,7 +123,7 @@ public class UserServiceImpl implements UserService {
         return userRepository.save(user);
     }
 
-    private User registerSupplier(SupplierRegisterRequestDto dto) {
+    private User registerSupplier(RequestSupplierRegisterDto dto) {
         Role roleUser = getRoleFromRepository(RoleName.ROLE_BLANK_USER);
 
         Set<Role> userRoles = new HashSet<>();
@@ -186,7 +187,7 @@ public class UserServiceImpl implements UserService {
 
             if (verificationToken.getExpiryDate().getTime() - Calendar.getInstance().getTimeInMillis() <= 0L) {
                 tokenRepository.delete(verificationToken);
-                throw new ConfirmationTokenInvalidException("Срок действия токена истёк");
+                throw new BadRequestException("Срок действия токена истёк");
             }
 
             User user = verificationToken.getUser();
@@ -236,23 +237,23 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponseDto getCurrentUser(HttpServletRequest request) {
+    public ResponseUserDto getCurrentUser(HttpServletRequest request) {
         User user = getUserFromHttpServletRequest(request);
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
 
         if (roles.contains(RoleName.ROLE_ADMIN)) {
-            return new CustomerResponseDto(user);
+            return new ResponseCustomerDto(user);
         }
 
         if (roles.contains(RoleName.ROLE_USER) || roles.contains(RoleName.ROLE_BLANK_USER)) {
-            return new SupplierResponseDto(user);
+            return new ResponseSupplierDto(user);
         }
 
         return null;
     }
 
     @Override
-    public CustomerResponseDto updateCustomer(HttpServletRequest request, CustomerUpdateRequestDto dto) {
+    public ResponseCustomerDto updateCustomer(HttpServletRequest request, RequestCustomerUpdateDto dto) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
 
@@ -274,13 +275,13 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setUpdatedAt(new Timestamp(new Date().getTime()));
-        return new CustomerResponseDto(userRepository.save(user));
+        return new ResponseCustomerDto(userRepository.save(user));
     }
 
     @Override
-    public SupplierResponseDto updateSupplier(
+    public ResponseSupplierDto updateSupplier(
             HttpServletRequest request,
-            SupplierUpdateRequestDto dto
+            RequestSupplierUpdateDto dto
     ) {
         User user = getUserFromHttpServletRequest(request);
         // TODO: 03.12.2020 Переделать через MapStruct
@@ -351,7 +352,7 @@ public class UserServiceImpl implements UserService {
         }
 
         user.setUpdatedAt(new Timestamp(new Date().getTime()));
-        return new SupplierResponseDto(userRepository.save(user));
+        return new ResponseSupplierDto(userRepository.save(user));
     }
 
     private void addTagsToUser(User user, Set<String> setOfId) {
@@ -376,7 +377,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public SupplierResponseDtoWithNewToken fillSupplier(HttpServletRequest request, SupplierFirstUpdateRequestDto dto) {
+    public ResponseSupplierDtoWithNewToken fillSupplier(HttpServletRequest request, RequestSupplierFirstUpdateDto dto) {
         User user = getUserFromHttpServletRequest(request);
         Set<RoleName> roles = user.getRoles().stream().map(Role::getName).collect(Collectors.toSet());
         if (!roles.contains(RoleName.ROLE_BLANK_USER)) {
@@ -434,7 +435,7 @@ public class UserServiceImpl implements UserService {
 
         String token = jwtTokenProvider.createToken(user.getEmail(), user.getRoles());
 
-        return new SupplierResponseDtoWithNewToken(userRepository.save(user), token);
+        return new ResponseSupplierDtoWithNewToken(userRepository.save(user), token);
     }
 
     @Override

@@ -10,7 +10,7 @@ import java.io.Serializable;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class LawStatusCreateRequestDto implements Serializable {
+public class RequestLawStatusCreateDto implements Serializable {
     @Unique(service = LawStatusService.class, fieldName = "name", message = "Юридический статус с данным названием уже существует")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я\"][a-zA-ZА-я0-9-.,&\" ]{1,99}+$", message = "{lawStatus.errors.regex}")
     private String name;

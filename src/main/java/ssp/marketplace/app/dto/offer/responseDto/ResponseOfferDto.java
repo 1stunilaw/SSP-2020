@@ -1,7 +1,7 @@
 package ssp.marketplace.app.dto.offer.responseDto;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
+import ssp.marketplace.app.dto.user.supplier.response.ResponseSupplierDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
 
@@ -41,7 +41,7 @@ public class ResponseOfferDto extends ResponseOfferDtoAbstract {
         ResponseOfferDto offerDto = new ResponseOfferDto();
         offerDto.setId(offer.getId());
         offerDto.setOrder(offer.getOrder().getNumber());
-        offerDto.setUser(new SupplierResponseDto(offer.getUser()));
+        offerDto.setUser(new ResponseSupplierDto(offer.getUser()));
         offerDto.setCreatedAt(offer.getCreatedAt());
         //offerDto.setUpdatedAt(offer.getUpdatedAt());
         offerDto.setNumber(offer.getNumber());

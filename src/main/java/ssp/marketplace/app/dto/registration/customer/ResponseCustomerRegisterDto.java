@@ -1,17 +1,17 @@
 package ssp.marketplace.app.dto.registration.customer;
 
 import lombok.*;
-import ssp.marketplace.app.dto.user.UserResponseDto;
+import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.entity.user.User;
 
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class CustomerRegisterResponseDto extends UserResponseDto {
+public class ResponseCustomerRegisterDto extends ResponseUserDto {
     private String fio;
     private String phone;
 
-    public CustomerRegisterResponseDto(User user) {
+    public ResponseCustomerRegisterDto(User user) {
         super.setId(user.getId());
         super.setEmail(user.getEmail());
         super.setCreatedAt(user.getCreatedAt());

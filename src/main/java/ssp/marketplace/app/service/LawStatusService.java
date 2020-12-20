@@ -1,15 +1,15 @@
 package ssp.marketplace.app.service;
 
-import ssp.marketplace.app.dto.lawStatus.LawStatusCreateRequestDto;
-import ssp.marketplace.app.dto.user.supplier.LawStatusResponseDto;
+import ssp.marketplace.app.dto.lawStatus.RequestLawStatusCreateDto;
+import ssp.marketplace.app.dto.lawStatus.ResponseLawStatusDto;
 import ssp.marketplace.app.validation.unique.FieldValueExists;
 
 import java.util.*;
 
 public interface LawStatusService extends FieldValueExists {
-    List<LawStatusResponseDto> getAllStatuses();
+    List<ResponseLawStatusDto> getAllStatuses();
 
-    LawStatusResponseDto createLawStatus(LawStatusCreateRequestDto dto);
+    ResponseLawStatusDto createLawStatus(RequestLawStatusCreateDto dto);
 
     void deleteLawStatus(UUID id);
 }

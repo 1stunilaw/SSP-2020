@@ -1,9 +1,9 @@
-package ssp.marketplace.app.dto.user.supplier;
+package ssp.marketplace.app.dto.user.supplier.request;
 
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.user.UserUpdateRequestDto;
+import ssp.marketplace.app.dto.user.RequestUserUpdateDto;
 import ssp.marketplace.app.service.UserService;
 import ssp.marketplace.app.validation.unique.Unique;
 import ssp.marketplace.app.validation.uuid.*;
@@ -14,14 +14,11 @@ import java.util.Set;
 @Getter
 @Setter
 @RequiredArgsConstructor
-public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
+public class RequestSupplierFirstUpdateDto extends RequestUserUpdateDto {
     @Unique(message = "{companyName.errors.unique}", service = UserService.class, fieldName = "companyName")
     @Length(min = 2, max = 255, message = "{companyName.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
-
-    @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
-    private String sendEmail;
 
     @NotBlank(message = "{inn.errors.empty}")
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
@@ -52,8 +49,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @ValidUUID(message = "{uuid.errors.regex}")
     private String lawStatusId;
 
-    @CollectionOfUiid(message = "{uuid.errors.regex}")
-    private Set<String> tags;
+    private Set<@ValidUUID(message = "{uuid.errors.regex}") String> tags;
 
     @Length(min = 5, max = 500, message = "{contacts.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()+@#][a-zA-ZА-я0-9-.,&\":_%$+@#() ]+$", message = "{contacts.errors.regex}")
