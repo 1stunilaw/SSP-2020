@@ -35,10 +35,9 @@ public class MailSenderImpl implements MailService {
     @Async
     @Override
     public void sendMail(String templateName, String mailSubject, Map<String, Object> data, User toUser) {
-        if (toUser.getSendEmail().equals(MailAgreement.NO)){
-            return;
+        if (toUser.getSendEmail().equals(MailAgreement.YES)){
+            sendMailAnyway(templateName, mailSubject, data, toUser);
         }
-        sendMailAnyway(templateName, mailSubject, data, toUser);
     }
 
     @Override
@@ -83,8 +82,9 @@ public class MailSenderImpl implements MailService {
                 helper.setSubject(mailSubject);
 
                 messages[i] = message;
-                mailSender.send(message);
             }
+
+            mailSender.send(messages);
         } catch (MessagingException | IOException | TemplateException ex) {
             throw new RuntimeException(ex.getMessage());
         }

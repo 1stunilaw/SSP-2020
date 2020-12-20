@@ -30,6 +30,7 @@ public class ResponseOfferDtoShow extends ResponseOfferDtoAbstract {
 
     private UUID order;
 
+    // TODO: 20.12.2020 Переделать через конструктор (по желанию)
     public static ResponseOfferDtoShow responseOfferDtoFromOffer(Offer offer) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> stringDocs = new ArrayList<>();

@@ -76,10 +76,10 @@ public class DocumentServiceImpl implements DocumentService {
         ) {
             strings.add(doc.getName());
         }
-        ResponseNameDocument responseNameDocument = new ResponseNameDocument(strings);
-        return responseNameDocument;
+        return new ResponseNameDocument(strings);
     }
 
+    // TODO: 20.12.2020 Удаление по названию ?
     @Override
     public void deleteDocument(String name) {
         Document document = documentRepository.findByNameAndStatusForDocumentNotIn(

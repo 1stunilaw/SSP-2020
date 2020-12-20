@@ -28,6 +28,8 @@ public class SupplierServiceImpl implements SupplierService {
     private final RoleRepository roleRepository;
     private final DocumentService documentService;
     private final UserService userService;
+
+    // TODO: 20.12.2020 Проверить необходимость jwtTokenProvider и нести, если не нужен
     private final JwtTokenProvider jwtTokenProvider;
 
 
@@ -88,6 +90,7 @@ public class SupplierServiceImpl implements SupplierService {
             String filename, UUID supplierId, HttpServletRequest request
     ) {
         User user = userService.getUserFromHttpServletRequest(request);
+        // TODO: 20.12.2020 Возможно стоит добавить проверку существования роли
         Role roleAdmin = roleRepository.findByName(RoleName.ROLE_ADMIN).get();
 
         if (!user.getRoles().contains(roleAdmin) && !user.getId().equals(supplierId)) {

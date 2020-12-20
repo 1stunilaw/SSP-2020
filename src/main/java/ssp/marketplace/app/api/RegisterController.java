@@ -42,8 +42,10 @@ public class RegisterController {
 //    }
 
     @GetMapping("/verify")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity confirmRegister(@RequestParam("token") String token){
         userService.confirmRegister(token);
+        // TODO: 20.12.2020 Переделать в дто
         HashMap response = new HashMap();
         response.put("status", HttpStatus.OK);
         response.put("message", "Регистрация успешно подтверждена");

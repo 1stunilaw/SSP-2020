@@ -30,6 +30,7 @@ public class ResponseOfferDto extends ResponseOfferDtoAbstract {
 
     private Long order;
 
+    // nit:TODO: 20.12.2020 Переделать через конструктор
     public static ResponseOfferDto responseOfferDtoFromOffer(Offer offer) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> stringDocs = new ArrayList<>();

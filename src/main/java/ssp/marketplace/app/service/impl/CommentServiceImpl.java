@@ -1,5 +1,6 @@
 package ssp.marketplace.app.service.impl;
 
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.factory.Mappers;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
@@ -20,14 +21,13 @@ import ssp.marketplace.app.service.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-
+@Slf4j
 @Service
 public class CommentServiceImpl implements CommentService {
     private final CommentRepository commentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserService userService;
     private final OrderRepository orderRepository;
-    private final ApplicationEventPublisher eventPublisher;
     private final MailService mailService;
 
     @Value("${frontend.url}")
@@ -37,38 +37,42 @@ public class CommentServiceImpl implements CommentService {
     private final CommentDtoMapper mapper = Mappers.getMapper(CommentDtoMapper.class);
 
     public CommentServiceImpl(
-            CommentRepository commentRepository, JwtTokenProvider jwtTokenProvider, UserService userService,
+            CommentRepository commentRepository,
+            JwtTokenProvider jwtTokenProvider,
+            UserService userService,
             OrderRepository orderRepository,
-            ApplicationEventPublisher eventPublisher,
             MailService mailService
     ) {
         this.commentRepository = commentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userService = userService;
         this.orderRepository = orderRepository;
-        this.eventPublisher = eventPublisher;
         this.mailService = mailService;
     }
 
     @Override
     public CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto, UUID parentId) {
         Comment comment = newComment(request, commentDto);
-        if(commentDto.getAccessLevel()==CommentAccessLevel.PUBLIC) comment.setAccessLevel(commentDto.getAccessLevel());
+        if(commentDto.getAccessLevel()==CommentAccessLevel.PUBLIC) {
+            comment.setAccessLevel(commentDto.getAccessLevel());
+        }
 
         Comment question = commentRepository
                 .findById(parentId)
                 .orElseThrow(() -> new NotFoundException("Комментарий не найден"));
 
-        if(question.getOrder().getId() != comment.getOrder().getId())
-        {
+        if(!question.getOrder().getId().equals(comment.getOrder().getId())) {
             throw new BadRequestException("Заказ ответа не совпадает с заказом вопроса");
         }
 
-        if(question.getStatus() == StatusForComment.DELETED) throw new BadRequestException("Комментарий был удален");
+        if(question.getStatus() == StatusForComment.DELETED) {
+            throw new BadRequestException("Комментарий был удален");
+        }
 
         if(question.getAccessLevel() ==CommentAccessLevel.PRIVATE){
             question.setAccessLevel(comment.getAccessLevel());
         }
+
         comment.setQuestion(question);
         commentRepository.save(question);
 
@@ -154,16 +158,16 @@ public class CommentServiceImpl implements CommentService {
         Collections.sort(responseCommentDtoList, Collections.reverseOrder());
 
         long start = pageable.getOffset();
-        long end = start + pageable.getPageSize() > responseCommentDtoList.size()
-                ? responseCommentDtoList.size()
-                : start + pageable.getPageSize();
-        if(end<start) throw new BadRequestException("Страницы не существует");
+        long end = Math.min(start + (long)pageable.getPageSize(), (long)responseCommentDtoList.size());
+        if(end < start) {
+            throw new BadRequestException("Страницы не существует");
+        }
 
-        Page<ResponseCommentDto> pages = new PageImpl<ResponseCommentDto>(
+        return new PageImpl<ResponseCommentDto>(
                 responseCommentDtoList.subList((int)start, (int)end), pageable, responseCommentDtoList.size());
-        return pages;
     }
 
+    // TODO: 20.12.2020 Переименовать методы отправки почты
     @Async
     public void sendConfirmationEmailForSupplier(Comment comment) {
         User user = comment.getQuestion().getUser();
@@ -188,10 +192,10 @@ public class CommentServiceImpl implements CommentService {
         try {
             Map<String, Object> data = new HashMap<>();
             data.put("url", frontendUrl + "/comments/" + orderId);
-
             mailService.sendMail(templateName, mailSubject, data, user);
         }
-        catch (Exception ignored) {
+        catch (Exception ex) {
+            log.error(ex.getMessage());
         }
     }
 }

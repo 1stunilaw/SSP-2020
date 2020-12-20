@@ -9,6 +9,8 @@ import java.io.Serializable;
 @Setter
 @RequiredArgsConstructor
 public class AuthenticationRequestDto implements Serializable {
+
+    // TODO: 20.12.2020 Добавить сообщения
     @NotBlank
     private String email;
     @NotBlank

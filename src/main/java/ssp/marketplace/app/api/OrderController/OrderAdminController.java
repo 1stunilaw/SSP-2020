@@ -23,7 +23,7 @@ public class OrderAdminController {
         this.orderService = orderService;
     }
 
-
+    // TODO: 20.12.2020 Переделать аннотации
     @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOneOrderDtoAdmin createOrder(
@@ -47,6 +47,7 @@ public class OrderAdminController {
     public void deleteOrder(
             @PathVariable UUID id
     ) {
+        // TODO: 20.12.2020 Добавить ответ
         orderService.deleteOrder(id);
     }
 
@@ -73,6 +74,7 @@ public class OrderAdminController {
             @PathVariable UUID orderId,
             @PathVariable String name
     ) {
+        // TODO: 20.12.2020 Добавить ответ
         orderService.deleteDocumentFromOrder(orderId, name);
     }
 }

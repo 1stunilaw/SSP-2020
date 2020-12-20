@@ -75,6 +75,7 @@ public class UserController {
         try {
             UUID id = UUID.fromString(tagId);
             supplierService.deleteTagFromSupplier(request, id);
+            // TODO: 20.12.2020 Переделать в дто
             HashMap response = new HashMap();
             response.put("status", HttpStatus.OK.value());
             response.put("message", "Тег успешно удалён");
@@ -97,6 +98,7 @@ public class UserController {
 
     @InitBinder("customerUpdateRequestDto")
     public void initBinderForCustomerUpdate(WebDataBinder binder){
+        // TODO: 20.12.2020 Попробовать убрать метод
         binder.registerCustomEditor(String.class, new StringTrimmerEditor(true));
     }
 }

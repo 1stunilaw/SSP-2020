@@ -36,6 +36,7 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
 
     private Timestamp createdAt;
 
+    // TODO: 20.12.2020 Пофиксить ошибки со времен
     //private Timestamp updatedAt;
 
     private List<String> documents;

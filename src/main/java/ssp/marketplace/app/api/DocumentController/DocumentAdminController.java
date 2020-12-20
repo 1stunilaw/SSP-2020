@@ -35,6 +35,7 @@ public class DocumentAdminController {
             @PathVariable UUID id,
             @RequestParam("files") MultipartFile[] multipartFiles
     ) {
+        // TODO: 20.12.2020 Перенести метод, контроллер удалить
         return documentService.addNewDocumentsInOrder(id, multipartFiles);
     }
 }

@@ -9,10 +9,10 @@ import java.util.*;
 public interface TagRepository extends JpaRepository<Tag, UUID> {
     Optional<Tag> findByTagName(String tagName);
 
-    List<Tag> findAllByStatusForTagNotIn(final Collection<StatusForTag> statusForTags);
+    List<Tag> findAllByStatusForTagNotIn(final Collection<StateStatus> statusForTags);
 
     Optional<Tag> findByIdAndStatusForTagNotIn(
             UUID id,
-            final Collection<StatusForTag> statusForTags
+            final Collection<StateStatus> statusForTags
     );
 }

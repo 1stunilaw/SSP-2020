@@ -1,5 +1,6 @@
 package ssp.marketplace.app.api;
 
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.AuthenticationException;
@@ -35,7 +36,7 @@ public class AuthenticationController {
 
             return new AuthenticationResponseDto(email, token);
         } catch (AuthenticationException e){
-            throw new BadCredentialsException("Invalid username or password");
+            throw new BadCredentialsException("Неверный email или пароль");
         }
     }
 }

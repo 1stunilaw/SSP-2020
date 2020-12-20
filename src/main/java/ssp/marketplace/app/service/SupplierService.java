@@ -18,6 +18,7 @@ public interface SupplierService {
 
     ResponseEntity<InputStreamResource> getSupplierDocument(String filename, UUID supplierId, HttpServletRequest request);
 
+    // TODO: 20.12.2020 Переделать название метода
     void deleteDocument(UUID supplierId, String filename, HttpServletRequest request);
 
     void deleteTagFromSupplier(HttpServletRequest request, UUID tagId);

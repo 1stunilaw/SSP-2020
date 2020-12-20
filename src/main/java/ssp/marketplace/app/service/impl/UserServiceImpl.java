@@ -9,7 +9,6 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import ssp.marketplace.app.dto.registration.RegisterRequestUserDto;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
@@ -18,7 +17,7 @@ import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
-import ssp.marketplace.app.entity.statuses.StatusForTag;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.supplier.*;
 import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
@@ -83,6 +82,7 @@ public class UserServiceImpl implements UserService {
         this.documentService = documentService;
     }
 
+    // TODO: 20.12.2020 Убрать лишние логи
     @Override
     public UserResponseDto register(RegisterRequestUserDto registerDto) {
         if (registerDto instanceof CustomerRegisterRequestDto) {
@@ -151,9 +151,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByEmail(String email) {
-        User result = userRepository.findByEmail(email)
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new NotFoundException("Пользователь с данным email не был найден: " + email));
-        return result;
     }
 
     @Override
@@ -228,8 +227,7 @@ public class UserServiceImpl implements UserService {
     public User getUserFromHttpServletRequest(HttpServletRequest req) {
         String token = jwtTokenProvider.resolveToken(req);
         String email = jwtTokenProvider.getEmail(token);
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"));
+        return findByEmail(email);
     }
 
     @Override
@@ -358,7 +356,7 @@ public class UserServiceImpl implements UserService {
 
     private void addTagsToUser(User user, Set<String> setOfId) {
         setOfId.forEach(id -> {
-            Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StatusForTag.DELETED))
+            Tag tag = tagRepository.findByIdAndStatusForTagNotIn(UUID.fromString(id), Collections.singleton(StateStatus.DELETED))
                     .orElseThrow(() -> new NotFoundException("Тег с данным id не найден"));
             user.getSupplierDetails().getTags().add(tag);
         });

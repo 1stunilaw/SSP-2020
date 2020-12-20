@@ -1,5 +1,5 @@
 package ssp.marketplace.app.entity.statuses;
 
-public enum StatusForTag {
+public enum StateStatus {
     ACTIVE, DELETED
 }

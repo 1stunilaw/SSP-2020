@@ -5,7 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.lawStatus.LawStatusCreateRequestDto;
 import ssp.marketplace.app.dto.user.supplier.LawStatusResponseDto;
-import ssp.marketplace.app.entity.statuses.StatusForTag;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.supplier.LawStatus;
 import ssp.marketplace.app.exceptions.NotFoundException;
 import ssp.marketplace.app.repository.LawStatusRepository;
@@ -27,7 +27,7 @@ public class LawStatusServiceImpl implements LawStatusService {
 
     @Override
     public List<LawStatusResponseDto> getAllStatuses() {
-        return lawStatusRepository.findByStatus(StatusForTag.ACTIVE).stream().map(LawStatusResponseDto::new).collect(Collectors.toList());
+        return lawStatusRepository.findByStatus(StateStatus.ACTIVE).stream().map(LawStatusResponseDto::new).collect(Collectors.toList());
     }
 
     @Override
@@ -38,17 +38,17 @@ public class LawStatusServiceImpl implements LawStatusService {
 
     @Override
     public void deleteLawStatus(UUID id) {
-        LawStatus lawStatus = lawStatusRepository.findByIdAndStatus(id, StatusForTag.ACTIVE)
+        LawStatus lawStatus = lawStatusRepository.findByIdAndStatus(id, StateStatus.ACTIVE)
                 .orElseThrow(()-> new NotFoundException("Юридического статуса с данным ID не существует"));
 
-        lawStatus.setStatus(StatusForTag.DELETED);
+        lawStatus.setStatus(StateStatus.DELETED);
         lawStatusRepository.save(lawStatus);
     }
 
     @Override
     public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
         if ("name".equals(fieldName)){
-            Set<LawStatus> result = lawStatusRepository.findByNameAndStatus(value.toString(), StatusForTag.ACTIVE);
+            Set<LawStatus> result = lawStatusRepository.findByNameAndStatus(value.toString(), StateStatus.ACTIVE);
             return !result.isEmpty();
         }
 

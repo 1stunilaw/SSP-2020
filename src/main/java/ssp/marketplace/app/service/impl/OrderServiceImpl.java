@@ -26,6 +26,10 @@ import java.util.*;
 @Slf4j
 public class OrderServiceImpl implements OrderService {
 
+    private static final int HOUR = 23;
+
+    private static final int MINUTE = 59;
+
     @Value("${frontend.url}")
     private String frontendUrl;
 
@@ -119,6 +123,7 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         List<Document> documents = DocumentService.selectOnlyActiveDocument(order);
         List<String> names = new ArrayList<>();
+        // TODO: 20.12.2020 Переделать удаление через id 
         for (Document doc : documents
         ) {
             names.add(doc.getName());
@@ -132,6 +137,7 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
+        // TODO: 20.12.2020 Переделать проверку через @Unique в дто 
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
@@ -142,6 +148,8 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException(dateError);
         }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
+
+        // TODO: 20.12.2020 Попробовать сделать без добавления заказ к пользователю. Если будет работать, то убрать его сохранение 
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOrders().add(order);
         order.setUser(userFromDB);
@@ -206,8 +214,7 @@ public class OrderServiceImpl implements OrderService {
         StatusForOrder statusForOrder = updateDto.getStatusForOrder();
         if (statusForOrder != null) {
             if (statusForOrder == StatusForOrder.CLOSED) {
-                LocalDateTime localDateTime = LocalDateTime.now();
-                order.setDateStop(localDateTime);
+                order.setDateStop(LocalDateTime.now());
             }
             order.setStatusForOrder(statusForOrder);
         }
@@ -260,6 +267,7 @@ public class OrderServiceImpl implements OrderService {
         int countOldDoc = oldDocuments.size();
         int countNewDoc = multipartFiles.length;
 
+        // TODO: 20.12.2020 Убрать одну из проверок - либо тут, либо в DocumentService
         if (countOldDoc + countNewDoc > 10) {
             String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
@@ -277,7 +285,7 @@ public class OrderServiceImpl implements OrderService {
     private Page<ResponseListOrderDto> mapToDtoAndToPages(Set<Order> search, Pageable pageable) {
         List<Order> targetList = new ArrayList<>(search);
         int start = (int)pageable.getOffset();
-        int end = (start + pageable.getPageSize()) > targetList.size() ? targetList.size() : start + pageable.getPageSize();
+        int end = Math.min(start + pageable.getPageSize(), targetList.size());
         if (end < start) {
             Page<Order> orders = new PageImpl<>(targetList.subList(0, 0), pageable, 0);
             Page<ResponseListOrderDto> page = orders.map(ResponseListOrderDto::responseOrderDtoFromOrder);
@@ -288,6 +296,7 @@ public class OrderServiceImpl implements OrderService {
         return page;
     }
 
+    // TODO: 20.12.2020 Переименовать метод
     @Async
     public void sendConfirmationEmail(Order order) {
         try {

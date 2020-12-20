@@ -10,6 +10,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
+// TODO: 20.12.2020 Переименовать
 public class ResponseNameDocument  {
 
     private List<String> name;

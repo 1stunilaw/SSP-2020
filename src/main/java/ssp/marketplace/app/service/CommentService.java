@@ -17,6 +17,7 @@ public interface CommentService {
 
     CommentDto addComment(HttpServletRequest request, RequestCommentDto commentDto, UUID parentId);
 
+    // TODO: 20.12.2020 Разобраться с необходимостью методов на данном этапе
     Page<ResponseCommentDto> getUsersComments(HttpServletRequest req, Pageable pageable);
 
 //    Page<ResponseCommentDto> getAllForAdmin(HttpServletRequest req, Pageable pageable);

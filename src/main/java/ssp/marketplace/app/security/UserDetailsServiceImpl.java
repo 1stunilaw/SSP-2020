@@ -25,7 +25,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         User user = userService.findByEmail(username);
 
         UserDetailsImpl jwtUser = UserDetailsFactory.create(user);
-        log.info("IN loadUserByUsername - user with email: {} successfully loaded", username);
         return jwtUser;
     }
 }

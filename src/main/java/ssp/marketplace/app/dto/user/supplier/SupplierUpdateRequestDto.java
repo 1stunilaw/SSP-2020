@@ -48,6 +48,7 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto{
     private String lawStatusId;
 
     @CollectionOfUiid(message = "{uuid.errors.regex}")
+    // TODO: 20.12.2020 Разобраться с валидацией UUID
     private Set<String> tags;
 
     @Size(max = 10, message = "{files.errors.amount}")

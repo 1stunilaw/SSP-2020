@@ -9,6 +9,7 @@ import ssp.marketplace.app.exceptions.BadRequestException;
 import ssp.marketplace.app.service.LawStatusService;
 
 import javax.validation.Valid;
+import java.security.Principal;
 import java.util.*;
 
 @RestController
@@ -23,6 +24,7 @@ public class LawStatusController {
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     public List<LawStatusResponseDto> getAllStatuses(){
         return lawStatusService.getAllStatuses();
     }
@@ -34,9 +36,12 @@ public class LawStatusController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity deleteLawStatus(@PathVariable("id") String id){
         try {
             lawStatusService.deleteLawStatus(UUID.fromString(id));
+
+            // TODO: 20.12.2020 Переделать в дто
             HashMap response = new HashMap();
             response.put("status", HttpStatus.OK);
             response.put("message", "Юридический статус успешно удалён");

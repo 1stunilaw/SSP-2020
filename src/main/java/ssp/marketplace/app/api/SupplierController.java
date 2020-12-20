@@ -73,6 +73,7 @@ public class SupplierController {
         try {
             UUID userId = UUID.fromString(supplierId);
             supplierService.deleteDocument(userId, filename, request);
+            // TODO: 20.12.2020 Переделать в дто
             HashMap response = new HashMap();
             response.put("status", HttpStatus.OK);
             response.put("message", "Документ успешно удалён");

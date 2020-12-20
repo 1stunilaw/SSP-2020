@@ -45,7 +45,8 @@ public class OrderController {
         return orderService.getOneOrder(id, req);
     }
 
-   @GetMapping(value = "/{orderId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    // TODO: 20.12.2020 Добавить ResponseStatus
+    @GetMapping(value = "/{orderId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     public ResponseEntity<InputStreamResource> getOrderDocument(
             @PathVariable String filename,
             @PathVariable UUID orderId

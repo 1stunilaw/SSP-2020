@@ -7,6 +7,7 @@ import java.util.*;
 import java.util.regex.Pattern;
 
 @Slf4j
+// TODO: 20.12.2020 Удалить валидатор
 public class CollectionOfUiidValidator implements ConstraintValidator<CollectionOfUiid, Collection<String>> {
     @Override
     public boolean isValid(Collection<String> collection, ConstraintValidatorContext context) {

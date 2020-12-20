@@ -9,9 +9,9 @@ import java.util.*;
 @Getter
 @Setter
 public class ResponseCommentDto implements Comparable<ResponseCommentDto>{
-    CommentDto question;
-    List<CommentDto> answers;
-    String creationDate;
+    private CommentDto question;
+    private List<CommentDto> answers;
+    private String creationDate;
 
     @Override
     public int compareTo(ResponseCommentDto o) {

@@ -21,7 +21,6 @@ public abstract class RegisterRequestUserDto implements Serializable {
     @Unique(message = "{email.errors.unique}", service = UserService.class, fieldName = "email")
     private String email;
 
-
     @NotBlank(message = "{password.errors.empty}")
     @Length(min = 10, max = 25, message = "{password.errors.length}")
     @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$)(?=[\\x21-\\x7E]+$).{10,25}$",

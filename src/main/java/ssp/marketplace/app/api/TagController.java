@@ -39,9 +39,11 @@ public class TagController {
             @PathVariable UUID tagId
     ) {
         tagServices.deleteTag(tagId);
+        // TODO: 20.12.2020 Переделать в дто
         HashMap response = new HashMap();
         response.put("status", HttpStatus.OK);
         response.put("message", "Тег успешно удалён");
+        // TODO: 20.12.2020 Статус
         return new ResponseEntity(response, HttpStatus.OK);
     }
 

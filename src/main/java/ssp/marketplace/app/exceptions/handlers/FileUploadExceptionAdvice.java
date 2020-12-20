@@ -5,9 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
 import ssp.marketplace.app.exceptions.response.ErrorResponse;
-
+// TODO: 20.12.2020 Переименовать класс
 @ControllerAdvice
 public class FileUploadExceptionAdvice {
+
 
     @Value("${spring.servlet.multipart.max-file-size}")
     private String size;

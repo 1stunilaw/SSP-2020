@@ -32,7 +32,7 @@ public class ResponseCommentDtoMapper {
 
         for (Comment comment : comments)
         {
-            result.add(userId == comment.getUser().getId()?createDtoFromComment(comment)
+            result.add(userId.equals(comment.getUser().getId()) ?createDtoFromComment(comment)
                     :createDtoFromPublicComment(comment));
         }
 
@@ -102,7 +102,9 @@ public class ResponseCommentDtoMapper {
         CustomerDetails details = user.getCustomerDetails();
         if(details == null) {
             SupplierDetails details1 = user.getSupplierDetails();
-            if(details1 == null) return null;
+            if(details1 == null) {
+                return null;
+            }
             return  details1.getCompanyName();
         }
         return details.getFio();

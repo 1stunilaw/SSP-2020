@@ -3,7 +3,7 @@ package ssp.marketplace.app.entity.supplier;
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.*;
 import ssp.marketplace.app.entity.BasicEntity;
-import ssp.marketplace.app.entity.statuses.StatusForTag;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 
 import javax.persistence.*;
 import java.util.List;
@@ -23,7 +23,7 @@ public class LawStatus extends BasicEntity {
 
     @Column(name = "status")
     @Enumerated(EnumType.STRING)
-    private StatusForTag status = StatusForTag.ACTIVE;
+    private StateStatus status = StateStatus.ACTIVE;
 
     public LawStatus(String name) {
         super();

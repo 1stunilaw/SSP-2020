@@ -22,7 +22,8 @@ public class OfferController {
         this.offerService = offerService;
     }
 
-    @RequestMapping(value = "/{orderId}/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+
+    @PostMapping(value = "/{orderId}/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOfferDto createOffer(
             @PathVariable("orderId") UUID id,
@@ -39,6 +40,7 @@ public class OfferController {
             @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate,
             HttpServletRequest req
     ) {
+        // TODO: 20.12.2020 Переделать аннотации
         return offerService.updateOffer(id, requestOfferDtoUpdate, req);
     }
 
@@ -48,6 +50,7 @@ public class OfferController {
             @PathVariable("offerId") UUID id,
             HttpServletRequest req
     ) {
+        // TODO: 20.12.2020 Добавить ответ
         offerService.deleteOffer(id, req);
     }
 
@@ -76,7 +79,9 @@ public class OfferController {
             @PathVariable String name,
             HttpServletRequest req
     ) {
+        // TODO: 20.12.2020 Добавить ответ
         offerService.deleteDocumentFromOffer(offerId, name, req);
     }
 
+    // TODO: 20.12.2020 Метод для получения документа из предложения?
 }

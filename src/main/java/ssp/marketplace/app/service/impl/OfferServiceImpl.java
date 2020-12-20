@@ -22,6 +22,7 @@ import java.util.*;
 @Service
 public class OfferServiceImpl implements OfferService {
 
+    // TODO: 20.12.2020 Убрать неиспользуемые классы, убрать лишние репозитории (ордер и юзер)
     private final OfferRepository offerRepository;
 
     private final OrderRepository orderRepository;
@@ -85,6 +86,7 @@ public class OfferServiceImpl implements OfferService {
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_BLANK_USER.toString())) {
+            // TODO: 20.12.2020 Изменить название переменной и кода ошибки
             String filesCountError = messageSource.getMessage("offers.errors.empty", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
@@ -92,6 +94,7 @@ public class OfferServiceImpl implements OfferService {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
+        // TODO: 20.12.2020 Попробовать сохранять только оффер с добавлеными заказом и пользователем
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
@@ -131,7 +134,7 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Заказ удален");
         }
 
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
@@ -160,7 +163,7 @@ public class OfferServiceImpl implements OfferService {
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && !(role.contains(RoleName.ROLE_ADMIN.toString()))) {
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId()) && !role.contains(RoleName.ROLE_ADMIN.toString())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
@@ -170,8 +173,8 @@ public class OfferServiceImpl implements OfferService {
         ) {
             try {
                 documentService.deleteDocument(doc.getName());
-            } catch (NotFoundException e) {
-                continue;
+            } catch (NotFoundException ignored) {
+
             }
         }
         offerRepository.save(offer);
@@ -189,7 +192,7 @@ public class OfferServiceImpl implements OfferService {
         }
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId()) && !(role.contains(RoleName.ROLE_ADMIN.toString()))) {
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId()) && !role.contains(RoleName.ROLE_ADMIN.toString())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
         List<Document> activeDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
@@ -206,7 +209,7 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Заказ удален");
         }
         Page<Offer> offers;
-        Page<ResponseListOfferDto> page = null;
+        Page<ResponseListOfferDto> page;
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
@@ -224,7 +227,7 @@ public class OfferServiceImpl implements OfferService {
 
     private void addDocumentToOffer(Offer offer, MultipartFile[] multipartFiles) {
         List<Document> oldDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
-     if ((oldDocuments.size() + multipartFiles.length) > 10) {
+        if (oldDocuments.size() + multipartFiles.length > 10) {
             String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
             throw new BadRequestException(filesCountError);
         }
@@ -245,7 +248,7 @@ public class OfferServiceImpl implements OfferService {
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
-        if ((offer.getUser().getId() != userService.getUserFromHttpServletRequest(req).getId())) {
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId())) {
             throw new AccessDeniedException("Доступ закрыт");
         }
         List<Document> documents = DocumentService.selectOnlyActiveOfferDocument(offer);

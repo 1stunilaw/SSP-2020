@@ -5,7 +5,7 @@ import org.springframework.stereotype.Service;
 import ssp.marketplace.app.dto.requestDto.*;
 import ssp.marketplace.app.dto.responseDto.ResponseTag;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForTag;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
 import ssp.marketplace.app.entity.user.User;
 import ssp.marketplace.app.exceptions.*;
@@ -31,7 +31,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public List<ResponseTag> getTags() {
-        List<Tag> allTags = tagRepository.findAllByStatusForTagNotIn(Collections.singleton(StatusForTag.DELETED));
+        List<Tag> allTags = tagRepository.findAllByStatusForTagNotIn(Collections.singleton(StateStatus.DELETED));
         List<ResponseTag> responseTagStream =
                 allTags.stream().map(ResponseTag::getResponseTagFromTag).collect(Collectors.toList());
         return responseTagStream;
@@ -46,14 +46,14 @@ public class TagServicesImpl implements TagServices {
             Tag tag;
             if (byTagName.isPresent()) {
                 tag = byTagName.get();
-                if(tag.getStatusForTag() == StatusForTag.DELETED){
-                    tag.setStatusForTag(StatusForTag.ACTIVE);
+                if(tag.getStatusForTag() == StateStatus.DELETED){
+                    tag.setStatusForTag(StateStatus.ACTIVE);
                 }
             }
             else {
                 tag = new Tag();
                 tag.setTagName(name);
-                tag.setStatusForTag(StatusForTag.ACTIVE);
+                tag.setStatusForTag(StateStatus.ACTIVE);
             }
             response.add(new ResponseTag(tagRepository.save(tag)));
         }
@@ -63,9 +63,9 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public void deleteTag(UUID id) {
-        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
+        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StateStatus.DELETED))
                 .orElseThrow(() -> new NotFoundException("Тег не найден"));
-        tag.setStatusForTag(StatusForTag.DELETED);
+        tag.setStatusForTag(StateStatus.DELETED);
         delTagInOrders(tag);
         delTagInSupplierDetails(tag);
         tagRepository.save(tag);
@@ -73,7 +73,7 @@ public class TagServicesImpl implements TagServices {
 
     @Override
     public ResponseTag editTag(UUID id, RequestUpdateTag requestUpdateTag) {
-        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StatusForTag.DELETED))
+        Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StateStatus.DELETED))
                 .orElseThrow(() -> new NotFoundException("Тег не найден"));
         String newTagName = requestUpdateTag.getTagName().toLowerCase();
         if (tagRepository.findByTagName(newTagName).isPresent()) {
@@ -83,6 +83,7 @@ public class TagServicesImpl implements TagServices {
         return new ResponseTag(tagRepository.save(tag));
     }
 
+    // TODO: 20.12.2020 Исправить навзание метода
     private void delTagInOrders(Tag tag) {
         List<Order> ordersList = tag.getOrdersList();
         if (ordersList != null) {
@@ -95,6 +96,7 @@ public class TagServicesImpl implements TagServices {
         }
     }
 
+    // TODO: 20.12.2020 Исправить название метода
     private void delTagInSupplierDetails(Tag tag) {
         List<SupplierDetails> suppliers = tag.getSuppliers();
         if (suppliers != null) {
