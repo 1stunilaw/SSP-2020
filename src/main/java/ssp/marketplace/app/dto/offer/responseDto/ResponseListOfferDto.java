@@ -2,7 +2,6 @@ package ssp.marketplace.app.dto.offer.responseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
-import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
 
