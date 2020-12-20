@@ -30,6 +30,7 @@ public class SupplierController {
     }
 
     @GetMapping()
+    @ResponseStatus(HttpStatus.OK)
     public Page<ResponseSupplierPageDto> getAllSuppliers(
             @PageableDefault(sort = {"supplierDetails.companyName"}, size = 30, value = 30, direction = Sort.Direction.ASC, page = 0) Pageable pageable
     ) {
@@ -37,6 +38,7 @@ public class SupplierController {
     }
 
     @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDto getSupplier(
             @PathVariable("id") String id,
             HttpServletRequest req
@@ -45,6 +47,7 @@ public class SupplierController {
     }
 
     @PostMapping("{id}")
+    @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDto addAccreditationStatus(
             @PathVariable("id") String id,
             @RequestBody @Valid RequestSupplierAddAccreditationDto accreditationStatus
@@ -53,6 +56,7 @@ public class SupplierController {
     }
 
     @GetMapping(value = "/{supplierId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getSupplierDocument(
             @PathVariable String filename,
             @PathVariable String supplierId,
@@ -67,6 +71,7 @@ public class SupplierController {
     }
 
     @DeleteMapping("/{supplierId}/{filename}")
+    @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteDocument(
             @PathVariable String supplierId,
             @PathVariable String filename,
