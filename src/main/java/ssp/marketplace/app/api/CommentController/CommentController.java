@@ -44,12 +44,12 @@ public class CommentController {
         return commentService.addComment(request, commentDto);
     }
 
-    @GetMapping("/getAllForUser")
-    @ResponseStatus(HttpStatus.OK)
-    public Page<ResponseCommentDto> getCommentsForUser(
-            @PageableDefault(sort = "creationDate", size = 10, direction = Sort.Direction.DESC) Pageable pageable,
-            HttpServletRequest req) {
-        return commentService.getUsersComments(req, pageable);
-    }
+//    @GetMapping("/getAllForUser")
+//    @ResponseStatus(HttpStatus.OK)
+//    public Page<ResponseCommentDto> getCommentsForUser(
+//            @PageableDefault(sort = "creationDate", size = 10, direction = Sort.Direction.DESC) Pageable pageable,
+//            HttpServletRequest req) {
+//        return commentService.getUsersComments(req, pageable);
+//    }
 
 }
