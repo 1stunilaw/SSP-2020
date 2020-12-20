@@ -2,6 +2,7 @@ package ssp.marketplace.app.dto.offer.responseDto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
+import ssp.marketplace.app.dto.user.supplier.SupplierResponseDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.service.DocumentService;
 
@@ -18,7 +19,7 @@ public class ResponseListOfferDto{
 
     private Long number;
 
-    private String user;
+    private UUID user;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     private Timestamp createdAt;
@@ -33,7 +34,7 @@ public class ResponseListOfferDto{
         ResponseListOfferDto responseListOfferDto = builder()
                 .id(offer.getId())
                 .number(offer.getNumber())
-                .user(offer.getUser().getSupplierDetails().getCompanyName())
+                .user(offer.getUser().getId())
                 .createdAt(offer.getCreatedAt())
                 .build();
 
