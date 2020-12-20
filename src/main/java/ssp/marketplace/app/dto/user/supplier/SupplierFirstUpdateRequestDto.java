@@ -49,8 +49,7 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @ValidUUID(message = "{uuid.errors.regex}")
     private String lawStatusId;
 
-    @CollectionOfUiid(message = "{uuid.errors.regex}")
-    private Set<String> tags;
+    private Set<@ValidUUID(message = "{uuid.errors.regex}") String> tags;
 
     @Length(min = 5, max = 500, message = "{contacts.errors.length}")
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"()+@#][a-zA-ZА-я0-9-.,&\":_%$+@#() ]+$", message = "{contacts.errors.regex}")
