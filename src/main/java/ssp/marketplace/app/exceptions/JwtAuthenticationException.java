@@ -1,4 +1,4 @@
-package ssp.marketplace.app.security.jwt;
+package ssp.marketplace.app.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;

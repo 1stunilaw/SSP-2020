@@ -53,7 +53,4 @@ public class SupplierUpdateRequestDto extends UserUpdateRequestDto{
 
     @Size(max = 10, message = "{files.errors.amount}")
     private MultipartFile[] files;
-
-    @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
-    private String sendEmail;
 }

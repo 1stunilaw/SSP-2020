@@ -186,7 +186,7 @@ public class UserServiceImpl implements UserService {
 
             if (verificationToken.getExpiryDate().getTime() - Calendar.getInstance().getTimeInMillis() <= 0L) {
                 tokenRepository.delete(verificationToken);
-                throw new ConfirmationTokenInvalidException("Срок действия токена истёк");
+                throw new BadRequestException("Срок действия токена истёк");
             }
 
             User user = verificationToken.getUser();

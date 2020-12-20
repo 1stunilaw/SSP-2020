@@ -3,7 +3,7 @@ package ssp.marketplace.app.exceptions.handlers;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.security.jwt.JwtAuthenticationException;
+import ssp.marketplace.app.exceptions.JwtAuthenticationException;
 
 public class JwtAuthenticationExceptionHandler {
     @ResponseStatus(HttpStatus.UNAUTHORIZED)

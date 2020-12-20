@@ -20,9 +20,6 @@ public class SupplierFirstUpdateRequestDto extends UserUpdateRequestDto {
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9\"][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     private String companyName;
 
-    @Pattern(regexp = "^(true|false)$", message = "{sendMail.errors.regex}")
-    private String sendEmail;
-
     @NotBlank(message = "{inn.errors.empty}")
     @Pattern(regexp = "^(\\d{10}|\\d{12})$", message = "{inn.errors.regex}")
     @Unique(message = "{inn.errors.unique}", service = UserService.class, fieldName = "inn")
