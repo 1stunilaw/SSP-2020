@@ -14,6 +14,7 @@ import java.util.UUID;
 public class CommentDto implements Comparable<CommentDto>{
     private UUID id;
     private UUID orderId;
+    private UUID userId;
     private String text;
     private StatusForComment status;
     private Timestamp createdAt;

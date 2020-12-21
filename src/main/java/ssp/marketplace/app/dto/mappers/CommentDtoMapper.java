@@ -8,6 +8,7 @@ import ssp.marketplace.app.entity.*;
 public interface CommentDtoMapper {
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mappings({
+            @Mapping(target="userId", source = "comment.user.id"),
             @Mapping(target="orderId", source = "comment.order.id"),
             @Mapping(target="id", source = "comment.id")})
     CommentDto commentToCommentDto(Comment comment);

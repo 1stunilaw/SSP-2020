@@ -18,6 +18,8 @@ public class ResponseListOfferDto{
 
     private Long number;
 
+    private UUID userId;
+
     private String user;
 
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
@@ -33,6 +35,7 @@ public class ResponseListOfferDto{
         ResponseListOfferDto responseListOfferDto = builder()
                 .id(offer.getId())
                 .number(offer.getNumber())
+                .userId(offer.getUser().getId())
                 .user(offer.getUser().getSupplierDetails().getCompanyName())
                 .createdAt(offer.getCreatedAt())
                 .build();
