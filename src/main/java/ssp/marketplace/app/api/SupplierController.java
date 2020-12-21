@@ -17,9 +17,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 
+/**
+ * Контроллер действий с поставщиками
+ */
 @RestController
 @RequestMapping("/api/suppliers")
-@Slf4j
 public class SupplierController {
 
     private SupplierService supplierService;
@@ -29,6 +31,11 @@ public class SupplierController {
         this.supplierService = supplierService;
     }
 
+    /**
+     * Запрашивает у сервиса всех поставщиков
+     * @param pageable параметры пагинации
+     * @return Страница с поставщиками
+     */
     @GetMapping()
     @ResponseStatus(HttpStatus.OK)
     public Page<ResponseSupplierPageDto> getAllSuppliers(
@@ -37,16 +44,28 @@ public class SupplierController {
         return supplierService.getAllSuppliers(pageable);
     }
 
+    /**
+     * Запрашивает у сервиса информацию о поставщике с указанным идентификатором
+     * @param id Идентификатор поставщика
+     * @param request Информация о запросе
+     * @return Поставщик с данным идентификатором
+     */
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDto getSupplier(
             @PathVariable("id") String id,
-            HttpServletRequest req
+            HttpServletRequest request
     ) {
-        return supplierService.getSupplier(id, req);
+        return supplierService.getSupplier(id, request);
     }
 
-    @PostMapping("{id}")
+    /**
+     * Запрашивает у сервиса изменение статуса аккредитации у поставщика с указанным идентификатором
+     * @param id Идентификатор поставщика
+     * @param accreditationStatus Статус аккредитации
+     * @return Поставщик с данным идентификатором с изменённым статусом аккредитации
+     */
+    @PostMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDto addAccreditationStatus(
             @PathVariable("id") String id,
@@ -55,6 +74,13 @@ public class SupplierController {
         return supplierService.addAccreditationStatus(id, accreditationStatus);
     }
 
+    /**
+     * Запрашивает у сервиса документ поставщика с данным id с указанным id документа
+     * @param filename Название файла
+     * @param supplierId Идентификатор поставщика
+     * @param request Информация о запросе
+     * @return Фаил с указанным названием
+     */
     @GetMapping(value = "/{supplierId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getSupplierDocument(
@@ -70,6 +96,13 @@ public class SupplierController {
         }
     }
 
+    /**
+     * Передаёт запрос сервису на удаление документа с указанным названием у поставщика с данным id
+     * @param supplierId Идентификатор поставщика
+     * @param filename Название файла
+     * @param request Информация о запросе
+     * @return Сообщение об успешном удалении документа
+     */
     @DeleteMapping("/{supplierId}/{filename}")
     @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteDocument(

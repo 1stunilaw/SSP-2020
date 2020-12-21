@@ -19,6 +19,9 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
+/**
+ * Контроллер действий пользователя
+ */
 @Slf4j
 @RestController
 @RequestMapping("/api")
@@ -32,11 +35,22 @@ public class UserController {
         this.supplierService = supplierService;
     }
 
+    /**
+     * Запрашивает у сервиса информацию об авторизованном пользователе
+     * @param request Информация о запросе
+     * @return Информацию об авторизованном пользователе
+     */
     @GetMapping("/user")
     public ResponseUserDto getCurrentUser(HttpServletRequest request){
         return userService.getCurrentUser(request);
     }
 
+    /**
+     * Передаёт сервису запрос на изменение данных авторизованного заказчика
+     * @param request Информация о запросе
+     * @param dto Новые данные заказчика
+     * @return Изменённые данные заказчика
+     */
     @PatchMapping(value = "/customer/update")
     @ResponseStatus(HttpStatus.OK)
     public ResponseCustomerDto updateCustomer(
@@ -47,6 +61,12 @@ public class UserController {
         return userService.updateCustomer(request, dto);
     }
 
+    /**
+     * Передаёт сервису запрос на изменение данных авторизованного поставщика
+     * @param request Информация о запросе
+     * @param dto Новые данные поставщика
+     * @return Изменённые данные поставщика
+     */
     @PatchMapping(value = "/supplier/update", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDto updateSupplier(
@@ -57,6 +77,12 @@ public class UserController {
         return userService.updateSupplier(request, dto);
     }
 
+    /**
+     * Передаёт сервису запрос на первичное заполнение поставщика
+     * @param request Информация о запросе
+     * @param dto Данные поставщика для заполнения
+     * @return Обновлённая информация о поставщике
+     */
     @PatchMapping(value = "/supplier/fill", consumes = "multipart/form-data")
     @ResponseStatus(HttpStatus.OK)
     public ResponseSupplierDtoWithNewToken fillSupplier(
