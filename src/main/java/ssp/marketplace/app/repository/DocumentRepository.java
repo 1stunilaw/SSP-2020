@@ -7,7 +7,5 @@ import ssp.marketplace.app.entity.statuses.*;
 import java.util.*;
 
 public interface DocumentRepository extends JpaRepository<Document, UUID> {
-    Document findByName(String name);
-    Optional<Document> findByNameAndStatusForDocumentNotIn(String name,
-            Collection<StatusForDocument> statusForDocuments);
+    Optional<Document> findByNameAndStatusForDocumentNotIn(String name, Collection<StateStatus> stateStatus);
 }

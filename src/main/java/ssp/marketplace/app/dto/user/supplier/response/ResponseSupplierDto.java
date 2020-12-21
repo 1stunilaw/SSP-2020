@@ -3,7 +3,7 @@ package ssp.marketplace.app.dto.user.supplier.response;
 import lombok.*;
 import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.user.User;
 
 import java.util.*;
@@ -43,7 +43,7 @@ public class ResponseSupplierDto extends ResponseUserDto {
         }
         tags = user.getSupplierDetails().getTags().stream().map(Tag::getTagName).collect(Collectors.toList());
         documents = user.getSupplierDetails().getDocuments().stream()
-                .filter(doc -> doc.getStatusForDocument().equals(StatusForDocument.ACTIVE))
+                .filter(doc -> doc.getStatusForDocument().equals(StateStatus.ACTIVE))
                 .map(Document::getName).collect(Collectors.toList());
     }
 }

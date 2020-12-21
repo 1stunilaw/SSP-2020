@@ -1,15 +1,16 @@
 package ssp.marketplace.app.api.OrderController;
 
-import org.springframework.http.*;
-import org.springframework.validation.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.*;
-import ssp.marketplace.app.service.OrderService;
+import org.springframework.web.multipart.MultipartFile;
+import ssp.marketplace.app.dto.SimpleResponse;
+import ssp.marketplace.app.dto.order.*;
+import ssp.marketplace.app.dto.tag.RequestDeleteTags;
+import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.util.*;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("api/admin/orders")
@@ -17,14 +18,17 @@ public class OrderAdminController {
 
     private final OrderService orderService;
 
+    public final DocumentService documentService;
+
     public OrderAdminController(
-            OrderService orderService
+            OrderService orderService,
+            DocumentService documentService
     ) {
         this.orderService = orderService;
+        this.documentService = documentService;
     }
 
-    // TODO: 20.12.2020 Переделать аннотации
-    @RequestMapping(value = "/create", method = RequestMethod.POST, consumes = {"multipart/form-data"})
+    @PostMapping(value = "/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOneOrderDtoAdmin createOrder(
             @ModelAttribute @Valid RequestOrderDto responseOrderDto,
@@ -33,7 +37,7 @@ public class OrderAdminController {
         return orderService.createOrder(req, responseOrderDto);
     }
 
-    @RequestMapping(value = "/{orderId}", method = RequestMethod.PATCH, consumes = {"multipart/form-data"})
+    @PatchMapping(value = "/{orderId}", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOneOrderDtoAdmin updateOrder(
             @PathVariable("orderId") UUID id,
@@ -43,12 +47,11 @@ public class OrderAdminController {
     }
 
     @DeleteMapping(value = "/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void deleteOrder(
+    public SimpleResponse deleteOrder(
             @PathVariable UUID id
     ) {
-        // TODO: 20.12.2020 Добавить ответ
         orderService.deleteOrder(id);
+        return new SimpleResponse(HttpStatus.OK.value(), "Заказ успешно удалён");
     }
 
     @PostMapping("/{id}/mark-done")
@@ -61,20 +64,30 @@ public class OrderAdminController {
 
     @DeleteMapping(value = "/{orderId}/delete-tag")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteTagFromOrder(
+    public SimpleResponse deleteTagFromOrder(
             @PathVariable UUID orderId,
             @RequestBody @Valid RequestDeleteTags requestDeleteTags
     ) {
         orderService.deleteOrderTags(orderId, requestDeleteTags);
+        return new SimpleResponse(HttpStatus.OK.value(), "Тег успешно удалён");
     }
 
     @DeleteMapping("/{orderId}/document/{name}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteDocumentFromOrder(
+    public SimpleResponse deleteDocumentFromOrder(
             @PathVariable UUID orderId,
             @PathVariable String name
     ) {
-        // TODO: 20.12.2020 Добавить ответ
         orderService.deleteDocumentFromOrder(orderId, name);
+        return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
+    }
+
+    @PostMapping(value = "/{id}/upload_file" , consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseAddNewDocumentInOrder addNewDocument(
+            @PathVariable UUID id,
+            @RequestParam("files") MultipartFile[] multipartFiles
+    ) {
+        return documentService.addNewDocumentsInOrder(id, multipartFiles);
     }
 }

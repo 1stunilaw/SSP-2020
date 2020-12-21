@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.requestDto;
+package ssp.marketplace.app.dto.order;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
@@ -6,6 +6,8 @@ import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
+import ssp.marketplace.app.service.OrderService;
+import ssp.marketplace.app.validation.unique.Unique;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;

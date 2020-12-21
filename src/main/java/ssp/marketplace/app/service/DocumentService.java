@@ -2,9 +2,9 @@ package ssp.marketplace.app.service;
 
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
+import ssp.marketplace.app.dto.order.ResponseAddNewDocumentInOrder;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 
 import java.util.*;
 
@@ -12,7 +12,7 @@ public interface DocumentService {
 
     List<Document> addNewDocuments(MultipartFile[] multipartFiles, String pathS3);
 
-    ResponseNameDocument addNewDocumentsInOrder(UUID id, MultipartFile[] multipartFiles);
+    ResponseAddNewDocumentInOrder addNewDocumentsInOrder(UUID id, MultipartFile[] multipartFiles);
 
     void deleteDocument(String name);
 
@@ -26,7 +26,7 @@ public interface DocumentService {
         if (allDocuments != null) {
             for (Document doc : allDocuments
             ) {
-                if (doc.getStatusForDocument() == StatusForDocument.ACTIVE) {
+                if (doc.getStatusForDocument() == StateStatus.ACTIVE) {
                     activeDocuments.add(doc);
                 }
             }
@@ -40,7 +40,7 @@ public interface DocumentService {
         if (allDocuments != null) {
             for (Document doc : allDocuments
             ) {
-                if (doc.getStatusForDocument() == StatusForDocument.ACTIVE) {
+                if (doc.getStatusForDocument() == StateStatus.ACTIVE) {
                     activeDocuments.add(doc);
                 }
             }

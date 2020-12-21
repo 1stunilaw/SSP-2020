@@ -1,15 +1,15 @@
 package ssp.marketplace.app.entity;
 
 import lombok.*;
-import org.hibernate.annotations.*;
 import org.hibernate.annotations.Generated;
+import org.hibernate.annotations.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.entity.user.User;
 
-import javax.persistence.*;
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 

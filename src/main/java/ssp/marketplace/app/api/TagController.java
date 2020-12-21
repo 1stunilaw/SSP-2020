@@ -1,10 +1,9 @@
 package ssp.marketplace.app.api;
 
-import org.springframework.http.*;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseTag;
+import ssp.marketplace.app.dto.tag.*;
 import ssp.marketplace.app.service.TagServices;
 
 import javax.validation.Valid;
@@ -35,12 +34,10 @@ public class TagController {
     }
 
     @DeleteMapping(value = "/admin/tags/{tagId}")
-    @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteTag(
             @PathVariable UUID tagId
     ) {
         tagServices.deleteTag(tagId);
-        // TODO: 20.12.2020 Статус
         return new SimpleResponse(HttpStatus.OK.value(), "Тег успешно удалён");
     }
 

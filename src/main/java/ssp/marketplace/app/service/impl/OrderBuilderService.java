@@ -2,7 +2,7 @@ package ssp.marketplace.app.service.impl;
 
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.requestDto.RequestOrderDto;
+import ssp.marketplace.app.dto.order.RequestOrderDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.exceptions.NotFoundException;

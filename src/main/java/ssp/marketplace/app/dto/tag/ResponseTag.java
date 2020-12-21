@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.responseDto;
+package ssp.marketplace.app.dto.tag;
 
 import lombok.*;
 import ssp.marketplace.app.entity.Tag;
@@ -16,7 +16,7 @@ public class ResponseTag {
 
     private String tagName;
 
-    public static ResponseTag getResponseTagFromTag(Tag tag){
+    public static ResponseTag getResponseTagFromTag(Tag tag) {
         ResponseTag responseTag = builder()
                 .id(tag.getId())
                 .tagName(tag.getTagName())
