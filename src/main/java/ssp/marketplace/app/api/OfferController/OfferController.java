@@ -98,9 +98,10 @@ public class OfferController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getOfferDocument(
             @PathVariable String filename,
-            @PathVariable UUID offerId
+            @PathVariable UUID offerId,
+            HttpServletRequest req
     ) {
-        S3ObjectInputStream s3is = documentService.downloadOfferFile(filename, offerId);
+        S3ObjectInputStream s3is = documentService.downloadOfferFile(filename, offerId, req);
         return ResponseEntity.ok().contentType(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM_VALUE)).cacheControl(CacheControl.noCache())
                 .header("Content-Disposition", "attachment; filename=" + filename)
                 .body(new InputStreamResource(s3is));

@@ -6,6 +6,7 @@ import ssp.marketplace.app.dto.order.ResponseAddNewDocumentInOrder;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StateStatus;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 public interface DocumentService {
@@ -20,7 +21,7 @@ public interface DocumentService {
 
     S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId);
 
-    S3ObjectInputStream downloadOfferFile(String keyName, UUID offerId);
+    S3ObjectInputStream downloadOfferFile(String keyName, UUID offerId, HttpServletRequest req);
 
     static List<Document> selectOnlyActiveDocument(Order order) {
         List<Document> allDocuments = order.getDocuments();
