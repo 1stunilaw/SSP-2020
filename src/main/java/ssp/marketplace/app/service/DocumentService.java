@@ -21,7 +21,7 @@ public interface DocumentService {
 
     S3ObjectInputStream downloadOrderFile(String keyName, UUID orderId);
 
-    S3ObjectInputStream downloadOfferFile(String keyName, UUID offerId, HttpServletRequest req);
+    S3ObjectInputStream downloadOfferFile(String keyName, UUID offerId);
 
     static List<Document> selectOnlyActiveDocument(Order order) {
         List<Document> allDocuments = order.getDocuments();
