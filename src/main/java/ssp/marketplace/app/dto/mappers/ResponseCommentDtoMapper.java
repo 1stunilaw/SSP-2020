@@ -2,7 +2,7 @@ package ssp.marketplace.app.dto.mappers;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ssp.marketplace.app.dto.CommentDto;
+import ssp.marketplace.app.dto.responseDto.ResponseOneCommentDto;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
@@ -45,20 +45,20 @@ public class ResponseCommentDtoMapper {
 
         List<Comment> answers = question.getAnswers();
         if(answers.isEmpty()) {
-            CommentDto dto = mapper.commentToCommentDto(question);
+            ResponseOneCommentDto dto = mapper.commentToCommentDto(question);
             User user = question.getUser();
             dto.setUserName(getName(user));
             responseCommentDto.setQuestion(dto);
         }
         else {
-            CommentDto commentDto = mapper.commentToCommentDto(question);
-            commentDto.setUserName(getName(question.getUser()));
-            responseCommentDto.setQuestion(commentDto);
-            ArrayList<CommentDto> answersDto = new ArrayList<CommentDto>();
+            ResponseOneCommentDto responseOneCommentDto = mapper.commentToCommentDto(question);
+            responseOneCommentDto.setUserName(getName(question.getUser()));
+            responseCommentDto.setQuestion(responseOneCommentDto);
+            ArrayList<ResponseOneCommentDto> answersDto = new ArrayList<ResponseOneCommentDto>();
 
 
             for (Comment answer : answers) {
-                CommentDto dto = mapper.commentToCommentDto(answer);
+                ResponseOneCommentDto dto = mapper.commentToCommentDto(answer);
                 User user = answer.getUser();
                 dto.setUserName(getName(user));
 
@@ -69,32 +69,30 @@ public class ResponseCommentDtoMapper {
             responseCommentDto.setAnswers(answersDto);
         }
 
-        responseCommentDto.setCreationDate(question.getCreatedAt().toString());
         return responseCommentDto;
     }
 
     public ResponseCommentDto createDtoFromPublicComment(Comment comment) {
         CommentDtoMapper mapper = Mappers.getMapper(CommentDtoMapper.class);
         ResponseCommentDto responseCommentDto = new ResponseCommentDto();
-        CommentDto question = mapper.commentToCommentDto(comment);
+        ResponseOneCommentDto question = mapper.commentToCommentDto(comment);
         User user = comment.getUser();
         question.setUserName(getName(user));
         responseCommentDto.setQuestion(question);
         List<Comment> answers = comment.getAnswers();
-        List<CommentDto> answersList = new ArrayList<>();
+        List<ResponseOneCommentDto> answersList = new ArrayList<>();
 
 
         for (Comment answer : answers) {
             if (answer.getAccessLevel() == CommentAccessLevel.PUBLIC) {
-                CommentDto commentDto = mapper.commentToCommentDto(answer);
+                ResponseOneCommentDto responseOneCommentDto = mapper.commentToCommentDto(answer);
                 User answerUser = answer.getUser();
-                commentDto.setUserName(getName(answerUser));
-                answersList.add(commentDto);
+                responseOneCommentDto.setUserName(getName(answerUser));
+                answersList.add(responseOneCommentDto);
 
             }
         }
         responseCommentDto.setAnswers(answersList);
-        responseCommentDto.setCreationDate(question.getCreatedAt().toString());
         return responseCommentDto;
     }
 

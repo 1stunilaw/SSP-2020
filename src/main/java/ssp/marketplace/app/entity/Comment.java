@@ -14,7 +14,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class Comment extends BasicEntity{
     @Enumerated(EnumType.STRING)
-    private StatusForComment status;
+    private StateStatus status;
 
     private String text;
 

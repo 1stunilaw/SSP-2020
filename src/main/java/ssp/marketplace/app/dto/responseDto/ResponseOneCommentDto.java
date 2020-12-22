@@ -1,28 +1,28 @@
-package ssp.marketplace.app.dto;
+package ssp.marketplace.app.dto.responseDto;
 
 import lombok.*;
-import org.hibernate.validator.constraints.Length;
-import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.entity.statuses.*;
 
-import javax.validation.constraints.*;
 import java.sql.Timestamp;
 import java.util.UUID;
 
+/**
+ * Дто комментария для ответа на запрос
+ */
 @Getter
 @Setter
-public class CommentDto implements Comparable<CommentDto>{
+public class ResponseOneCommentDto implements Comparable<ResponseOneCommentDto>{
     private UUID id;
     private UUID orderId;
     private UUID userId;
     private String text;
-    private StatusForComment status;
+    private StateStatus status;
     private Timestamp createdAt;
     private CommentAccessLevel accessLevel;
     private String userName;
 
     @Override
-    public int compareTo(CommentDto o) {
+    public int compareTo(ResponseOneCommentDto o) {
         return getCreatedAt().compareTo(o.createdAt);
     }
 }

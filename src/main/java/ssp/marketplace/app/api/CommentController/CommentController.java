@@ -2,25 +2,32 @@ package ssp.marketplace.app.api.CommentController;
 
 import lombok.AllArgsConstructor;
 import org.springframework.data.domain.*;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.CommentDto;
+import ssp.marketplace.app.dto.responseDto.ResponseOneCommentDto;
 import ssp.marketplace.app.dto.requestDto.RequestCommentDto;
 import ssp.marketplace.app.dto.responseDto.ResponseCommentDto;
 import ssp.marketplace.app.service.CommentService;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
 import java.util.*;
 
-
+/**
+ * Контроллер для работы с комментариями
+ */
 @AllArgsConstructor
 @RestController
 @RequestMapping("api/comments")
 public class CommentController {
     private final CommentService commentService;
 
+    /**
+     * Запрос на возврат всех комментариев под заказом (показывает в зависимости от роли)
+     * @param page  страница
+     * @param size размер страницы
+     * @param orderId id заказа
+     *
+     */
     @GetMapping("/{orderId}")
     @ResponseStatus(HttpStatus.OK)
     public Page<ResponseCommentDto> getComments(
@@ -36,9 +43,12 @@ public class CommentController {
         return commentService.getAll(req, pageable, orderId);
     }
 
+    /**
+     * Запрос на создание комментария для поставщика
+     */
     @PostMapping("/addQuestion")
     @ResponseStatus(HttpStatus.CREATED)
-    public CommentDto addNewQuestion(
+    public ResponseOneCommentDto addNewQuestion(
             @Valid @RequestBody RequestCommentDto commentDto,
             HttpServletRequest request) {
         return commentService.addComment(request, commentDto);
