@@ -7,6 +7,9 @@ import ssp.marketplace.app.entity.statuses.CommentAccessLevel;
 import javax.validation.constraints.*;
 import java.util.UUID;
 
+/**
+ * Дто для запроса на создание комментария
+ */
 @Getter
 @Setter
 public class RequestCommentDto {
