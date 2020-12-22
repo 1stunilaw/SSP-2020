@@ -2,6 +2,7 @@ package ssp.marketplace.app.entity.user;
 
 import com.sun.istack.Nullable;
 import lombok.*;
+import org.hibernate.annotations.Proxy;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.customer.CustomerDetails;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
@@ -10,6 +11,7 @@ import javax.persistence.*;
 import java.util.*;
 
 @Entity
+@Proxy(lazy = false)
 @Table(name = "users")
 @Getter
 @Setter

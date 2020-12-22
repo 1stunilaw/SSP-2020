@@ -41,6 +41,7 @@ public class MailSenderImpl implements MailService {
     }
 
     @Override
+    @Async
     public void sendMailAnyway(String templateName, String mailSubject, Map<String, Object> data, User toUser) {
         String recipientAddress = "<" + toUser.getEmail() + ">";
         try {
@@ -61,6 +62,7 @@ public class MailSenderImpl implements MailService {
     }
 
     @Async
+    @Override
     public void sendMassMail(String templateName, String mailSubject, Map<String, Object> data, List<User> toUsers) {
         try {
             MimeMessage[] messages = new MimeMessage[toUsers.size()];

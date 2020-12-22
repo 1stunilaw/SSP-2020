@@ -4,7 +4,7 @@ import lombok.*;
 import ssp.marketplace.app.dto.user.ResponseUserDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StateStatus;
-import ssp.marketplace.app.entity.user.User;
+import ssp.marketplace.app.entity.user.*;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -22,6 +22,7 @@ public class ResponseSupplierDto extends ResponseUserDto {
     private String region;
     private String nda;
     private String lawStatus;
+    private Boolean sendEmail;
 
 
     private List<String> tags;
@@ -38,6 +39,8 @@ public class ResponseSupplierDto extends ResponseUserDto {
         contacts = user.getSupplierDetails().getContacts();
         region = user.getSupplierDetails().getRegion();
         nda = user.getSupplierDetails().getNda();
+        sendEmail = user.getSendEmail().equals(MailAgreement.YES);
+
         if(user.getSupplierDetails().getLawStatus() != null){
             lawStatus = user.getSupplierDetails().getLawStatus().getName();
         }

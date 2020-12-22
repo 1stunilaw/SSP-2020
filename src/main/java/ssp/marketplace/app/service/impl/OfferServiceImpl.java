@@ -72,18 +72,6 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
-        /**
-         * id предложения /
-         * id заказа +
-         * id поставщика (организация) +
-         * порядковый номер предложения /
-         * статус +
-         * описание +
-         * дата создания /
-         * дата изменения /
-         * документы +
-         */
-
         Offer offer = new Offer();
 
         Order orderFromDB = orderRepository.findById(id)
@@ -91,13 +79,16 @@ public class OfferServiceImpl implements OfferService {
         if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
         }
-
+        if (!(orderFromDB.getStatusForOrder() == StatusForOrder.WAITING_OFFERS)) {
+            String notWaitingOffers = messageSource.getMessage("offers.errors.late", null, new Locale("ru", "RU"));
+            throw new BadRequestException(notWaitingOffers);
+        }
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_BLANK_USER.toString())) {
             // TODO: 20.12.2020 Изменить название переменной и кода ошибки
-            String filesCountError = messageSource.getMessage("offers.errors.empty", null, new Locale("ru", "RU"));
-            throw new BadRequestException(filesCountError);
+            String notFullInformation = messageSource.getMessage("offers.errors.contacts", null, new Locale("ru", "RU"));
+            throw new BadRequestException(notFullInformation);
         }
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
             throw new AccessDeniedException("Доступ закрыт");
@@ -126,7 +117,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Async
-    private void sendOfferNotification(Offer offer){
+    void sendOfferNotification(Offer offer){
         HashMap<String, Object> data = new HashMap<>();
         data.put("companyName", offer.getUser().getSupplierDetails().getCompanyName());
         data.put("orderUrl", frontendUrl + "/orders/" + offer.getOrder().getId());
@@ -137,11 +128,6 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
-        /**
-         * описание +
-         * дата изменения TODO: проверка наличия изменений чуть позже
-         * документы +
-         */
 
         Offer offer = offerRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
@@ -151,6 +137,11 @@ public class OfferServiceImpl implements OfferService {
 
         if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
+        }
+
+        if (!(offer.getOrder().getStatusForOrder() == StatusForOrder.WAITING_OFFERS)) {
+            String notWaitingOffers = messageSource.getMessage("offers.errors.late", null, new Locale("ru", "RU"));
+            throw new BadRequestException(notWaitingOffers);
         }
 
         if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId())) {

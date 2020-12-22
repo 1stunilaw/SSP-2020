@@ -23,16 +23,20 @@ public class DocumentServiceImpl implements DocumentService {
 
     private final UserRepository userRepository;
 
+    private final OfferRepository offerRepository;
+
     public final DocumentRepository documentRepository;
 
     private final MessageSource messageSource;
 
     public DocumentServiceImpl(
             S3Services s3Services, MessageSource messageSource, UserRepository userRepository, OrderRepository orderRepository,
-            DocumentRepository documentRepository
+            OfferRepository offerRepository, DocumentRepository documentRepository
+
     ) {
         this.s3Services = s3Services;
         this.orderRepository = orderRepository;
+        this.offerRepository = offerRepository;
         this.documentRepository = documentRepository;
         this.userRepository = userRepository;
         this.messageSource = messageSource;
@@ -105,6 +109,15 @@ public class DocumentServiceImpl implements DocumentService {
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         String className = order.getClass().getSimpleName().split("\\$")[0];
         String path = "/" + className + "/" + order.getName();
+        return s3Services.downloadFile(keyName, path);
+    }
+
+    @Override
+    public S3ObjectInputStream downloadOfferFile(String keyName, UUID offerId) {
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
+        String className = offer.getClass().getSimpleName().split("\\$")[0];
+        String path = "/" + className + "/" + offer.getNumber();
         return s3Services.downloadFile(keyName, path);
     }
 }
