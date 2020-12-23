@@ -265,7 +265,7 @@ public class UserServiceImpl implements UserService {
             }
         }
 
-        if (dto.getFio() != null && !dto.getPhone().trim().isEmpty()) {
+        if (dto.getFio() != null && !dto.getFio().trim().isEmpty()) {
             user.getCustomerDetails().setFio(dto.getFio());
         }
 
