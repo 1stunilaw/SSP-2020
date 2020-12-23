@@ -86,7 +86,6 @@ public class OfferServiceImpl implements OfferService {
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_BLANK_USER.toString())) {
-            // TODO: 20.12.2020 Изменить название переменной и кода ошибки
             String notFullInformation = messageSource.getMessage("offers.errors.contacts", null, new Locale("ru", "RU"));
             throw new BadRequestException(notFullInformation);
         }
@@ -94,12 +93,19 @@ public class OfferServiceImpl implements OfferService {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
+        //если номер предложения формируется внутри заказа
+        //List <Offer> offers = offerRepository.findByOrderId(id);
+
+        List <Offer> offers = offerRepository.findAll();
+        Long number = (long)(offers.size() + 1);
+        offer.setNumber(number);
+
         // TODO: 20.12.2020 Попробовать сохранять только оффер с добавлеными заказом и пользователем
         User userFromDB = userService.getUserFromHttpServletRequest(req);
-        userFromDB.getOffers().add(offer);
+        //userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
 
-        orderFromDB.getOffers().add(offer);
+        //orderFromDB.getOffers().add(offer);
         offer.setOrder(orderFromDB);
 
         offer.setStatusForOffer(StatusForOffer.ACTIVE);
@@ -110,8 +116,8 @@ public class OfferServiceImpl implements OfferService {
             addDocumentToOffer(offer, multipartFiles);
         }
         Offer savedOffer = offerRepository.save(offer);
-        userRepository.save(userFromDB);
-        orderRepository.save(orderFromDB);
+        //userRepository.save(userFromDB);
+        //orderRepository.save(orderFromDB);
         sendOfferNotification(savedOffer);
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }

@@ -17,4 +17,7 @@ public interface OfferRepository extends JpaRepository<Offer, UUID> {
     Page<Offer> findByOrderIdAndUserIdAndStatusForOffer(Pageable pageable, UUID OrderId, UUID UserId, StatusForOffer statusForOffer);
 
     Page<Offer> findByOrderIdAndStatusForOffer(Pageable pageable, UUID OrderId, StatusForOffer statusForOffer);
+
+    //если номер предложения формируется внутри заказа
+    //List<Offer> findByOrderId(UUID OrderId);
 }

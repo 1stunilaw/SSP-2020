@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.responseDto;
+package ssp.marketplace.app.dto.order;
 
 import lombok.*;
 import ssp.marketplace.app.entity.*;
@@ -10,9 +10,6 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-// TODO: 20.12.2020 Переименовать
-public class ResponseNameDocument  {
-
+public class ResponseAddNewDocumentInOrder {
     private List<String> name;
-
 }

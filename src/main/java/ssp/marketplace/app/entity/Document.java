@@ -1,7 +1,7 @@
 package ssp.marketplace.app.entity;
 
 import lombok.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
+import ssp.marketplace.app.entity.statuses.StateStatus;
 
 import javax.persistence.*;
 
@@ -19,5 +19,5 @@ public class Document extends BasicEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
-    private StatusForDocument statusForDocument;
+    private StateStatus statusForDocument;
 }

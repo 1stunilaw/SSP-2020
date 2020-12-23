@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.responseDto;
+package ssp.marketplace.app.dto.order;
 
 import lombok.*;
 import ssp.marketplace.app.entity.*;
@@ -29,7 +29,6 @@ public class ResponseListOrderDto {
 
     private String dateStop;
 
-    // TODO: 20.12.2020 Переделать на конструктор (по желанию)
     public static ResponseListOrderDto responseOrderDtoFromOrder(Order order) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveDocument(order);
         List<String> stringDocs = new ArrayList<>();

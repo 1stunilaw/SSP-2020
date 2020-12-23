@@ -1,7 +1,6 @@
 package ssp.marketplace.app.service;
 
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseTag;
+import ssp.marketplace.app.dto.tag.*;
 
 import java.util.*;
 

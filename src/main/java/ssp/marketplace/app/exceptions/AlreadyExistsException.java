@@ -6,7 +6,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @ResponseStatus(value = HttpStatus.BAD_REQUEST)
 public class AlreadyExistsException extends RuntimeException {
 
-    // TODO: 20.12.2020 Лишний класс. Переделать проверку через аннотацию
     public AlreadyExistsException(String message) {
         super(message);
     }

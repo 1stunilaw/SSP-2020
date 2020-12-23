@@ -15,6 +15,7 @@ import java.util.*;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Tag {
+
     @Id
     @GeneratedValue(generator = "system-uuid")
     @GenericGenerator(
@@ -35,5 +36,4 @@ public class Tag {
 
     @ManyToMany(mappedBy = "tags", fetch = FetchType.LAZY)
     private List<SupplierDetails> suppliers;
-
 }

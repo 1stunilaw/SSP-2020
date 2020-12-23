@@ -2,8 +2,7 @@ package ssp.marketplace.app.service.impl;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.ResponseTag;
+import ssp.marketplace.app.dto.tag.*;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StateStatus;
 import ssp.marketplace.app.entity.supplier.SupplierDetails;
@@ -66,8 +65,8 @@ public class TagServicesImpl implements TagServices {
         Tag tag = tagRepository.findByIdAndStatusForTagNotIn(id, Collections.singleton(StateStatus.DELETED))
                 .orElseThrow(() -> new NotFoundException("Тег не найден"));
         tag.setStatusForTag(StateStatus.DELETED);
-        delTagInOrders(tag);
-        delTagInSupplierDetails(tag);
+        deleteTagInOrders(tag);
+        deleteTagInSupplierDetails(tag);
         tagRepository.save(tag);
     }
 
@@ -83,8 +82,7 @@ public class TagServicesImpl implements TagServices {
         return new ResponseTag(tagRepository.save(tag));
     }
 
-    // TODO: 20.12.2020 Исправить навзание метода
-    private void delTagInOrders(Tag tag) {
+    private void deleteTagInOrders(Tag tag) {
         List<Order> ordersList = tag.getOrdersList();
         if (ordersList != null) {
             for (Order o : ordersList
@@ -96,8 +94,7 @@ public class TagServicesImpl implements TagServices {
         }
     }
 
-    // TODO: 20.12.2020 Исправить название метода
-    private void delTagInSupplierDetails(Tag tag) {
+    private void deleteTagInSupplierDetails(Tag tag) {
         List<SupplierDetails> suppliers = tag.getSuppliers();
         if (suppliers != null) {
             for (SupplierDetails supplier : suppliers

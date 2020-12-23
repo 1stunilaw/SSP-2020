@@ -4,10 +4,10 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.responseDto.ResponseNameDocument;
+import ssp.marketplace.app.dto.order.ResponseAddNewDocumentInOrder;
 import ssp.marketplace.app.entity.*;
-import ssp.marketplace.app.entity.statuses.StatusForDocument;
-import ssp.marketplace.app.entity.user.User;
+import ssp.marketplace.app.entity.statuses.StateStatus;
+import ssp.marketplace.app.entity.user.*;
 import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.service.*;
@@ -28,7 +28,6 @@ public class DocumentServiceImpl implements DocumentService {
     public final DocumentRepository documentRepository;
 
     private final MessageSource messageSource;
-
 
     public DocumentServiceImpl(
             S3Services s3Services, MessageSource messageSource, UserRepository userRepository, OrderRepository orderRepository,
@@ -54,7 +53,7 @@ public class DocumentServiceImpl implements DocumentService {
             s3Services.uploadFile(mf, fileName, pathS3);
             Document document = new Document();
             document.setName(fileName);
-            document.setStatusForDocument(StatusForDocument.ACTIVE);
+            document.setStatusForDocument(StateStatus.ACTIVE);
             documents.add(document);
             documentRepository.save(document);
         }
@@ -62,7 +61,7 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     @Override
-    public ResponseNameDocument addNewDocumentsInOrder(
+    public ResponseAddNewDocumentInOrder addNewDocumentsInOrder(
             UUID id, MultipartFile[] multipartFiles
     ) {
         Order order = orderRepository.findById(id)
@@ -82,16 +81,15 @@ public class DocumentServiceImpl implements DocumentService {
         ) {
             strings.add(doc.getName());
         }
-        return new ResponseNameDocument(strings);
+        return new ResponseAddNewDocumentInOrder(strings);
     }
 
-    // TODO: 20.12.2020 Удаление по названию ?
     @Override
     public void deleteDocument(String name) {
         Document document = documentRepository.findByNameAndStatusForDocumentNotIn(
-                name, Collections.singleton(StatusForDocument.DELETED))
+                name, Collections.singleton(StateStatus.DELETED))
                 .orElseThrow(() -> new NotFoundException("Документ не найден"));
-        document.setStatusForDocument(StatusForDocument.DELETED);
+        document.setStatusForDocument(StateStatus.DELETED);
         documentRepository.save(document);
     }
 

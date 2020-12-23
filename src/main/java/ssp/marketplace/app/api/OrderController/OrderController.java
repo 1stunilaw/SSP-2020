@@ -4,10 +4,10 @@ import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
-import org.springframework.data.web.*;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
-import ssp.marketplace.app.dto.responseDto.*;
+import ssp.marketplace.app.dto.order.*;
 import ssp.marketplace.app.service.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -45,8 +45,8 @@ public class OrderController {
         return orderService.getOneOrder(id, req);
     }
 
-    // TODO: 20.12.2020 Добавить ResponseStatus
     @GetMapping(value = "/{orderId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
+    @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getOrderDocument(
             @PathVariable String filename,
             @PathVariable UUID orderId

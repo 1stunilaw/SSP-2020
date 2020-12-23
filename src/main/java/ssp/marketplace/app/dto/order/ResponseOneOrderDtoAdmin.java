@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.responseDto;
+package ssp.marketplace.app.dto.order;
 
 import lombok.*;
 import ssp.marketplace.app.dto.user.customer.ResponseCustomerDto;
@@ -23,7 +23,6 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
         ) {
             stringDocs.add(doc.getName());
         }
-
         ResponseOneOrderDtoAdmin orderDto = new ResponseOneOrderDtoAdmin();
         orderDto.setId(order.getId());
         orderDto.setDateStart(order.getDateStart().withSecond(0).withNano(0).toString());
@@ -35,16 +34,7 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
         orderDto.setDescription(order.getDescription());
         orderDto.setNumber(order.getNumber());
         orderDto.setOrganizationName(order.getOrganizationName());
-
-        Set<Tag> tags = order.getTags();
-        List<ResponseTag> tagsName = new ArrayList<>();
-        if (tags != null) {
-            for (Tag tag : tags
-            ) {
-                tagsName.add(ResponseTag.getResponseTagFromTag(tag));
-            }
-            orderDto.setTags(tagsName);
-        }
+        setTags(order, orderDto);
         return orderDto;
     }
 }

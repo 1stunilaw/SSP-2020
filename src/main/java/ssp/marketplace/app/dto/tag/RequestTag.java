@@ -1,4 +1,4 @@
-package ssp.marketplace.app.dto.requestDto;
+package ssp.marketplace.app.dto.tag;
 
 import lombok.*;
 

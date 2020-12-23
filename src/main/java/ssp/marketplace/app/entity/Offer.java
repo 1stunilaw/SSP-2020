@@ -44,7 +44,7 @@ public class Offer extends BasicEntity{
     @Column(name = "status")
     private StatusForOffer statusForOffer;
 
-    @Generated(GenerationTime.INSERT)
+    //@Generated(GenerationTime.INSERT)
     private Long number;
 
     @ManyToMany(fetch = FetchType.LAZY)

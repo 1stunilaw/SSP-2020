@@ -1,13 +1,14 @@
 package ssp.marketplace.app.service;
 
 import org.springframework.data.domain.*;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.*;
+import ssp.marketplace.app.dto.order.*;
+import ssp.marketplace.app.dto.tag.RequestDeleteTags;
+import ssp.marketplace.app.validation.unique.FieldValueExists;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public interface OrderService {
+public interface OrderService{
 
     Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status);
 

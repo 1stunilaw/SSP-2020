@@ -1,17 +1,15 @@
-package ssp.marketplace.app.dto.requestDto;
+package ssp.marketplace.app.dto.order;
 
-import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
-import ssp.marketplace.app.exceptions.BadRequestException;
+import ssp.marketplace.app.service.OrderService;
+import ssp.marketplace.app.validation.unique.Unique;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.util.*;
 

@@ -8,8 +8,8 @@ import org.springframework.data.domain.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-import ssp.marketplace.app.dto.requestDto.*;
-import ssp.marketplace.app.dto.responseDto.*;
+import ssp.marketplace.app.dto.order.*;
+import ssp.marketplace.app.dto.tag.RequestDeleteTags;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.entity.user.*;
@@ -17,6 +17,7 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
+import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.*;
@@ -82,18 +83,20 @@ public class OrderServiceImpl implements OrderService {
             return page;
         }
         if (!StringUtils.isBlank(textSearch) && !StringUtils.isBlank(status)) {
-            Set<Order> search = orderRepository.searchAndFilterStatus(textSearch, status);
+            List<Order> all = orderRepository.findAll(OrderSpecification.search(textSearch).and(OrderSpecification.statusFilter(status)));
+            Set<Order> search = new HashSet<>(all);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
         if (!StringUtils.isBlank(status)) {
-            Set<Order> search = orderRepository.filterStatus(status);
+            List<Order> all = orderRepository.findAll(OrderSpecification.statusFilter(status));
+            Set<Order> search = new HashSet<>(all);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
-
         if (!StringUtils.isBlank(textSearch)) {
-            Set<Order> search = orderRepository.search(textSearch);
+            List<Order> all = orderRepository.findAll(OrderSpecification.search(textSearch));
+            Set<Order> search = new HashSet<>(all);
             page = mapToDtoAndToPages(search, pageable);
             return page;
         }
@@ -123,7 +126,6 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         List<Document> documents = DocumentService.selectOnlyActiveDocument(order);
         List<String> names = new ArrayList<>();
-        // TODO: 20.12.2020 Переделать удаление через id 
         for (Document doc : documents
         ) {
             names.add(doc.getName());
@@ -137,7 +139,6 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
-        // TODO: 20.12.2020 Переделать проверку через @Unique в дто 
         if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
             throw new AlreadyExistsException("Заказ с таким именнем уже существует");
         }
@@ -148,18 +149,14 @@ public class OrderServiceImpl implements OrderService {
             throw new BadRequestException(dateError);
         }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
-
-        // TODO: 20.12.2020 Попробовать сделать без добавления заказ к пользователю. Если будет работать, то убрать его сохранение 
         User userFromDB = userService.getUserFromHttpServletRequest(req);
-        userFromDB.getOrders().add(order);
         order.setUser(userFromDB);
         MultipartFile[] multipartFiles = requestOrderDto.getFiles();
         if (multipartFiles != null) {
             addDocumentToOrder(order, multipartFiles);
         }
         orderRepository.save(order);
-        userRepository.save(userFromDB);
-        sendConfirmationEmail(order);
+        sendNewOrderEmail(order);
         return ResponseOneOrderDtoAdmin.responseOrderDtoFromOrder(order);
     }
 
@@ -263,15 +260,6 @@ public class OrderServiceImpl implements OrderService {
             Order order,
             MultipartFile[] multipartFiles
     ) {
-        List<Document> oldDocuments = DocumentService.selectOnlyActiveDocument(order);
-        int countOldDoc = oldDocuments.size();
-        int countNewDoc = multipartFiles.length;
-
-        // TODO: 20.12.2020 Убрать одну из проверок - либо тут, либо в DocumentService
-        if (countOldDoc + countNewDoc > 10) {
-            String filesCountError = messageSource.getMessage("files.errors.amount", null, new Locale("ru", "RU"));
-            throw new BadRequestException(filesCountError);
-        }
         String pathS3 = "/" + order.getClass().getSimpleName() + "/" + order.getName();
         List<Document> documents = documentService.addNewDocuments(multipartFiles, pathS3);
         if (order.getDocuments() != null) {
@@ -296,9 +284,8 @@ public class OrderServiceImpl implements OrderService {
         return page;
     }
 
-    // TODO: 20.12.2020 Переименовать метод
     @Async
-    public void sendConfirmationEmail(Order order) {
+    public void sendNewOrderEmail(Order order) {
         try {
             List<Role> roles = roleRepository.findByNameIsIn(Arrays.asList(RoleName.ROLE_USER, RoleName.ROLE_BLANK_USER));
             List<User> userList = userRepository.findByRolesInAndStatus(roles, UserStatus.ACTIVE);

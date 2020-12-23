@@ -1,6 +1,5 @@
 package ssp.marketplace.app.api;
 
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
@@ -33,6 +32,7 @@ public class SupplierController {
 
     /**
      * Запрашивает у сервиса всех поставщиков
+     *
      * @param pageable параметры пагинации
      * @return Страница с поставщиками
      */
@@ -46,7 +46,8 @@ public class SupplierController {
 
     /**
      * Запрашивает у сервиса информацию о поставщике с указанным идентификатором
-     * @param id Идентификатор поставщика
+     *
+     * @param id      Идентификатор поставщика
      * @param request Информация о запросе
      * @return Поставщик с данным идентификатором
      */
@@ -61,7 +62,8 @@ public class SupplierController {
 
     /**
      * Запрашивает у сервиса изменение статуса аккредитации у поставщика с указанным идентификатором
-     * @param id Идентификатор поставщика
+     *
+     * @param id                  Идентификатор поставщика
      * @param accreditationStatus Статус аккредитации
      * @return Поставщик с данным идентификатором с изменённым статусом аккредитации
      */
@@ -75,10 +77,23 @@ public class SupplierController {
     }
 
     /**
+     * Запрашивает у сервиса возможные статусы аккредитации
+     *
+     * @return Все возможные статусы аккредитации
+     */
+    @GetMapping("/accreditation")
+    @ResponseStatus(HttpStatus.OK)
+    public ResponseAllAccreditationStatus getAccreditationStatus(
+    ) {
+        return new ResponseAllAccreditationStatus();
+    }
+
+    /**
      * Запрашивает у сервиса документ поставщика с данным id с указанным id документа
-     * @param filename Название файла
+     *
+     * @param filename   Название файла
      * @param supplierId Идентификатор поставщика
-     * @param request Информация о запросе
+     * @param request    Информация о запросе
      * @return Фаил с указанным названием
      */
     @GetMapping(value = "/{supplierId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
@@ -91,16 +106,17 @@ public class SupplierController {
         try {
             UUID userId = UUID.fromString(supplierId);
             return supplierService.getSupplierDocument(filename, userId, request);
-        } catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Невалидный ID пользователя");
         }
     }
 
     /**
      * Передаёт запрос сервису на удаление документа с указанным названием у поставщика с данным id
+     *
      * @param supplierId Идентификатор поставщика
-     * @param filename Название файла
-     * @param request Информация о запросе
+     * @param filename   Название файла
+     * @param request    Информация о запросе
      * @return Сообщение об успешном удалении документа
      */
     @DeleteMapping("/{supplierId}/{filename}")
@@ -114,7 +130,7 @@ public class SupplierController {
             UUID userId = UUID.fromString(supplierId);
             supplierService.deleteDocument(userId, filename, request);
             return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
-        } catch (IllegalArgumentException ex){
+        } catch (IllegalArgumentException ex) {
             throw new BadRequestException("Невалидный ID пользователя");
         }
     }
