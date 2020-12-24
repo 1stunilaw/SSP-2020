@@ -79,15 +79,15 @@ public class OfferController {
         return offerService.getListOfOffers(pageable, id, req);
     }
 
-    @DeleteMapping("/{offerId}/document/{name}")
+    @DeleteMapping("/{offerId}/document/{filename}")
     @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteDocumentFromOffer(
+            @PathVariable String filename,
             @PathVariable UUID offerId,
-            @PathVariable String name,
             HttpServletRequest req
     ) {
         try {
-            offerService.deleteDocumentFromOffer(offerId, name, req);
+            offerService.deleteDocumentFromOffer(filename, offerId, req);
             return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
         } catch (IllegalArgumentException ex){
             throw new BadRequestException("Невалидный ID предложения");
@@ -98,11 +98,13 @@ public class OfferController {
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getOfferDocument(
             @PathVariable String filename,
-            @PathVariable UUID offerId
+            @PathVariable UUID offerId,
+            HttpServletRequest req
     ) {
-        S3ObjectInputStream s3is = documentService.downloadOfferFile(filename, offerId);
-        return ResponseEntity.ok().contentType(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM_VALUE)).cacheControl(CacheControl.noCache())
-                .header("Content-Disposition", "attachment; filename=" + filename)
-                .body(new InputStreamResource(s3is));
+        try {
+            return offerService.getOfferDocument(filename, offerId, req);
+        } catch (IllegalArgumentException ex) {
+            throw new BadRequestException("Невалидный ID предложения");
+        }
     }
 }

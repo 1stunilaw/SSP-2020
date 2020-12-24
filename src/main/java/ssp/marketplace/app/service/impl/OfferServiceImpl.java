@@ -1,9 +1,12 @@
 package ssp.marketplace.app.service.impl;
 
+import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.*;
 import org.springframework.context.MessageSource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
@@ -96,7 +99,7 @@ public class OfferServiceImpl implements OfferService {
         //если номер предложения формируется внутри заказа
         //List <Offer> offers = offerRepository.findByOrderId(id);
 
-        List <Offer> offers = offerRepository.findAll();
+        List<Offer> offers = offerRepository.findAll();
         Long number = (long)(offers.size() + 1);
         offer.setNumber(number);
 
@@ -123,7 +126,7 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Async
-    void sendOfferNotification(Offer offer){
+    void sendOfferNotification(Offer offer) {
         HashMap<String, Object> data = new HashMap<>();
         data.put("companyName", offer.getUser().getSupplierDetails().getCompanyName());
         data.put("orderUrl", frontendUrl + "/orders/" + offer.getOrder().getId());
@@ -258,8 +261,32 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void deleteDocumentFromOffer(UUID id, String name, HttpServletRequest req) {
-        Offer offer = offerRepository.findById(id)
+    public ResponseEntity<InputStreamResource> getOfferDocument(
+            String filename, UUID offerId, HttpServletRequest req
+    ) {
+        Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(offerId, Collections.singleton(StatusForOffer.DELETED))
+                .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
+        if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
+            throw new NotFoundException("Предложение удалено");
+        }
+        if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
+            throw new NotFoundException("Заказ удален");
+        }
+        String token = jwtTokenProvider.resolveToken(req);
+        List<String> role = jwtTokenProvider.getRole(token);
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId()) && !role.contains(RoleName.ROLE_ADMIN.toString())) {
+            throw new AccessDeniedException("Доступ закрыт");
+        }
+
+        S3ObjectInputStream s3is = documentService.downloadOfferFile(filename, offerId);
+        return ResponseEntity.ok().contentType(MediaType.valueOf(MediaType.APPLICATION_OCTET_STREAM_VALUE)).cacheControl(CacheControl.noCache())
+                .header("Content-Disposition", "attachment; filename=" + filename)
+                .body(new InputStreamResource(s3is));
+    }
+
+    @Override
+    public void deleteDocumentFromOffer(String filename, UUID offerId, HttpServletRequest req) {
+        Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
 
         String token = jwtTokenProvider.resolveToken(req);
@@ -273,8 +300,8 @@ public class OfferServiceImpl implements OfferService {
         ) {
             names.add(doc.getName());
         }
-        if (names.contains(name)) {
-            documentService.deleteDocument(name);
+        if (names.contains(filename)) {
+            documentService.deleteDocument(filename);
         } else {
             throw new NotFoundException("Документ не найден");
         }
