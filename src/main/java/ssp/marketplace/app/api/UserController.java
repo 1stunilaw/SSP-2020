@@ -7,7 +7,7 @@ import org.springframework.http.*;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import ssp.marketplace.app.dto.SimpleResponse;
-import ssp.marketplace.app.dto.user.ResponseUserDto;
+import ssp.marketplace.app.dto.user.*;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.request.*;
 import ssp.marketplace.app.dto.user.supplier.response.*;
@@ -60,6 +60,20 @@ public class UserController {
     {
         return userService.updateCustomer(request, dto);
     }
+
+
+    @PatchMapping(value = "/user/password")
+    @ResponseStatus(HttpStatus.OK)
+    public SimpleResponse updatePassword(
+            HttpServletRequest request,
+            @RequestBody @Valid @NotNull RequestPasswordUpdateDto passwordUpdateDto
+    )
+    {
+        userService.updatePassword(request, passwordUpdateDto);
+        return new SimpleResponse(HttpStatus.OK.value(), "Пароль успешно изменён");
+    }
+
+
 
     /**
      * Передаёт сервису запрос на изменение данных авторизованного поставщика

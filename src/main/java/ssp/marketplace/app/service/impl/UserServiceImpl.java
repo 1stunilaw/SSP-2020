@@ -12,7 +12,7 @@ import org.springframework.web.multipart.MultipartFile;
 import ssp.marketplace.app.dto.registration.RequestRegisterUserDto;
 import ssp.marketplace.app.dto.registration.customer.*;
 import ssp.marketplace.app.dto.registration.supplier.*;
-import ssp.marketplace.app.dto.user.ResponseUserDto;
+import ssp.marketplace.app.dto.user.*;
 import ssp.marketplace.app.dto.user.customer.*;
 import ssp.marketplace.app.dto.user.supplier.request.*;
 import ssp.marketplace.app.dto.user.supplier.response.*;
@@ -250,6 +250,16 @@ public class UserServiceImpl implements UserService {
         }
 
         return null;
+    }
+
+    @Override
+    public void updatePassword(HttpServletRequest request, RequestPasswordUpdateDto updateDto) {
+        User user = getUserFromHttpServletRequest(request);
+        if (!updateDto.getPassword().equals(updateDto.getPasswordConfirm())){
+            throw new BadRequestException("Введённые пароли не совпадают");
+        }
+        user.setPassword(new BCryptPasswordEncoder().encode(updateDto.getPassword()));
+        userRepository.save(user);
     }
 
     @Override

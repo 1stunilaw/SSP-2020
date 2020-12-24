@@ -29,6 +29,8 @@ public interface UserService extends FieldValueExists {
 
     ResponseUserDto getCurrentUser(HttpServletRequest request);
 
+    void updatePassword(HttpServletRequest request, RequestPasswordUpdateDto updateDto);
+
     ResponseCustomerDto updateCustomer(HttpServletRequest request, RequestCustomerUpdateDto dto);
 
     ResponseSupplierDto updateSupplier(HttpServletRequest request, RequestSupplierUpdateDto dto);
