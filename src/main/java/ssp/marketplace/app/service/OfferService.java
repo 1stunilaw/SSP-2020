@@ -1,6 +1,8 @@
 package ssp.marketplace.app.service;
 
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.domain.*;
+import org.springframework.http.ResponseEntity;
 import ssp.marketplace.app.dto.offer.requestDto.*;
 import ssp.marketplace.app.dto.offer.responseDto.*;
 
@@ -19,6 +21,8 @@ public interface OfferService {
 
     Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req);
 
-    void deleteDocumentFromOffer(UUID id, String name, HttpServletRequest req);
+    ResponseEntity<InputStreamResource> getOfferDocument(String filename, UUID offerId, HttpServletRequest req);
+
+    void deleteDocumentFromOffer(String filename, UUID offerId, HttpServletRequest req);
 
 }
