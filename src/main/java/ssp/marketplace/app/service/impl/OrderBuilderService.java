@@ -42,7 +42,7 @@ public class OrderBuilderService {
 
         Order order = Order.builder()
                 .name(requestOrderDto.getName())
-//                .dateStart(LocalDateTime.now().withSecond(0).withNano(0))
+                .dateStart(LocalDateTime.now().withSecond(0).withNano(0))
                 .dateStop(localDateTime)
                 .description(requestOrderDto.getDescription())
                 .statusForOrder(statusForOrder)

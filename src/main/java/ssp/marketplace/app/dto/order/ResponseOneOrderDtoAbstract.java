@@ -6,7 +6,6 @@ import ssp.marketplace.app.dto.user.customer.ResponseCustomerDto;
 import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 @Data
@@ -24,7 +23,7 @@ public abstract class ResponseOneOrderDtoAbstract {
 
     private StatusForOrder statusForOrder;
 
-    private Timestamp dateStart;
+    private String dateStart;
 
     private String dateStop;
 

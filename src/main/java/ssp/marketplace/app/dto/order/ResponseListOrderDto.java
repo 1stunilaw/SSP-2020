@@ -5,7 +5,6 @@ import ssp.marketplace.app.entity.*;
 import ssp.marketplace.app.entity.statuses.StatusForOrder;
 import ssp.marketplace.app.service.DocumentService;
 
-import java.sql.Timestamp;
 import java.util.*;
 
 @Data
@@ -26,7 +25,7 @@ public class ResponseListOrderDto {
 
     private List<String> tags;
 
-    private Timestamp dateStart;
+    private String dateStart;
 
     private String dateStop;
 
@@ -39,7 +38,7 @@ public class ResponseListOrderDto {
         }
         ResponseListOrderDto responseListOrderDto = builder()
                 .id(order.getId())
-                .dateStart(order.getDateStart())
+                .dateStart(order.getDateStart().withSecond(0).withNano(0).toString())
                 .dateStop(order.getDateStop().withSecond(0).withNano(0).toString())
                 .name(order.getName())
                 .statusForOrder(order.getStatusForOrder())

@@ -61,5 +61,4 @@
     <include file="v2/2020-12-16T04-05--alter-name-law-statuses.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-16T17-05--add-accreditation_status-for-supplier_details.xml" relativeToChangelogFile="true"/>
     <include file="v2/2020-12-17T12-23--add-send-mail-column-to-user.xml" relativeToChangelogFile="true"/>
-    <include file="v2/2020-12-27T01-47--add-timezon-in-orders.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

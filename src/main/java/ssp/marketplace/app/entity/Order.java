@@ -1,6 +1,5 @@
 package ssp.marketplace.app.entity;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import org.hibernate.annotations.Generated;
 import org.hibernate.annotations.*;
@@ -11,7 +10,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.*;
-import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.*;
 
@@ -35,10 +33,8 @@ public class Order {
     @Column(name = "name", nullable = false)
     private String name;
 
-    @CreationTimestamp
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss Z")
     @Column(name = "date_start", nullable = false)
-    private Timestamp dateStart;
+    private LocalDateTime dateStart;
 
     @Column(name = "date_stop", nullable = false)
     private LocalDateTime dateStop;
