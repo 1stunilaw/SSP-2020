@@ -25,7 +25,7 @@ public class ResponseOneOrderDtoAdmin extends ResponseOneOrderDtoAbstract {
         }
         ResponseOneOrderDtoAdmin orderDto = new ResponseOneOrderDtoAdmin();
         orderDto.setId(order.getId());
-        orderDto.setDateStart(order.getDateStart().withSecond(0).withNano(0).toString());
+        orderDto.setDateStart(order.getDateStart());
         orderDto.setDateStop(order.getDateStop().withSecond(0).withNano(0).toString());
         orderDto.setName(order.getName());
         orderDto.setUser(new ResponseCustomerDto(order.getUser()));

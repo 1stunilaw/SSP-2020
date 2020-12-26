@@ -17,7 +17,7 @@ public class ResponseOneOrderDto extends ResponseOneOrderDtoAbstract {
         }
         ResponseOneOrderDto orderDto = new ResponseOneOrderDto();
         orderDto.setId(order.getId());
-        orderDto.setDateStart(order.getDateStart().withSecond(0).withNano(0).toString());
+        orderDto.setDateStart(order.getDateStart());
         orderDto.setDateStop(order.getDateStop().withSecond(0).withNano(0).toString());
         orderDto.setName(order.getName());
         orderDto.setStatusForOrder(order.getStatusForOrder());
