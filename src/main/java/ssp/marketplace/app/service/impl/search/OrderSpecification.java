@@ -10,13 +10,14 @@ public class OrderSpecification {
 
     public static Specification<Order> search(String search) {
         return (root, query, criteriaBuilder) -> {
+            String likeSearch = "%" + search + "%";
             Predicate statusDel = criteriaBuilder.notEqual(root.get("statusForOrder"), StatusForOrder.DELETED);
-            Predicate name = criteriaBuilder.like(root.get("name"), "%" + search + "%");
-            Predicate user = criteriaBuilder.like(root.get("user").get("customerDetails").get("fio"), "%" + search + "%");
-            Predicate tag = criteriaBuilder.like(criteriaBuilder.lower(root.join("tags", JoinType.LEFT).get("tagName")), "%" + search + "%");
-            Predicate description = criteriaBuilder.like(root.get("description"), "%" + search + "%");
-            Predicate organizationName = criteriaBuilder.like(root.get("organizationName"), "%" + search + "%");
-            Predicate number = criteriaBuilder.like(root.get("number").as(String.class), "%" + search + "%");
+            Predicate name = criteriaBuilder.like(criteriaBuilder.lower(root.get("name")), likeSearch.toLowerCase());
+            Predicate user = criteriaBuilder.like(criteriaBuilder.lower(root.get("user").get("customerDetails").get("fio")),  likeSearch.toLowerCase());
+            Predicate tag = criteriaBuilder.like(criteriaBuilder.lower(root.join("tags", JoinType.LEFT).get("tagName")),  likeSearch.toLowerCase());
+            Predicate description = criteriaBuilder.like(criteriaBuilder.lower(root.get("description")),  likeSearch.toLowerCase());
+            Predicate organizationName = criteriaBuilder.like(criteriaBuilder.lower(root.get("organizationName")),  likeSearch.toLowerCase());
+            Predicate number = criteriaBuilder.like(criteriaBuilder.lower(root.get("number").as(String.class)),  likeSearch.toLowerCase());
             Predicate mainPredicate = criteriaBuilder.or(description, organizationName, name, user, number, tag);
             return criteriaBuilder.and(statusDel, mainPredicate);
         };
