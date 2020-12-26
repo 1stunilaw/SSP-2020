@@ -25,8 +25,10 @@ import ssp.marketplace.app.exceptions.*;
 import ssp.marketplace.app.repository.*;
 import ssp.marketplace.app.security.jwt.JwtTokenProvider;
 import ssp.marketplace.app.service.*;
+import sun.security.validator.ValidatorException;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import java.sql.Timestamp;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,6 +126,9 @@ public class UserServiceImpl implements UserService {
     }
 
     private User registerSupplier(RequestSupplierRegisterDto dto) {
+        if (!dto.getPassword().equals(dto.getPasswordConfirm())){
+            throw new ConfirmationException("password", "Пароль и подтверждение пароля не совпадают");
+        }
         Role roleUser = getRoleFromRepository(RoleName.ROLE_BLANK_USER);
 
         Set<Role> userRoles = new HashSet<>();
@@ -256,7 +261,7 @@ public class UserServiceImpl implements UserService {
     public void updatePassword(HttpServletRequest request, RequestPasswordUpdateDto updateDto) {
         User user = getUserFromHttpServletRequest(request);
         if (!updateDto.getPassword().equals(updateDto.getPasswordConfirm())){
-            throw new BadRequestException("Введённые пароли не совпадают");
+            throw new ConfirmationException("password", "Пароль и подтверждение пароля не совпадают");
         }
         user.setPassword(new BCryptPasswordEncoder().encode(updateDto.getPassword()));
         userRepository.save(user);

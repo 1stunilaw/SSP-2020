@@ -32,6 +32,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-freemarker'
     implementation 'org.liquibase:liquibase-core'
+    implementation 'commons-beanutils:commons-beanutils:1.9.3'
 
     implementation 'org.mapstruct:mapstruct:1.4.1.Final'
 

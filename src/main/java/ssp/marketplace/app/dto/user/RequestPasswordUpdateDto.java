@@ -17,8 +17,5 @@ public class RequestPasswordUpdateDto implements Serializable {
     private String password;
 
     @NotBlank(message = "{passwordConfirm.errors.empty}")
-    @Length(min = 10, max = 25, message = "{password.errors.length}")
-    @Pattern(regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=_])(?=\\S+$)(?=[\\x21-\\x7E]+$).{10,25}$",
-            message = "{password.errors.validation}")
     private String passwordConfirm;
 }
