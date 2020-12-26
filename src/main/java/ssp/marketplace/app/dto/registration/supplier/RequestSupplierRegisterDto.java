@@ -17,4 +17,7 @@ public class RequestSupplierRegisterDto extends RequestRegisterUserDto {
     @Pattern(regexp = "^(?!^\\d+$)[a-zA-ZА-я0-9][a-zA-ZА-я0-9-.,&\" ]+$", message = "{companyName.errors.regex}")
     @Length(min = 1, max = 250, message = "{companyName.errors.length}")
     private String companyName;
+
+    @NotBlank(message = "{passwordConfirm.errors.empty}")
+    private String passwordConfirm;
 }
