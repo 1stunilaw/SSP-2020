@@ -8,7 +8,7 @@ import ssp.marketplace.app.validation.unique.FieldValueExists;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
-public interface OrderService{
+public interface OrderService extends FieldValueExists{
 
     Page<ResponseListOrderDto> getOrders(Pageable pageable, String textSearch, String status);
 

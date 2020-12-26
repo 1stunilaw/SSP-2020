@@ -11,6 +11,8 @@ public interface OrderRepository extends JpaRepository<Order, UUID>, JpaSpecific
 
     Page<Order> findByStatusForOrderNotIn(Pageable pageable, final Collection<StatusForOrder> statusForOrder);
 
+    Boolean existsByName(String name);
+
     Optional<Order> findByIdAndStatusForOrderNotIn(
             UUID id,
             final Collection<StatusForOrder> statusForOrder

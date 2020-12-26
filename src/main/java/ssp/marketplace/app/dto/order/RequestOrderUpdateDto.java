@@ -22,12 +22,14 @@ public class RequestOrderUpdateDto {
 
     @Length(max = 250, message = "{name.errors.length.max}")
     @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{name.errors.regex}")
+    @Unique(message = "{order.errors.unique}", service = OrderService.class, fieldName = "name")
     private String name;
 
     //    @DateTimeFormat(pattern = "YYYY-MM-dd hh:mm")
     //    private LocalDateTime dateStart;
 
     @DateTimeFormat(pattern = "yyyy-MM-dd")
+    @Unique(message = "{dateStop.errors.before}", service = OrderService.class, fieldName = "dateStop")
     private LocalDate dateStop;
 
     @Length(max = 10000, message = "{description.errors.length}")

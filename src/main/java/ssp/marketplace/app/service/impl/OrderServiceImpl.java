@@ -139,15 +139,15 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     public ResponseOneOrderDtoAdmin createOrder(HttpServletRequest req, RequestOrderDto requestOrderDto) {
-        if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
-            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
-        }
-        LocalDate now = LocalDate.now();
-        LocalDate dateStop = requestOrderDto.getDateStop();
-        if (dateStop.isBefore(now)) {
-            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
-            throw new BadRequestException(dateError);
-        }
+//        if (orderRepository.findByName(requestOrderDto.getName()).isPresent()) {
+//            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
+//        }
+//        LocalDate now = LocalDate.now();
+//        LocalDate dateStop = requestOrderDto.getDateStop();
+//        if (dateStop.isBefore(now)) {
+//            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
+//            throw new BadRequestException(dateError);
+//        }
         Order order = orderBuilderService.orderFromOrderDto(requestOrderDto);
         User userFromDB = userService.getUserFromHttpServletRequest(req);
         order.setUser(userFromDB);
@@ -166,17 +166,17 @@ public class OrderServiceImpl implements OrderService {
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
 
         String updateName = updateDto.getName();
-        Optional<Order> byName = orderRepository.findByName(updateName);
-        //если в бд существует заказ с таким же именем
-        if (byName.isPresent() && !byName.get().getId().equals(id)) {
-            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
-        }
-        LocalDate now = LocalDate.now();
-        LocalDate dateStop = updateDto.getDateStop();
-        if (dateStop != null && dateStop.isBefore(now)) {
-            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
-            throw new BadRequestException(dateError);
-        }
+//        Optional<Order> byName = orderRepository.findByName(updateName);
+//        //если в бд существует заказ с таким же именем
+//        if (byName.isPresent() && !byName.get().getId().equals(id)) {
+//            throw new AlreadyExistsException("Заказ с таким именнем уже существует");
+//        }
+//        LocalDate now = LocalDate.now();
+//        LocalDate dateStop = updateDto.getDateStop();
+//        if (dateStop != null && dateStop.isBefore(now)) {
+//            String dateError = messageSource.getMessage("dateStop.errors.before", null, new Locale("ru", "RU"));
+//            throw new BadRequestException(dateError);
+//        }
 
         MultipartFile[] multipartFiles = updateDto.getFiles();
         if (multipartFiles != null) {
@@ -295,6 +295,20 @@ public class OrderServiceImpl implements OrderService {
             data.put("theme", order.getName());
             mailService.sendMassMail("new_order", "Доступен новый заказ", data, userList);
         } catch (Exception ignored) {
+        }
+    }
+
+    @Override
+    public boolean fieldValueExists(Object value, String fieldName) throws UnsupportedOperationException {
+        switch (fieldName) {
+            case "name":
+                return orderRepository.existsByName(value.toString());
+            case "dateStop":
+                LocalDate dateStop = (LocalDate)value;
+                LocalDate now = LocalDate.now();
+                return dateStop.isBefore(now);
+            default:
+                throw new UnsupportedOperationException("Данное поле не поддерживается");
         }
     }
 }
