@@ -31,16 +31,17 @@ public class RequestOrderDto {
     //    private LocalDateTime dateStart;
 
     @NotNull(message = "{dateStop.errors.empty}")
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
+//    @DateTimeFormat(pattern = "yyyy-MM-dd")
     @Unique(message = "{dateStop.errors.before}", service = OrderService.class, fieldName = "dateStop")
-    private LocalDate dateStop;
+    private String dateStop;
 
     @NotBlank(message = "{description.errors.empty}")
     @Length(min = 1, max = 10000, message = "{description.errors.length}")
     @Pattern(regexp = "(^$)|(^[а-яА-ЯёЁa-zA-Z0-9-a-zA-ZА-я-()<>@#№$;%*_=^/{}\\[\\].,!?':\\s+&\" ]+$)", message = "{description.errors.regex}")
     private String description;
 
-    private StatusForOrder statusForOrder;
+    @Pattern(regexp = "^($|WAITING_OFFERS|CONSIDERATION|CLOSED|DELETED|\\s)", message = "{statusForOrder.errors.value}")
+    private String statusForOrder;
 
     private List<UUID> tags;
 

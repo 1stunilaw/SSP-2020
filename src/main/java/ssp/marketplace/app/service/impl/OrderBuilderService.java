@@ -9,6 +9,7 @@ import ssp.marketplace.app.exceptions.NotFoundException;
 import ssp.marketplace.app.repository.TagRepository;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -26,17 +27,21 @@ public class OrderBuilderService {
 
     public Order orderFromOrderDto(RequestOrderDto requestOrderDto) {
         StatusForOrder statusForOrder = StatusForOrder.WAITING_OFFERS;
-        StatusForOrder statusOrderDto = requestOrderDto.getStatusForOrder();
-        if (statusOrderDto != null) {
-            statusForOrder = statusOrderDto;
+        String dtoStatusForOrder = requestOrderDto.getStatusForOrder();
+        if (!StringUtils.isBlank(dtoStatusForOrder)) {
+            statusForOrder = StatusForOrder.valueOf(dtoStatusForOrder);
         }
-        LocalDate localDate = requestOrderDto.getDateStop();
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate localDate = LocalDate.parse(requestOrderDto.getDateStop(), formatter);
+
+//        LocalDate localDate = requestOrderDto.getDateStop();
         LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
 
         List<UUID> tagsId = requestOrderDto.getTags();
 
         String organizationName = null;
-        if(!StringUtils.isBlank(requestOrderDto.getOrganizationName())){
+        if (!StringUtils.isBlank(requestOrderDto.getOrganizationName())) {
             organizationName = requestOrderDto.getOrganizationName();
         }
 
@@ -54,19 +59,19 @@ public class OrderBuilderService {
 
     public Order setTagForOrder(Order order, List<UUID> tagsId) {
         Set<Tag> orderTags = order.getTags();
-        if(orderTags==null){
+        if (orderTags == null) {
             orderTags = new HashSet<>();
         }
         if (tagsId != null) {
             for (UUID id : tagsId
             ) {
-                if(id==null){
+                if (id == null) {
                     continue;
                 }
                 Tag tagFromDB = tagRepository.findById(id).orElseThrow(
                         () -> new NotFoundException("Тега c id = " + id + " не существует в базе данных"));
-                    orderTags.add(tagFromDB);//
-                    tagRepository.save(tagFromDB);
+                orderTags.add(tagFromDB);//
+                tagRepository.save(tagFromDB);
             }
         }
         order.setTags(orderTags);

@@ -20,7 +20,9 @@ import ssp.marketplace.app.service.*;
 import ssp.marketplace.app.service.impl.search.OrderSpecification;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ValidationException;
 import java.time.*;
+import java.time.format.*;
 import java.util.*;
 
 @Service
@@ -304,11 +306,18 @@ public class OrderServiceImpl implements OrderService {
             case "name":
                 return orderRepository.existsByName(value.toString());
             case "dateStop":
-                LocalDate dateStop = (LocalDate)value;
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+                LocalDate dateStop;
+                try{
+                    dateStop = LocalDate.parse(value.toString(), formatter);
+                }
+                catch (DateTimeParseException e){
+                    return true;
+                }
                 LocalDate now = LocalDate.now();
                 return dateStop.isBefore(now);
             default:
-                throw new UnsupportedOperationException("Данное поле не поддерживается");
+                return true;
         }
     }
 }
