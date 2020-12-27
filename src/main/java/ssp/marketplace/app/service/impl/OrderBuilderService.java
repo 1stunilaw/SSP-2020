@@ -31,13 +31,9 @@ public class OrderBuilderService {
         if (!StringUtils.isBlank(dtoStatusForOrder)) {
             statusForOrder = StatusForOrder.valueOf(dtoStatusForOrder);
         }
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         LocalDate localDate = LocalDate.parse(requestOrderDto.getDateStop(), formatter);
-
-//        LocalDate localDate = requestOrderDto.getDateStop();
         LocalDateTime localDateTime = localDate.atStartOfDay().withHour(HOUR).withMinute(MINUTE);
-
         List<UUID> tagsId = requestOrderDto.getTags();
 
         String organizationName = null;
@@ -47,7 +43,6 @@ public class OrderBuilderService {
 
         Order order = Order.builder()
                 .name(requestOrderDto.getName())
-                .dateStart(LocalDateTime.now().withSecond(0).withNano(0))
                 .dateStop(localDateTime)
                 .description(requestOrderDto.getDescription())
                 .statusForOrder(statusForOrder)
