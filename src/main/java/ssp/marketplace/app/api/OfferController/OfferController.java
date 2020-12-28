@@ -33,50 +33,53 @@ public class OfferController {
     @PostMapping(value = "/{orderId}/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOfferDto createOffer(
-            @PathVariable("orderId") UUID id,
+            @PathVariable("orderId") UUID orderId,
             @ModelAttribute @Valid RequestOfferDto requestOfferDto,
             HttpServletRequest req
     ) {
-        return offerService.createOffer(id, req, requestOfferDto);
+        return offerService.createOffer(orderId, req, requestOfferDto);
     }
 
     @PatchMapping (value = "/{offerId}", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOfferDto updateOffer(
-            @PathVariable("offerId") UUID id,
+            @PathVariable("offerId") UUID offerId,
             @ModelAttribute @Valid RequestOfferDtoUpdate requestOfferDtoUpdate,
             HttpServletRequest req
     ) {
-        return offerService.updateOffer(id, requestOfferDtoUpdate, req);
+        return offerService.updateOffer(offerId, requestOfferDtoUpdate, req);
     }
 
     @DeleteMapping(value = "/{offerId}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteOffer(
-            @PathVariable("offerId") UUID id,
+    public SimpleResponse deleteOffer(
+            @PathVariable("offerId") UUID offerId,
             HttpServletRequest req
     ) {
-        // TODO: 20.12.2020 Добавить ответ
-        offerService.deleteOffer(id, req);
-
+            try {
+                offerService.deleteOffer(offerId, req);
+                return new SimpleResponse(HttpStatus.OK.value(), "Предложение успешно удалено");
+            } catch (IllegalArgumentException ex){
+                throw new BadRequestException("Невалидный ID предложения");
+            }
     }
 
     @GetMapping("/{offerId}/show")
     public ResponseOfferDtoShow getOneOffer(
-            @PathVariable("offerId") UUID id,
+            @PathVariable("offerId") UUID offerId,
             HttpServletRequest req
     ) {
-        return offerService.getOneOffer(id, req);
+        return offerService.getOneOffer(offerId, req);
     }
 
     @GetMapping("/{orderId}")
     public Page<ResponseListOfferDto> getListOfOffers(
             @PageableDefault(sort = {"createdAt"},
                     size = 30, value = 30, direction = Sort.Direction.DESC) Pageable pageable,
-            @PathVariable("orderId") UUID id,
+            @PathVariable("orderId") UUID orderId,
             HttpServletRequest req
     ) {
-        return offerService.getListOfOffers(pageable, id, req);
+        return offerService.getListOfOffers(pageable, orderId, req);
     }
 
     @DeleteMapping("/{offerId}/document/{filename}")
@@ -90,7 +93,7 @@ public class OfferController {
             offerService.deleteDocumentFromOffer(filename, offerId, req);
             return new SimpleResponse(HttpStatus.OK.value(), "Документ успешно удалён");
         } catch (IllegalArgumentException ex){
-            throw new BadRequestException("Невалидный ID предложения");
+            throw new BadRequestException("Невалидные ID предложения или имя файла");
         }
     }
 
@@ -104,7 +107,7 @@ public class OfferController {
         try {
             return offerService.getOfferDocument(filename, offerId, req);
         } catch (IllegalArgumentException ex) {
-            throw new BadRequestException("Невалидный ID предложения");
+            throw new BadRequestException("Невалидные ID предложения или имя файла");
         }
     }
 }

@@ -42,7 +42,7 @@ public class Offer extends BasicEntity{
     private String description;
 
     @Column(name = "status")
-    private StatusForOffer statusForOffer;
+    private StateStatus stateStatus;
 
     //@Generated(GenerationTime.INSERT)
     private Long number;

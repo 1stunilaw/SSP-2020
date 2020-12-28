@@ -14,23 +14,8 @@ import java.util.*;
 @Builder
 public class ResponseOfferDtoShow extends ResponseOfferDtoAbstract {
 
-    /**
-     * Информация, которая видна заказчику:
-     *
-     * id предложения
-     * id заказа (номер заказа)
-     * id поставщика (организация)
-     * порядковый номер предложения
-     * описание
-     * статус
-     * дата создания
-     * дата изменения
-     * документы
-     */
-
     private UUID order;
 
-    // TODO: 20.12.2020 Переделать через конструктор (по желанию)
     public static ResponseOfferDtoShow responseOfferDtoFromOffer(Offer offer) {
         List<Document> activeDocument = DocumentService.selectOnlyActiveOfferDocument(offer);
         List<String> stringDocs = new ArrayList<>();
@@ -43,10 +28,9 @@ public class ResponseOfferDtoShow extends ResponseOfferDtoAbstract {
         offerDto.setOrder(offer.getOrder().getId());
         offerDto.setUser(new ResponseSupplierDto(offer.getUser()));
         offerDto.setCreatedAt(offer.getCreatedAt());
-        //offerDto.setUpdatedAt(offer.getUpdatedAt());
         offerDto.setNumber(offer.getNumber());
         offerDto.setDescription(offer.getDescription());
-        offerDto.setStatusForOffer(offer.getStatusForOffer());
+        offerDto.setStateStatus(offer.getStateStatus());
         offerDto.setDocuments(stringDocs);
 
         return offerDto;

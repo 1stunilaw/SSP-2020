@@ -10,11 +10,6 @@ import javax.validation.constraints.*;
 @RequiredArgsConstructor
 public class RequestOfferDto {
 
-    /**
-     * Запрос на создание:
-     * Описание
-     * Документы
-     */
     @NotBlank(message = "{description.errors.empty}")
     @NotNull(message = "{description.errors.empty}")
     @Length(min = 1, max = 10000, message = "{description.errors.length}")

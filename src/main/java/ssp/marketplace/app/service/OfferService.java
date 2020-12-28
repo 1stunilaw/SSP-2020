@@ -11,13 +11,13 @@ import java.util.UUID;
 
 public interface OfferService {
 
-    ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto);
+    ResponseOfferDto createOffer(UUID orderId, HttpServletRequest req, RequestOfferDto requestOfferDto);
 
-    ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req);
+    ResponseOfferDto updateOffer(UUID offerId, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req);
 
-    void deleteOffer(UUID id, HttpServletRequest req);
+    void deleteOffer(UUID offerId, HttpServletRequest req);
 
-    ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req);
+    ResponseOfferDtoShow getOneOffer(UUID offerId, HttpServletRequest req);
 
     Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req);
 

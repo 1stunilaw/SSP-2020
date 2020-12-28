@@ -37,7 +37,7 @@ public interface DocumentService {
         return activeDocuments;
     }
 
-    static List<Document> selectOnlyActiveOfferDocument(Offer offer) { //TODO: подкорректировать позже
+    static List<Document> selectOnlyActiveOfferDocument(Offer offer) {
         List<Document> allDocuments = offer.getDocuments();
         List<Document> activeDocuments = new ArrayList<>();
         if (allDocuments != null) {

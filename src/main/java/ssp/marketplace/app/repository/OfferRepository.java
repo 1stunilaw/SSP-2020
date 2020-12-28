@@ -9,14 +9,11 @@ import java.util.*;
 
 public interface OfferRepository extends JpaRepository<Offer, UUID> {
 
-    Optional<Offer> findByIdAndStatusForOfferNotIn(
-            UUID id,
-            final Collection<StatusForOffer> statusForOffer
-    );
+    Optional<Offer> findByIdAndStateStatus(UUID id, StateStatus stateStatus);
 
-    Page<Offer> findByOrderIdAndUserIdAndStatusForOffer(Pageable pageable, UUID OrderId, UUID UserId, StatusForOffer statusForOffer);
+    Page<Offer> findByOrderIdAndUserIdAndStateStatus(Pageable pageable, UUID OrderId, UUID UserId, StateStatus stateStatus);
 
-    Page<Offer> findByOrderIdAndStatusForOffer(Pageable pageable, UUID OrderId, StatusForOffer statusForOffer);
+    Page<Offer> findByOrderIdAndStateStatus(Pageable pageable, UUID OrderId, StateStatus stateStatus);
 
     //если номер предложения формируется внутри заказа
     //List<Offer> findByOrderId(UUID OrderId);

@@ -12,17 +12,6 @@ import java.util.*;
 @RequiredArgsConstructor
 public abstract class ResponseOfferDtoAbstract implements Serializable {
 
-    /**
-     * id предложения
-     * id заказа
-     * id поставщика (организация)
-     * порядковый номер предложения
-     * описание
-     * статус
-     * дата создания
-     * //дата изменения
-     * документы
-     */
     private UUID id;
 
     private ResponseSupplierDto user;
@@ -31,11 +20,10 @@ public abstract class ResponseOfferDtoAbstract implements Serializable {
 
     private String description;
 
-    private StatusForOffer statusForOffer;
+    private StateStatus stateStatus;
 
     private Timestamp createdAt;
 
-    // TODO: 20.12.2020 Пофиксить ошибки со времен
     //private Timestamp updatedAt;
 
     private List<String> documents;

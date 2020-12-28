@@ -27,22 +27,15 @@ import java.util.*;
 @Service
 public class OfferServiceImpl implements OfferService {
 
-    // TODO: 20.12.2020 Убрать неиспользуемые классы, убрать лишние репозитории (ордер и юзер)
     private final OfferRepository offerRepository;
 
     private final OrderRepository orderRepository;
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
-
-    private final OrderService orderService;
 
     private final MessageSource messageSource;
 
     private final DocumentService documentService;
-
-    private final DocumentRepository documentRepository;
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -53,31 +46,26 @@ public class OfferServiceImpl implements OfferService {
 
     @Autowired
     public OfferServiceImpl(
-            OfferRepository offerRepository, OrderRepository orderRepository, UserRepository userRepository,
-            UserService userService, OrderService orderService,
+            OfferRepository offerRepository, OrderRepository orderRepository, UserService userService,
             MessageSource messageSource, DocumentService documentService,
-            DocumentRepository documentRepository,
             JwtTokenProvider jwtTokenProvider,
             MailService mailService
     ) {
         this.offerRepository = offerRepository;
         this.orderRepository = orderRepository;
-        this.userRepository = userRepository;
         this.userService = userService;
-        this.orderService = orderService;
         this.messageSource = messageSource;
         this.documentService = documentService;
-        this.documentRepository = documentRepository;
         this.jwtTokenProvider = jwtTokenProvider;
         this.mailService = mailService;
     }
 
     @Override
-    public ResponseOfferDto createOffer(UUID id, HttpServletRequest req, RequestOfferDto requestOfferDto) {
+    public ResponseOfferDto createOffer(UUID orderId, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
         Offer offer = new Offer();
 
-        Order orderFromDB = orderRepository.findById(id)
+        Order orderFromDB = orderRepository.findById(orderId)
                 .orElseThrow(() -> new NotFoundException("Заказ не найден"));
         if (orderFromDB.getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
@@ -96,22 +84,19 @@ public class OfferServiceImpl implements OfferService {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
-        //если номер предложения формируется внутри заказа
+        //если номер предложения формируется внутри каждого заказа
         //List <Offer> offers = offerRepository.findByOrderId(id);
 
         List<Offer> offers = offerRepository.findAll();
         Long number = (long)(offers.size() + 1);
         offer.setNumber(number);
 
-        // TODO: 20.12.2020 Попробовать сохранять только оффер с добавлеными заказом и пользователем
         User userFromDB = userService.getUserFromHttpServletRequest(req);
-        //userFromDB.getOffers().add(offer);
         offer.setUser(userFromDB);
 
-        //orderFromDB.getOffers().add(offer);
         offer.setOrder(orderFromDB);
 
-        offer.setStatusForOffer(StatusForOffer.ACTIVE);
+        offer.setStateStatus(StateStatus.ACTIVE);
         offer.setDescription(requestOfferDto.getDescription());
 
         MultipartFile[] multipartFiles = requestOfferDto.getFiles();
@@ -119,8 +104,6 @@ public class OfferServiceImpl implements OfferService {
             addDocumentToOffer(offer, multipartFiles);
         }
         Offer savedOffer = offerRepository.save(offer);
-        //userRepository.save(userFromDB);
-        //orderRepository.save(orderFromDB);
         sendOfferNotification(savedOffer);
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
@@ -136,11 +119,11 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDto updateOffer(UUID id, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
+    public ResponseOfferDto updateOffer(UUID offerId, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
 
-        Offer offer = offerRepository.findById(id)
+        Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
-        if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
+        if (offer.getStateStatus() == StateStatus.DELETED) {
             throw new NotFoundException("Предложение удалено");
         }
 
@@ -148,13 +131,13 @@ public class OfferServiceImpl implements OfferService {
             throw new NotFoundException("Заказ удален");
         }
 
+        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId())) {
+            throw new AccessDeniedException("Доступ закрыт");
+        }
+
         if (!(offer.getOrder().getStatusForOrder() == StatusForOrder.WAITING_OFFERS)) {
             String notWaitingOffers = messageSource.getMessage("offers.errors.late", null, new Locale("ru", "RU"));
             throw new BadRequestException(notWaitingOffers);
-        }
-
-        if (!offer.getUser().getId().equals(userService.getUserFromHttpServletRequest(req).getId())) {
-            throw new AccessDeniedException("Доступ закрыт");
         }
 
         MultipartFile[] multipartFiles = updateOfferDto.getFiles();
@@ -172,8 +155,8 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void deleteOffer(UUID id, HttpServletRequest req) {
-        Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
+    public void deleteOffer(UUID offerId, HttpServletRequest req) {
+        Offer offer = offerRepository.findByIdAndStateStatus(offerId, StateStatus.ACTIVE)
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
 
         if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
@@ -186,7 +169,7 @@ public class OfferServiceImpl implements OfferService {
             throw new AccessDeniedException("Доступ закрыт");
         }
 
-        offer.setStatusForOffer(StatusForOffer.DELETED);
+        offer.setStateStatus(StateStatus.DELETED);
         List<Document> documents = offer.getDocuments();
         for (Document doc : documents
         ) {
@@ -200,10 +183,10 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public ResponseOfferDtoShow getOneOffer(UUID id, HttpServletRequest req) {
-        Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(id, Collections.singleton(StatusForOffer.DELETED))
+    public ResponseOfferDtoShow getOneOffer(UUID offerId, HttpServletRequest req) {
+        Offer offer = offerRepository.findByIdAndStateStatus(offerId, StateStatus.ACTIVE)
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
-        if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
+        if (offer.getStateStatus() == StateStatus.DELETED) {
             throw new NotFoundException("Предложение удалено");
         }
         if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
@@ -233,12 +216,12 @@ public class OfferServiceImpl implements OfferService {
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
         if (role.contains(RoleName.ROLE_ADMIN.toString())) {
-            offers = offerRepository.findByOrderIdAndStatusForOffer(pageable, orderId, StatusForOffer.ACTIVE);
+            offers = offerRepository.findByOrderIdAndStateStatus(pageable, orderId, StateStatus.ACTIVE);
             page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
             return page;
         }
         User user = userService.getUserFromHttpServletRequest(req);
-        offers = offerRepository.findByOrderIdAndUserIdAndStatusForOffer(pageable, orderId, user.getId(), StatusForOffer.ACTIVE);
+        offers = offerRepository.findByOrderIdAndUserIdAndStateStatus(pageable, orderId, user.getId(), StateStatus.ACTIVE);
         page = offers.map(ResponseListOfferDto::responseOfferDtoFromOffer);
 
         return page;
@@ -264,11 +247,9 @@ public class OfferServiceImpl implements OfferService {
     public ResponseEntity<InputStreamResource> getOfferDocument(
             String filename, UUID offerId, HttpServletRequest req
     ) {
-        Offer offer = offerRepository.findByIdAndStatusForOfferNotIn(offerId, Collections.singleton(StatusForOffer.DELETED))
+        Offer offer = offerRepository.findByIdAndStateStatus(offerId, StateStatus.ACTIVE)
                 .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
-        if (offer.getStatusForOffer() == StatusForOffer.DELETED) {
-            throw new NotFoundException("Предложение удалено");
-        }
+
         if (offer.getOrder().getStatusForOrder() == StatusForOrder.DELETED) {
             throw new NotFoundException("Заказ удален");
         }
@@ -287,7 +268,7 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public void deleteDocumentFromOffer(String filename, UUID offerId, HttpServletRequest req) {
         Offer offer = offerRepository.findById(offerId)
-                .orElseThrow(() -> new NotFoundException("Заказ не найден"));
+                .orElseThrow(() -> new NotFoundException("Предложение не найдено"));
 
         String token = jwtTokenProvider.resolveToken(req);
         List<String> role = jwtTokenProvider.getRole(token);
