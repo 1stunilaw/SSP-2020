@@ -24,6 +24,10 @@ import ssp.marketplace.app.service.*;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
+/**
+ * Сервис для работы с предложениями
+ * @author Golubenko Alina
+ */
 @Service
 public class OfferServiceImpl implements OfferService {
 
@@ -60,6 +64,13 @@ public class OfferServiceImpl implements OfferService {
         this.mailService = mailService;
     }
 
+    /**
+     * Метод для создания предложений. Доступен USER
+     * @param orderId id заказа
+     * @param req информация о запросе
+     * @param requestOfferDto информация о предложении
+     * @return информация о созданном предложении
+     */
     @Override
     public ResponseOfferDto createOffer(UUID orderId, HttpServletRequest req, RequestOfferDto requestOfferDto) {
 
@@ -108,6 +119,10 @@ public class OfferServiceImpl implements OfferService {
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
+    /**
+     * Метод для отправки письма, оповещающего о появлении нового предложения к заказу
+     * @param offer предложение, о котором оповещают
+     */
     @Async
     void sendOfferNotification(Offer offer) {
         HashMap<String, Object> data = new HashMap<>();
@@ -118,6 +133,13 @@ public class OfferServiceImpl implements OfferService {
         mailService.sendMail("new_offer", "Новое предложение к вашему заказу", data, offer.getOrder().getUser());
     }
 
+    /**
+     * Метод для изменения предложения. Доступен создателю предложения (USER)
+     * @param offerId id изменяемого предложения
+     * @param updateOfferDto новая информация о предложении
+     * @param req информация о запросе
+     * @return измененная информация о предложении
+     */
     @Override
     public ResponseOfferDto updateOffer(UUID offerId, RequestOfferDtoUpdate updateOfferDto, HttpServletRequest req) {
 
@@ -154,6 +176,11 @@ public class OfferServiceImpl implements OfferService {
         return ResponseOfferDto.responseOfferDtoFromOffer(offer);
     }
 
+    /**
+     * Метод для удаления предложения. Доступен создателю предложения (USER)
+     * @param offerId id удаляемого предложения
+     * @param req информация о запросе
+     */
     @Override
     public void deleteOffer(UUID offerId, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStateStatus(offerId, StateStatus.ACTIVE)
@@ -182,6 +209,12 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.save(offer);
     }
 
+    /**
+     * Метод для просмотра выбранного предложения. Доступен создателю предложения (USER) и ADMIN
+     * @param offerId id удаляемого предложения
+     * @param req информация о запросе
+     * @return подробная информация о предложении
+     */
     @Override
     public ResponseOfferDtoShow getOneOffer(UUID offerId, HttpServletRequest req) {
         Offer offer = offerRepository.findByIdAndStateStatus(offerId, StateStatus.ACTIVE)
@@ -202,6 +235,15 @@ public class OfferServiceImpl implements OfferService {
         return ResponseOfferDtoShow.responseOfferDtoFromOffer(offer);
     }
 
+    /**
+     * Метод для получения списка предложений к заказу
+     * - Поставщик (USER) получает информацию только о собственных предложениях
+     * - Заказчик (ADMIN) получает информацию обо всех предложениях
+     * @param pageable номер страницы
+     * @param orderId id заказа
+     * @param req информация о запросе
+     * @return список предложений в зависимости от роли
+     */
     @Override
     public Page<ResponseListOfferDto> getListOfOffers(Pageable pageable, UUID orderId, HttpServletRequest req) {
 
@@ -227,6 +269,12 @@ public class OfferServiceImpl implements OfferService {
         return page;
     }
 
+    /**
+     * Метод для добавления файлов к предложению
+     * Содержит проверку на кол-во файлов
+     * @param offer предложение
+     * @param multipartFiles добавляемые файлы
+     */
     private void addDocumentToOffer(Offer offer, MultipartFile[] multipartFiles) {
         List<Document> oldDocuments = DocumentService.selectOnlyActiveOfferDocument(offer);
         if (oldDocuments.size() + multipartFiles.length > 10) {
@@ -243,6 +291,13 @@ public class OfferServiceImpl implements OfferService {
         offerRepository.save(offer);
     }
 
+    /**
+     * Метод для получения файла из предложения. Доступен автору предложения (USER) и ADMIN
+     * @param filename имя файла
+     * @param offerId id предложения
+     * @param req информация о запросе
+     * @return запрашиваемый файл
+     */
     @Override
     public ResponseEntity<InputStreamResource> getOfferDocument(
             String filename, UUID offerId, HttpServletRequest req
@@ -265,6 +320,12 @@ public class OfferServiceImpl implements OfferService {
                 .body(new InputStreamResource(s3is));
     }
 
+    /**
+     * Метод для удаления файла из предложения. Доступен автору предложения (USER)
+     * @param filename имя файла
+     * @param offerId id предложения
+     * @param req информация о запросе
+     */
     @Override
     public void deleteDocumentFromOffer(String filename, UUID offerId, HttpServletRequest req) {
         Offer offer = offerRepository.findById(offerId)

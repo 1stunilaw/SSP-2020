@@ -16,6 +16,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.UUID;
 
+/**
+ * Контроллер для работы с предложениями
+ */
 @RestController
 @RequestMapping("api/offers")
 public class OfferController {
@@ -29,7 +32,13 @@ public class OfferController {
         this.documentService = documentService;
     }
 
-
+    /**
+     * Запрос на отправку предложения для заказа
+     * @param orderId id заказа
+     * @param requestOfferDto входные данные для создания
+     * @param req информация о запросе
+     * @return информацию о созданном предложении
+     */
     @PostMapping(value = "/{orderId}/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseOfferDto createOffer(
@@ -40,6 +49,13 @@ public class OfferController {
         return offerService.createOffer(orderId, req, requestOfferDto);
     }
 
+    /**
+     * Запрос на изменение выбранного предложения
+     * @param offerId id изменяемого предложения
+     * @param requestOfferDtoUpdate входные данные для изменения предложения
+     * @param req информация о запросе
+     * @return информация об измененном предложении
+     */
     @PatchMapping (value = "/{offerId}", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.OK)
     public ResponseOfferDto updateOffer(
@@ -50,6 +66,12 @@ public class OfferController {
         return offerService.updateOffer(offerId, requestOfferDtoUpdate, req);
     }
 
+    /**
+     * Запрос на удаление выбранного предложения
+     * @param offerId id удаляемого предложения
+     * @param req информация о запросе
+     * @return сообщение, информирующее о результате запроса
+     */
     @DeleteMapping(value = "/{offerId}")
     @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteOffer(
@@ -64,6 +86,12 @@ public class OfferController {
             }
     }
 
+    /**
+     * Запрос на получение подробной информации предложения
+     * @param offerId id просамтриваемого предложения
+     * @param req информация о запросе
+     * @return информация о просматриваемом предложении
+     */
     @GetMapping("/{offerId}/show")
     public ResponseOfferDtoShow getOneOffer(
             @PathVariable("offerId") UUID offerId,
@@ -72,6 +100,13 @@ public class OfferController {
         return offerService.getOneOffer(offerId, req);
     }
 
+    /**
+     * Запрос на получение всех предложений к выбранному заказу
+     * @param pageable страница списка
+     * @param orderId id просматриваемого заказа
+     * @param req информация о запросе
+     * @return список предложений к заказу
+     */
     @GetMapping("/{orderId}")
     public Page<ResponseListOfferDto> getListOfOffers(
             @PageableDefault(sort = {"createdAt"},
@@ -82,6 +117,13 @@ public class OfferController {
         return offerService.getListOfOffers(pageable, orderId, req);
     }
 
+    /**
+     * Запрос на удаление файла из предложения
+     * @param filename имя удаляемого файла
+     * @param offerId id предложения
+     * @param req информация о запросе
+     * @return сообщение, информирующее о результате
+     */
     @DeleteMapping("/{offerId}/document/{filename}")
     @ResponseStatus(HttpStatus.OK)
     public SimpleResponse deleteDocumentFromOffer(
@@ -97,6 +139,13 @@ public class OfferController {
         }
     }
 
+    /**
+     * Запрос на скачивание файла из предложения
+     * @param filename имя удаляемого файла
+     * @param offerId id предложения
+     * @param req информация о запросе
+     * @return сообщение, информирующее о результате
+     */
     @GetMapping(value = "/{offerId}/{filename}", consumes = {MediaType.APPLICATION_OCTET_STREAM_VALUE})
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<InputStreamResource> getOfferDocument(
